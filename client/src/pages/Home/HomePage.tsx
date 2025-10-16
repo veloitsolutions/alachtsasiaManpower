@@ -220,7 +220,7 @@ const HomePage: React.FC = () => {
           <div className="testimonials-container">
             <div className="testimonial-card">
               <div className="testimonial-text">
-                "Intralink helped us find the perfect staff for our hotel. Their attention to detail and understanding of our needs was impressive."
+                "Alachtsasi helped us find the perfect staff for our hotel. Their attention to detail and understanding of our needs was impressive."
               </div>
               <div className="testimonial-author">
                 <img 
@@ -237,7 +237,7 @@ const HomePage: React.FC = () => {
 
             <div className="testimonial-card">
               <div className="testimonial-text">
-                "We've been working with Intralink for over 5 years now. They consistently provide reliable staff and excellent service."
+                "We've been working with Alachtsasi for over 5 years now. They consistently provide reliable staff and excellent service."
               </div>
               <div className="testimonial-author">
                 <img 
@@ -254,7 +254,7 @@ const HomePage: React.FC = () => {
 
             <div className="testimonial-card">
               <div className="testimonial-text">
-                "Finding the right domestic help was made easy thanks to Intralink. Their staff is professional, well-trained, and reliable."
+                "Finding the right domestic help was made easy thanks to Alachtsasi. Their staff is professional, well-trained, and reliable."
               </div>
               <div className="testimonial-author">
                 <img 
