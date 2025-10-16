@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AdminSidebar from './components/AdminSidebar';
 import './AdminStyles.css';
+import { API_ENDPOINTS } from '../../config/api';
 
 interface Testimonial {
   _id: string;
@@ -38,7 +39,7 @@ const AdminTestimonials: React.FC = () => {
   const fetchTestimonials = async () => {
     try {
       setLoading(true);
-      const response = await fetch('https://intralinkgroup.net/api/testimonials', {
+      const response = await fetch(API_ENDPOINTS.TESTIMONIALS, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -96,7 +97,7 @@ const AdminTestimonials: React.FC = () => {
         formData.append('image', image);
       }
 
-      const response = await fetch('https://intralinkgroup.net/api/testimonials', {
+      const response = await fetch(API_ENDPOINTS.TESTIMONIALS, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -136,7 +137,7 @@ const AdminTestimonials: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`https://intralinkgroup.net/api/testimonials/${id}`, {
+      const response = await fetch(`${API_ENDPOINTS.TESTIMONIALS}/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

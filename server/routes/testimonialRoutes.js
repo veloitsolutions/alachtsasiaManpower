@@ -11,14 +11,31 @@ const router = express.Router();
 // Ensure multer is properly configured
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/testimonials/');
+    const uploadPath = path.join(process.cwd(), 'uploads', 'testimonials');
+    // Ensure directory exists
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
-    cb(null, `${Date.now()}${path.extname(file.originalname)}`);
+    cb(null, `testimonial-${Date.now()}${path.extname(file.originalname)}`);
   }
 });
 
-const upload = multer({ storage });
+const upload = multer({ 
+  storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'), false);
+    }
+  }
+});
 
 // Get all testimonials (public)
 router.get('/', async (req, res) => {
@@ -30,13 +47,33 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Error handling middleware for multer
+const handleMulterError = (err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ message: 'File too large. Maximum size is 5MB.' });
+    }
+    return res.status(400).json({ message: 'File upload error: ' + err.message });
+  }
+  if (err) {
+    return res.status(400).json({ message: err.message });
+  }
+  next();
+};
+
 // Create a new testimonial (admin only)
-router.post('/', protect, admin, upload.single('image'), async (req, res) => {
+router.post('/', protect, admin, upload.single('image'), handleMulterError, async (req, res) => {
   try {
     const { name, rating, review } = req.body;
     // Position is now optional
     const position = req.body.position || '';
-    const image = req.file ? `/uploads/testimonials/${req.file.filename}` : '';
+    
+    // Check if image was uploaded
+    if (!req.file) {
+      return res.status(400).json({ message: 'Image is required' });
+    }
+    
+    const image = `/uploads/testimonials/${req.file.filename}`;
 
     const testimonial = await Testimonial.create({
       name,
@@ -48,7 +85,8 @@ router.post('/', protect, admin, upload.single('image'), async (req, res) => {
 
     res.status(201).json(testimonial);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Testimonial creation error:', error);
+    res.status(400).json({ message: error.message || 'Failed to create testimonial' });
   }
 });
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./ClientLogos.css";
+import { API_ENDPOINTS, ASSETS_CONFIG } from '../../config/api';
 
 interface ClientLogo {
   _id?: string;
@@ -15,7 +16,7 @@ const ClientLogos: React.FC = () => {
   useEffect(() => {
     const fetchClientLogos = async () => {
       try {
-        const response = await fetch('https://intralinkgroup.net/api/clients');
+        const response = await fetch(API_ENDPOINTS.CLIENTS);
 
         if (!response.ok) {
           throw new Error('Failed to fetch client logos');
@@ -26,7 +27,7 @@ const ClientLogos: React.FC = () => {
         // Transform data to include full URL for logos
         const transformedData = data.map((client: ClientLogo) => ({
           ...client,
-          logo: client.logo.includes('http') ? client.logo : `https://intralinkgroup.net${client.logo}`
+          logo: client.logo.includes('http') ? client.logo : `${ASSETS_CONFIG.BASE_URL}${client.logo}`
         }));
 
         setClients(transformedData);

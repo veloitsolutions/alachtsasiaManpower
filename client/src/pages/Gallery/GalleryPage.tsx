@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import "./GalleryPage.css";
+import { API_ENDPOINTS, ASSETS_CONFIG } from '../../config/api';
 
 interface GalleryItem {
   _id?: string;
@@ -19,7 +20,7 @@ const GalleryPage: React.FC = () => {
   useEffect(() => {
     const fetchGalleryItems = async () => {
       try {
-        const response = await fetch("https://intralinkgroup.net/api/gallery");
+        const response = await fetch(API_ENDPOINTS.GALLERY);
 
         if (!response.ok) {
           throw new Error("Failed to fetch gallery items");
@@ -34,7 +35,7 @@ const GalleryPage: React.FC = () => {
             return {
               ...item,
               thumbnail: item.thumbnail
-                ? `https://intralinkgroup.net${item.thumbnail}`
+                ? `${ASSETS_CONFIG.BASE_URL}${item.thumbnail}`
                 : "",
               // No transformation for video src as it should be a YouTube ID
               src: item.src,
@@ -45,7 +46,7 @@ const GalleryPage: React.FC = () => {
               ...item,
               src: item.src.includes("http")
                 ? item.src
-                : `https://intralinkgroup.net${item.src}`,
+                : `${ASSETS_CONFIG.BASE_URL}${item.src}`,
             };
           }
         });

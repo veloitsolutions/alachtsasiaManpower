@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 // import { useNavigate } from 'react-router-dom';
 import AdminSidebar from './components/AdminSidebar';
 import './AdminStyles.css';
+import { API_ENDPOINTS } from '../../config/api';
 
 interface Contact {
   _id: string;
@@ -33,7 +34,7 @@ const AdminContacts: React.FC = () => {
   const fetchContacts = async () => {
     try {
       setLoading(true);
-      const response = await fetch('https://intralinkgroup.net/api/contact', {
+      const response = await fetch(API_ENDPOINTS.CONTACT, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -64,7 +65,7 @@ const AdminContacts: React.FC = () => {
     // Mark as read if not already read
     if (!contact.isRead) {
       try {
-        const response = await fetch(`https://intralinkgroup.net/api/contact/${contact._id}`, {
+        const response = await fetch(`${API_ENDPOINTS.CONTACT}/${contact._id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -95,7 +96,7 @@ const AdminContacts: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`https://intralinkgroup.net/api/contact/${id}`, {
+      const response = await fetch(`${API_ENDPOINTS.CONTACT}/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,

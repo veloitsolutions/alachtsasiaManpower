@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 // import { useNavigate } from 'react-router-dom';
 import AdminSidebar from './components/AdminSidebar';
 import './AdminStyles.css';
+import { API_ENDPOINTS } from '../../config/api';
 
 interface GalleryItem {
   _id: string;
@@ -40,7 +41,7 @@ const AdminGallery: React.FC = () => {
   const fetchGalleryItems = async () => {
     try {
       setLoading(true);
-      const response = await fetch('https://intralinkgroup.net/api/gallery', {
+      const response = await fetch(API_ENDPOINTS.GALLERY, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -103,7 +104,7 @@ const AdminGallery: React.FC = () => {
         const formData = new FormData();
         formData.append('file', file);
 
-        const uploadResponse = await fetch('https://intralinkgroup.net/api/upload', {
+        const uploadResponse = await fetch(API_ENDPOINTS.UPLOAD, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -124,7 +125,7 @@ const AdminGallery: React.FC = () => {
         const formData = new FormData();
         formData.append('file', thumbnailFile);
 
-        const uploadResponse = await fetch('https://intralinkgroup.net/api/upload', {
+        const uploadResponse = await fetch(API_ENDPOINTS.UPLOAD, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -148,7 +149,7 @@ const AdminGallery: React.FC = () => {
         thumbnail: type === 'video' ? thumbnailPath : undefined,
       };
 
-      const response = await fetch('https://intralinkgroup.net/api/gallery', {
+      const response = await fetch(API_ENDPOINTS.GALLERY, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -184,7 +185,7 @@ const AdminGallery: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`https://intralinkgroup.net/api/gallery/${id}`, {
+      const response = await fetch(`${API_ENDPOINTS.GALLERY}/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,

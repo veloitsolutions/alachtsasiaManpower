@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminStyles.css';
+import { API_ENDPOINTS } from '../../config/api';
 
 const AdminLoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -27,7 +28,7 @@ const AdminLoginPage: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('https://intralinkgroup.net/api/users/login', {
+      const response = await fetch(`${API_ENDPOINTS.USERS}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

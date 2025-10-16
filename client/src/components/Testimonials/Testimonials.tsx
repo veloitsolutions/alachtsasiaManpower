@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './Testimonials.css';
+import { API_ENDPOINTS, ASSETS_CONFIG } from '../../config/api';
 
 interface Testimonial {
   _id: string;
@@ -25,7 +26,7 @@ const Testimonials: React.FC = () => {
 
   const fetchTestimonials = useCallback(async () => {
     try {
-      const response = await fetch('https://intralinkgroup.net/api/testimonials');
+      const response = await fetch(API_ENDPOINTS.TESTIMONIALS);
       
       if (!response.ok) {
         throw new Error('Failed to fetch testimonials');
@@ -138,18 +139,18 @@ const Testimonials: React.FC = () => {
 
   // Handle image error
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    e.currentTarget.src = 'https://intralinkgroup.net/placeholder-avatar.png'; // Fallback image
+    e.currentTarget.src = ASSETS_CONFIG.PLACEHOLDER_AVATAR; // Fallback image
   };
 
   // Format image URL correctly
   const getImageUrl = (imagePath: string) => {
-    if (!imagePath) return 'https://intralinkgroup.net/placeholder-avatar.png';
+    if (!imagePath) return ASSETS_CONFIG.PLACEHOLDER_AVATAR;
     
     // If it's already a full URL, return it
     if (imagePath.startsWith('http')) return imagePath;
     
     // If it's a relative path, add the base URL
-    return `https://intralinkgroup.net${imagePath.startsWith('/') ? imagePath : `/${imagePath}`}`;
+    return `${ASSETS_CONFIG.BASE_URL}${imagePath.startsWith('/') ? imagePath : `/${imagePath}`}`;
   };
 
   return (

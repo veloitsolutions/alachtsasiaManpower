@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Button from '../Button/Button';
 import './ContactForm.css';
+import { API_ENDPOINTS } from '../../config/api';
 
 interface FormData {
   name: string;
@@ -61,7 +62,7 @@ const ContactForm: React.FC = () => {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch('https://intralinkgroup.net/api/contact', {
+      const response = await fetch(API_ENDPOINTS.CONTACT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

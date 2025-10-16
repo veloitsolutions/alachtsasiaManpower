@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 // import { useNavigate } from 'react-router-dom';
 import AdminSidebar from './components/AdminSidebar';
 import './AdminStyles.css';
+import { API_ENDPOINTS } from '../../config/api';
 
 interface ClientLogo {
   _id: string;
@@ -35,7 +36,7 @@ const AdminClientLogos: React.FC = () => {
   const fetchClientLogos = async () => {
     try {
       setLoading(true);
-      const response = await fetch('https://intralinkgroup.net/api/clients', {
+      const response = await fetch(API_ENDPOINTS.CLIENTS, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -80,7 +81,7 @@ const AdminClientLogos: React.FC = () => {
       const formData = new FormData();
       formData.append('file', file);
 
-      const uploadResponse = await fetch('https://intralinkgroup.net/api/upload', {
+        const uploadResponse = await fetch(API_ENDPOINTS.UPLOAD, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -101,7 +102,7 @@ const AdminClientLogos: React.FC = () => {
         logo: logoPath,
       };
 
-      const response = await fetch('https://intralinkgroup.net/api/clients', {
+      const response = await fetch(API_ENDPOINTS.CLIENTS, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -134,7 +135,7 @@ const AdminClientLogos: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`https://intralinkgroup.net/api/clients/${id}`, {
+      const response = await fetch(`${API_ENDPOINTS.CLIENTS}/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,

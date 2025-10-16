@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import AdminSidebar from './components/AdminSidebar';
 import './AdminStyles.css';
+import { API_ENDPOINTS } from '../../config/api';
 
 interface DashboardStats {
   galleryCount: number;
@@ -32,7 +33,7 @@ const AdminDashboard: React.FC = () => {
     const fetchStats = async () => {
       try {
         // Fetch gallery count
-        const galleryResponse = await fetch('https://intralinkgroup.net/api/gallery', {
+        const galleryResponse = await fetch(API_ENDPOINTS.GALLERY, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -40,7 +41,7 @@ const AdminDashboard: React.FC = () => {
         const galleryData = await galleryResponse.json();
 
         // Fetch client logos count
-        const clientsResponse = await fetch('https://intralinkgroup.net/api/clients', {
+        const clientsResponse = await fetch(API_ENDPOINTS.CLIENTS, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -48,7 +49,7 @@ const AdminDashboard: React.FC = () => {
         const clientsData = await clientsResponse.json();
 
         // Fetch contacts
-        const contactsResponse = await fetch('https://intralinkgroup.net/api/contact', {
+        const contactsResponse = await fetch(API_ENDPOINTS.CONTACT, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -56,7 +57,7 @@ const AdminDashboard: React.FC = () => {
         const contactsData = await contactsResponse.json();
 
         // Fetch testimonials
-        const testimonialsResponse = await fetch('https://intralinkgroup.net/api/testimonials', {
+        const testimonialsResponse = await fetch(API_ENDPOINTS.TESTIMONIALS, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
