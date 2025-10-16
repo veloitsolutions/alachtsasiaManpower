@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 // import { useNavigate } from 'react-router-dom';
 import AdminSidebar from './components/AdminSidebar';
 import './AdminStyles.css';
-import { API_ENDPOINTS } from '../../config/api';
+import { API_ENDPOINTS, ASSETS_CONFIG } from '../../config/api';
 
 interface GalleryItem {
   _id: string;
@@ -312,14 +312,14 @@ const AdminGallery: React.FC = () => {
                 <div key={item._id} className="admin-gallery-item">
                   {item.type === 'image' ? (
                     <img
-                      src={`https://intralinkgroup.net${item.src}`}
+                      src={`${ASSETS_CONFIG.BASE_URL}${item.src}`}
                       alt={item.caption}
                       className="admin-gallery-image"
                     />
                   ) : (
                     <div className="admin-gallery-video">
                       <img
-                        src={item.thumbnail ? `https://intralinkgroup.net${item.thumbnail}`
+                        src={item.thumbnail ? `${ASSETS_CONFIG.BASE_URL}${item.thumbnail}`
                           : ''}
                         alt={`Thumbnail for ${item.caption}`}
                         className="admin-gallery-thumbnail"

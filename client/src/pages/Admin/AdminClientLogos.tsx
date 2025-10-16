@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 // import { useNavigate } from 'react-router-dom';
 import AdminSidebar from './components/AdminSidebar';
 import './AdminStyles.css';
-import { API_ENDPOINTS } from '../../config/api';
+import { API_ENDPOINTS, ASSETS_CONFIG } from '../../config/api';
 
 interface ClientLogo {
   _id: string;
@@ -222,7 +222,7 @@ const AdminClientLogos: React.FC = () => {
               clientLogos.map((logo) => (
                 <div key={logo._id} className="admin-logo-item">
                   <img
-                    src={`https://intralinkgroup.net${logo.logo}`}
+                    src={`${ASSETS_CONFIG.BASE_URL}${logo.logo}`}
                     alt={logo.name}
                     className="admin-logo-image"
                   />

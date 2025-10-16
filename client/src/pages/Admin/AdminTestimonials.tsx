@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AdminSidebar from './components/AdminSidebar';
 import './AdminStyles.css';
-import { API_ENDPOINTS } from '../../config/api';
+import { API_ENDPOINTS, ASSETS_CONFIG } from '../../config/api';
 
 interface Testimonial {
   _id: string;
@@ -278,7 +278,7 @@ const AdminTestimonials: React.FC = () => {
                 <div key={testimonial._id} className="admin-testimonial-item">
                   <div className="admin-testimonial-header">
                     <img
-                      src={`https://intralinkgroup.net${testimonial.image}`}
+                      src={`${ASSETS_CONFIG.BASE_URL}${testimonial.image}`}
                       alt={testimonial.name}
                       className="admin-testimonial-image"
                     />
