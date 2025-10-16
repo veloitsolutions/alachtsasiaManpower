@@ -1,0 +1,345 @@
+/* About Hero Section */
+.about-hero-section {
+  height: 400px;
+  background-image: url('https://images.pexels.com/photos/1181619/pexels-photo-1181619.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-top: 70px;
+}
+
+.about-hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
+}
+
+.about-hero-content {
+  position: relative;
+  z-index: 1;
+  color: var(--neutral-white);
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+.about-hero-content h1 {
+  font-size: 3rem;
+  margin-bottom: var(--space-sm);
+  animation: fadeInDown 1s ease-out;
+}
+
+.about-hero-content p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  animation: fadeInUp 1s ease-out 0.3s forwards;
+  opacity: 0;
+}
+
+/* Who We Are Section */
+.who-we-are-section {
+  background-color: var(--neutral-white);
+}
+
+.who-we-are-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  align-items: center;
+}
+
+.who-we-are-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.who-we-are-text p {
+  margin-bottom: var(--space-md);
+}
+
+.country-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm);
+  margin: var(--space-md) 0;
+  list-style: none;
+}
+
+.country-list li {
+  position: relative;
+  padding-left: 20px;
+}
+
+.country-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--primary-red);
+}
+
+.who-we-are-image {
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.who-we-are-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.who-we-are-image:hover img {
+  transform: scale(1.05);
+}
+
+/* Our Promise Section */
+.our-promise-section {
+  background-color: var(--neutral-light-gray);
+}
+
+.promise-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-lg);
+}
+
+.promise-card {
+  background-color: var(--neutral-white);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-normal);
+}
+
+.promise-card:hover {
+  transform: translateY(-5px);
+}
+
+.promise-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--primary-red);
+  color: var(--neutral-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-md);
+  font-weight: var(--font-weight-bold);
+  font-size: 1.2rem;
+}
+
+.promise-card h3 {
+  margin-bottom: var(--space-sm);
+  color: var(--neutral-black);
+}
+
+.promise-card p {
+  color: var(--neutral-gray);
+  line-height: 1.6;
+}
+
+/* Our Approach Section */
+.our-approach-section {
+  background-color: var(--neutral-white);
+}
+
+.approach-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  align-items: center;
+}
+
+.approach-image {
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.approach-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.approach-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.approach-step {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--primary-red);
+  color: var(--neutral-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-bold);
+  flex-shrink: 0;
+}
+
+.step-content h3 {
+  margin-bottom: var(--space-xs);
+  color: var(--neutral-black);
+}
+
+.step-content p {
+  color: var(--neutral-gray);
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+/* Team Section */
+.team-section {
+  background-color: var(--neutral-light-gray);
+}
+
+.team-grid {
+  /* display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); */
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10rem;
+      padding: 20px 0;
+
+}
+
+.team-member {
+  text-align: center;
+  transition: transform var(--transition-normal);
+}
+
+.team-member:hover {
+  transform: translateY(-5px);
+}
+
+.member-image {
+  border-radius: 50%;
+  overflow: hidden;
+  width: 180px;
+  height: 180px;
+  margin: 0 auto var(--space-md);
+  border: 3px solid var(--primary-red);
+}
+
+.member-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.member-name {
+  margin-bottom: 4px;
+  color: var(--neutral-black);
+}
+
+.member-role {
+  color: var(--primary-red);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: 0;
+}
+
+/* CTA Section */
+.about-cta-section {
+  background-color: var(--primary-red);
+  color: var(--neutral-white);
+  text-align: center;
+}
+
+.about-cta-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.about-cta-content h2 {
+  margin-bottom: var(--space-sm);
+  font-size: 2.2rem;
+}
+
+.about-cta-content p {
+  margin-bottom: var(--space-lg);
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.about-cta-section .button.primary {
+  background-color: var(--neutral-white);
+  color: var(--primary-red);
+  border-color: var(--neutral-white);
+}
+
+.about-cta-section .button.primary:hover {
+  background-color: transparent;
+  color: var(--neutral-white);
+}
+
+/* Responsive Styles */
+@media (max-width: 991px) {
+  .who-we-are-content,
+  .approach-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .who-we-are-text,
+  .approach-text {
+    order: 2;
+  }
+  
+  .who-we-are-image,
+  .approach-image {
+    order: 1;
+    margin-bottom: var(--space-md);
+  }
+  
+  .country-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-hero-content h1 {
+    font-size: 2.5rem;
+  }
+  
+  .about-hero-content p {
+    font-size: 1.1rem;
+  }
+  
+  .about-hero-section {
+    height: 300px;
+  }
+  
+  .team-grid {
+    /* grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); */
+    gap: 1rem;
+
+  }
+  
+  .member-image {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .about-cta-content h2 {
+    font-size: 1.8rem;
+  }
+}

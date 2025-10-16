@@ -1,0 +1,208 @@
+.serviceDetailsPage {
+    margin-top: 80px;
+    min-height: 100vh;
+    background-color: var(--neutral-white);
+  }
+  
+  .serviceHero {
+    /* background-color: var(--primary-red); */
+    color: var(--neutral-white);
+    padding: var(--space-xl) 0;
+    position: relative;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .serviceHero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.4) 100%);
+  }
+  
+  .serviceHeroContent {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    /* margin-top: 70px; */
+    text-align: center;
+    padding: 0 var(--space-md);
+  }
+  
+  /* .serviceIcon {
+    width: 80px;
+    height: 80px;
+    background-color: var(--neutral-white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--space-md);
+    color: var(--primary-red);
+  }
+   */
+  .serviceTitle {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    margin-bottom: var(--space-md);
+    line-height: 1.2;
+  }
+  
+  .serviceDescription {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .serviceContent {
+    padding: var(--space-xl) 0;
+  }
+  
+  .serviceSection {
+    max-width: 800px;
+    margin: 0 auto var(--space-xl);
+    padding: 0 var(--space-md);
+  }
+  
+  .serviceSection:last-child {
+    margin-bottom: 0;
+  }
+  
+  .sectionTitle {
+    color: var(--primary-red);
+    margin-bottom: var(--space-md);
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+  }
+  
+  .fullDescription {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--neutral-black);
+    margin-bottom: var(--space-lg);
+  }
+  
+  .benefitsList,
+  .processList {
+    list-style: none;
+    display: grid;
+    gap: var(--space-md);
+  }
+  
+  .benefitItem,
+  .processItem {
+    display: flex;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background-color: var(--neutral-white);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-normal);
+  }
+  
+  .benefitItem:hover,
+  .processItem:hover {
+    transform: translateY(-3px);
+    
+  }
+  
+  .itemIcon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    background-color: var(--primary-red);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--neutral-white);
+  }
+  
+  .itemContent h4 {
+    margin-bottom: var(--space-xs);
+    color: var(--neutral-black);
+    font-size: 1.1rem;
+  }
+  
+  .itemContent p {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+  
+  .processItem {
+    position: relative;
+  }
+  
+  .processItem::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: var(--primary-red);
+    border-radius: var(--border-radius-md) 0 0 var(--border-radius-md);
+  }
+  
+  .ctaSection {
+    background-color: var(--neutral-light-gray);
+    padding: var(--space-xl) 0;
+    text-align: center;
+  }
+  
+  .ctaContent {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+  }
+  
+  .ctaTitle {
+    margin-bottom: var(--space-md);
+    font-size: clamp(1.6rem, 3vw, 2rem);
+    color: var(--neutral-black);
+  }
+  
+  .ctaDescription {
+    margin-bottom: var(--space-lg);
+    /* color: var(--neutral-gray); */
+    font-size: 1.1rem;
+  }
+
+  .servicesButton{
+    text-align: center;
+  }
+  
+  @media (max-width: 768px) {
+    .serviceHero {
+      padding: var(--space-lg) 0;
+    }
+  
+    .serviceIcon {
+      width: 60px;
+      height: 60px;
+    }
+  
+    .benefitItem,
+    .processItem {
+      padding: var(--space-sm);
+    }
+  
+    .itemIcon {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+    }
+  
+    .itemContent h4 {
+      font-size: 1rem;
+    }
+  
+    .itemContent p {
+      font-size: 0.9rem;
+    }
+  }
