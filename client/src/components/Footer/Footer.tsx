@@ -19,9 +19,10 @@ const Footer: React.FC = () => {
             <NavLink to="/">
               <img
                 className="logo"
-                src="/alachtsasis.png"
+                src="/logo.png"
                 alt="Alachtsasi for Manpower"
               />
+              <h3 className="footer-logo-text">Alachtsasi Manpower</h3>
             </NavLink>
             <p className="footer-description">
               Alachtsasi for Manpower is a specialized recruitment agency dedicated to 

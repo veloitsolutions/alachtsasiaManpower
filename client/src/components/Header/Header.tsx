@@ -22,14 +22,20 @@ const Header: React.FC<HeaderProps> = ({ scrolled }) => {
   return (
     <header className={`header ${scrolled ? 'scrolled' : ''} ${isHomePage && !scrolled ? 'with-top-bar' : ''}`}>
       <div className="container header-container">
-        <div className="logo-wrapper" onClick={closeMenu}>
-          <NavLink to="/">
-
-          <img className='logo' src="/logo.png" alt="Alachtsasi for Manpower" />
+        {/* Logo Section */}
+        <div className="logo-section" onClick={closeMenu}>
+          <NavLink to="/" className="logo-link">
+            <div className="logo-container">
+              <img className="logo-img" src="/logo.png" alt="Alachtsasi for Manpower" />
+              <div className="logo-text-container">
+                <span className="logo-text">Alachtsasi</span>
+                <span className="logo-subtext">Manpower</span>
+              </div>
+            </div>
           </NavLink>
-
         </div>
 
+        {/* Mobile Menu Toggle */}
         <button 
           className={`menu-toggle ${menuOpen ? 'active' : ''}`} 
           onClick={toggleMenu}
@@ -40,6 +46,7 @@ const Header: React.FC<HeaderProps> = ({ scrolled }) => {
           <span></span>
         </button>
 
+        {/* Navigation Menu */}
         <nav className={`nav-menu ${menuOpen ? 'open' : ''}`}>
           <ul className="nav-list">
             <li className="nav-item">

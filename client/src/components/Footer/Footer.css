@@ -17,8 +17,15 @@
 }
 
 .footer-brand img {
-  height: 100px;
-  margin-bottom: var(--space-md);
+  height: 60px;
+  margin-bottom: var(--space-sm);
+}
+
+.footer-logo-text {
+  color: var(--neutral-white);
+  font-size: 1.1rem;
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--space-md) 0;
 }
 
 .footer-description {
@@ -172,7 +179,11 @@
   }
 
   .footer-brand img {
-    height: 80px;
+    height: 50px;
+  }
+  
+  .footer-logo-text {
+    font-size: 1rem;
   }
 
   .footer-description,
