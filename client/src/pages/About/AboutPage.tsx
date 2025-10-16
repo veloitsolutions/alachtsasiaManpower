@@ -52,7 +52,7 @@ const AboutPage: React.FC = () => {
             </div>
             <div className="who-we-are-image">
               <img 
-              src="https://images.pexels.com/photos/3153198/pexels-photo-3153198.jpeg?auto=compress&cs=tinysrgb&w=800" 
+              src="/img/2.webp" 
               alt="Alachtsasi team meeting" 
               />
               </div>

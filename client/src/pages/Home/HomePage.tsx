@@ -17,10 +17,10 @@ const HomePage: React.FC = () => {
   });
   
   const targetCounts = {
-    years: 15,
-    placements: 5000,
-    countries: 8,
-    satisfaction: 95
+    years: 30,
+    placements: 10000,
+    countries: 10,
+    satisfaction: 1000
   };
   
   const statsRef = useRef<HTMLDivElement>(null);
@@ -47,7 +47,7 @@ const HomePage: React.FC = () => {
   }, []);
 
   const startCountAnimation = () => {
-    const duration = 5000; // 5 seconds
+    const duration = 3000; // 5 seconds
     const steps = 60;
     const interval = duration / steps;
 
@@ -84,7 +84,6 @@ const HomePage: React.FC = () => {
         <div className="hero-background"></div>
         <div className="hero-content">
           <div className="hero-text">
-            <p className="hero-subtitle">الاختصاصي لجلب الأيدي العاملة</p>
             <h1 className="hero-title">
               Alachtsasi for Manpower
             </h1>
@@ -171,7 +170,7 @@ const HomePage: React.FC = () => {
             </div>
             <div className="welcome-image-container">
               <img 
-                src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800" 
+                src="/img/5.webp" 
                 alt="Professional team at Alachtsasi" 
                 className="welcome-image"
               />

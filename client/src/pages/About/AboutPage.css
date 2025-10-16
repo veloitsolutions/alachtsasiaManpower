@@ -1,7 +1,7 @@
 /* About Hero Section */
 .about-hero-section {
   height: 400px;
-  background-image: url('https://images.pexels.com/photos/1181619/pexels-photo-1181619.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+  background-image: url('/img/4.webp');
   background-size: cover;
   background-position: center;
   position: relative;

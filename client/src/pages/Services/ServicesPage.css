@@ -1,7 +1,7 @@
 /* Services Hero Section */
 .services-hero-section {
   height: 400px;
-  background-image: url('https://images.pexels.com/photos/3153198/pexels-photo-3153198.jpeg?auto=compress&cs=tinysrgb&w=800');
+  background-image: url('/img/6.webp');
   background-size: cover;
   background-position: center;
   position: relative;

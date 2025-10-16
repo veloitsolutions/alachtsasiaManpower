@@ -227,7 +227,7 @@ const JourneyPage: React.FC = () => {
           <div className="future-content">
             <div className="future-image">
               <img 
-                src="https://images.pexels.com/photos/6224/hands-people-woman-working.jpg?auto=compress&cs=tinysrgb&w=800" 
+                src="/img/7.webp" 
                 alt="Future planning at Alachtsasi" 
               />
             </div>
