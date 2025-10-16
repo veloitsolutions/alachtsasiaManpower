@@ -36,14 +36,14 @@ const ContactPage: React.FC = () => {
                   <div className="contact-text">
                     <h3>Email Us</h3>
                     <p>
-                      <a href="mailto:info@alachtsasi.com">
-                        info@alachtsasi.com
+                      <a href="mailto:Info@alikhtsasy.com">
+                        Info@alikhtsasy.com
                       </a>
                     </p>
                     <p>
-                      <a href="mailto:recruitment@alachtsasi.com">
-                        recruitment@alachtsasi.com
-                      </a>
+                      {/* <a href="mailto:Info@alikhtsasy.com">
+                        Info@alikhtsasy.com
+                      </a> */}
                     </p>
                   </div>
                 </div>

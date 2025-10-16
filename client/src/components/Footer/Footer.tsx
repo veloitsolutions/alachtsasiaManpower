@@ -66,8 +66,8 @@ const Footer: React.FC = () => {
                 <div className="h1st">
                   <li>
                     <span>Email:</span>
-                    <a href="mailto:info@alachtsasi.com">info@alachtsasi.com</a>
-                    <a href="mailto:recruitment@alachtsasi.com">recruitment@alachtsasi.com</a>
+                    <a href="mailto:Info@alikhtsasy.com">Info@alikhtsasy.com</a>
+                    {/* <a href="mailto:Info@alikhtsasy.com">Info@alikhtsasy.com</a> */}
                   </li>
                   <li>
                     <span>Phone:</span>

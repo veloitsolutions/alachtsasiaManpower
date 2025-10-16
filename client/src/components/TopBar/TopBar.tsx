@@ -44,9 +44,9 @@ const TopBar: React.FC = () => {
     <div className={`top-bar ${visible ? "visible" : "hidden"}`}>
       <div className="container top-bar-container">
         <div className="top-bar-contact">
-          <a href="mailto:intralinkqatar@hotmail.com" className="top-bar-item">
+          <a href="mailto:Info@alikhtsasy.com" className="top-bar-item">
             <Mail size={16} />
-            <span>intralinkqatar@hotmail.com</span>
+            <span>Info@alikhtsasy.com</span>
           </a>
           <span className="top-bar-item-1">
             <Clock size={16} />
