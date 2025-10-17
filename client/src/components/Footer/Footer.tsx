@@ -84,9 +84,9 @@ const Footer: React.FC = () => {
                   <li>
                     <span>Address:</span>
                     <address>
-                      Alachtsasi Office,
+                      Zone 38 Street 231 Bldg. No 10 First Floor Room 111 Al Sadd / Opposite of Hamad Hospital
                       <br />
-                      Business District, City Center, Country.
+                      Suhaim Tower / Juwan Gallery
                     </address>
                   </li>
                 </div>

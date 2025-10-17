@@ -21,7 +21,7 @@ const WhatsAppButton: React.FC = () => {
   return (
     <div className="whatsapp-button visible">
       <a
-        href="https://wa.me/97470994833"
+        // href="https://wa.me/97470994833"
         className="whatsapp-link"
         target="_blank"
         rel="noopener noreferrer"

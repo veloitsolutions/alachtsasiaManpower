@@ -170,7 +170,7 @@ const HomePage: React.FC = () => {
             </div>
             <div className="welcome-image-container">
               <img 
-                src="/img/5.webp" 
+                src="/office.jpg" 
                 alt="Professional team at Alachtsasi" 
                 className="welcome-image"
               />

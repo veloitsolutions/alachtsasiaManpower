@@ -52,14 +52,14 @@ const TopBar: React.FC = () => {
             <Clock size={16} />
             <span>Sunday - Thursday: 9 AM to 6 PM | Friday: Closed</span> <br />
           </span>
-          <span className="top-bar-item-2">
+          {/* <span className="top-bar-item-2">
             <Phone size={16} /> 
             <a href="tel:+97470994833">+974 70994833</a>
           </span>
           <span className="top-bar-item-2">
             <Phone size={16} /> 
             <a href="tel:+97477866538">+974 77866538</a>
-          </span>
+          </span> */}
           {/* <span className="top-bar-item-2">
             <Phone size={16} /> 
             <a href="tel:+97470994833">+974 70994833</a>
