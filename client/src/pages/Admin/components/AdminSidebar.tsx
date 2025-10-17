@@ -56,6 +56,14 @@ const AdminSidebar: React.FC = () => {
           </li>
           <li>
             <Link
+              to="/admin/team-members"
+              className={`admin-sidebar-link ${isActive('/admin/team-members') ? 'active' : ''}`}
+            >
+              Team Members
+            </Link>
+          </li>
+          <li>
+            <Link
               to="/admin/contacts"
               className={`admin-sidebar-link ${isActive('/admin/contacts') ? 'active' : ''}`}
             >

@@ -9,6 +9,7 @@ export const API_ENDPOINTS = {
   CONTACT: `${API_BASE_URL}/api/contact`,
   UPLOAD: `${API_BASE_URL}/api/upload`,
   USERS: `${API_BASE_URL}/api/users`,
+  TEAM_MEMBERS: `${API_BASE_URL}/api/team-members`,
 };
 
 export const ASSETS_CONFIG = {

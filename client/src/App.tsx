@@ -26,6 +26,7 @@ import AdminClientLogos from './pages/Admin/AdminClientLogos';
 import AdminContacts from './pages/Admin/AdminContacts';
 import AdminRoute from './components/AdminRoute/AdminRoute';
 import AdminTestimonials from './pages/Admin/AdminTestimonials';
+import AdminTeamMembers from './pages/Admin/AdminTeamMembers';
 
 // Global Styles
 import ContactPage from './pages/Contact/ContactPage';
@@ -79,6 +80,7 @@ function App() {
           <Route path="/admin/clients" element={<AdminRoute><AdminClientLogos /></AdminRoute>} />
           <Route path="/admin/contacts" element={<AdminRoute><AdminContacts /></AdminRoute>} />
           <Route path="/admin/testimonials" element={<AdminRoute><AdminTestimonials /></AdminRoute>} />
+          <Route path="/admin/team-members" element={<AdminRoute><AdminTeamMembers /></AdminRoute>} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

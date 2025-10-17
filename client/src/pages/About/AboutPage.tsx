@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button/Button';
+import TeamMembers from '../../components/TeamMembers/TeamMembers';
 import './AboutPage.css';
 import { FlagCarousel } from '../../components/FlagCarousel/FlagCarousel';
 import ClientLogos from '../../components/ClientLogos/ClientLogos';
@@ -164,56 +165,7 @@ const AboutPage: React.FC = () => {
          <ClientLogos />
 
       {/* Team Section */}
-      <section className="section team-section">
-        <div className="container">
-          <h2 className="section-title">Our Leadership Team</h2>
-          <div className="team-grid">
-            <div className="team-member">
-              <div className="member-image">
-                <img 
-                  src="/intra-team/lokman.png" 
-                  alt="Team member" 
-                />
-              </div>
-              <h3 className="member-name">Lokman Ahmed</h3>
-              <p className="member-role">Founder & CEO</p>
-            </div>
-            
-            <div className="team-member">
-              <div className="member-image">
-                <img 
-                  src="/intra-team/radi.jpeg" 
-                  alt="Team member" 
-                />
-              </div>
-              <h3 className="member-name">Radai Bu Saad</h3>
-              <p className="member-role">Client relations Manager</p>
-            </div>
-            
-            <div className="team-member">
-              <div className="member-image">
-                <img 
-                  src="/intra-team/rasel.png" 
-                  alt="Team member" 
-                />
-              </div>
-              <h3 className="member-name">Rasel Mahmud</h3>
-              <p className="member-role">Operation Manager</p>
-            </div>
-            
-            {/* <div className="team-member">
-              <div className="member-image">
-                <img 
-                  src="https://images.pexels.com/photos/5717632/pexels-photo-5717632.jpeg?auto=compress&cs=tinysrgb&w=800" 
-                  alt="Team member" 
-                />
-              </div>
-              <h3 className="member-name">Elena Rodriguez</h3>
-              <p className="member-role">Client Relations</p>
-            </div> */}
-          </div>
-        </div>
-      </section>
+      <TeamMembers />
 
        
 
