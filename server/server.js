@@ -28,7 +28,7 @@ const app = express();
 // CORS configuration
 const corsOptions = {
   origin: [
-    'https://veloitsolutions.in/',
+    'https://veloitsolutions.in',
     'http://localhost:3001', 
     'http://localhost:5173',
   ],
