@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Clock, Facebook, Twitter, Instagram, Linkedin, Phone } from 'lucide-react';
+import { Mail, Clock, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
 import './TopBar.css';
 
 // const TopBar: React.FC = () => {
