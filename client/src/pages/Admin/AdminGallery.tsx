@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import AdminSidebar from './components/AdminSidebar';
 import './AdminStyles.css';
 import { API_ENDPOINTS, ASSETS_CONFIG } from '../../config/api';
+import { extractYouTubeVideoId, isValidYouTubeUrl } from '../../utils/youtubeUtils';
 
 interface GalleryItem {
   _id: string;
@@ -89,7 +90,17 @@ const AdminGallery: React.FC = () => {
       }
 
       if (type === 'video' && !videoUrl) {
-        throw new Error('Please enter a video URL');
+        throw new Error('Please enter a YouTube video URL');
+      }
+
+      // Extract video ID from URL if it's a video
+      let finalVideoUrl = videoUrl;
+      if (type === 'video') {
+        const videoId = extractYouTubeVideoId(videoUrl);
+        if (!videoId) {
+          throw new Error('Please enter a valid YouTube URL or video ID');
+        }
+        finalVideoUrl = videoId;
       }
 
       if (type === 'video' && !thumbnailFile) {
@@ -144,7 +155,7 @@ const AdminGallery: React.FC = () => {
       // Create gallery item
       const galleryData = {
         type,
-        src: type === 'image' ? imagePath : videoUrl,
+        src: type === 'image' ? imagePath : finalVideoUrl,
         caption,
         thumbnail: type === 'video' ? thumbnailPath : undefined,
       };
@@ -265,15 +276,18 @@ const AdminGallery: React.FC = () => {
               ) : (
                 <>
                   <div className="admin-form-group">
-                    <label htmlFor="videoUrl">Video URL (YouTube ID)</label>
+                    <label htmlFor="videoUrl">YouTube Video URL</label>
                     <input
                       type="text"
                       id="videoUrl"
                       value={videoUrl}
                       onChange={(e) => setVideoUrl(e.target.value)}
-                      placeholder="e.g., dQw4w9WgXcQ"
+                      placeholder="e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ"
                       required
                     />
+                    <small className="admin-form-help">
+                      Paste the full YouTube URL or just the video ID
+                    </small>
                   </div>
                   <div className="admin-form-group">
                     <label htmlFor="thumbnail">Video Thumbnail</label>
