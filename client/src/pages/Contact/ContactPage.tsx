@@ -55,9 +55,9 @@ const ContactPage: React.FC = () => {
                   <div className="contact-text">
                     <h3>Call Us</h3>
                     <p>
-                      <a href="tel:+1234567890">+1-234-567-890</a>
+                      <a href="tel:+97444447060">+974 44 44 7060</a>
                       <br />
-                      <a href="tel:+1234567891">+1-234-567-891</a>
+                      <a href="tel:+97450047060">+974 50 04 7060</a>
                     </p>
                   </div>
                 </div>
@@ -69,9 +69,21 @@ const ContactPage: React.FC = () => {
                   <div className="contact-text">
                     <h3>WhatsApp</h3>
                     <p>
-                      <a href="https://wa.me/1234567890">+1-234-567-890</a>
+                      <a href="https://wa.me/97450047060">+974 50 04 7060</a>
                       <br />
-                      <a href="https://wa.me/1234567891">+1-234-567-891</a>
+                      <a href="https://wa.me/97444447060">+974 44 44 7060</a>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="contact-detail-item">
+                  <div className="contact-icon">
+                    <Phone size={24} />
+                  </div>
+                  <div className="contact-text">
+                    <h3>Fax</h3>
+                    <p>
+                      <a href="tel:+97444444728">+974 44 44 4728</a>
                     </p>
                   </div>
                 </div>

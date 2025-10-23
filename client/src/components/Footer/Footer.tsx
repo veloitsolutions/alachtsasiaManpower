@@ -71,15 +71,16 @@ const Footer: React.FC = () => {
                   </li>
                   <li>
                     <span>Phone:</span>
-                    <a href="tel:+1234567890">+1-234-567-890</a>
-                    <a href="tel:+1234567891">+1-234-567-891</a>
+                    <a href="tel:+97444447060">+974 44 44 7060</a>
+                    <a href="tel:+97450047060">+974 50 04 7060</a>
+                    <a href="tel:+97444444728">+974 44 44 4728</a>
                   </li>
                 </div>
                 <div className="h2nd">
                   <li>
                     <span>WhatsApp:</span>
-                    <a href="https://wa.me/1234567890">+1-234-567-890</a>
-                    <a href="https://wa.me/1234567891">+1-234-567-891</a>
+                    <a href="https://wa.me/97450047060">+974 50 04 7060</a>
+                    <a href="https://wa.me/97444447060">+974 44 44 7060</a>
                   </li>
                   <li>
                     <span>Address:</span>
