@@ -230,7 +230,9 @@ const AdminTeamMembers: React.FC = () => {
         ) : (
           <div className="admin-team-grid">
             {teamMembers.length === 0 ? (
-              <p>No team members found. Add some!</p>
+              <div className="admin-empty-state">
+                <p>No team members found. Add some!</p>
+              </div>
             ) : (
               teamMembers.map((member) => (
                 <div key={member._id} className="admin-team-item">

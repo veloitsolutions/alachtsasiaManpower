@@ -597,6 +597,23 @@
   color: var(--neutral-gray);
 }
 
+.admin-empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--neutral-gray);
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.admin-empty-state p {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
 .admin-error-message {
   background-color: #ffebee;
   color: #d32f2f;

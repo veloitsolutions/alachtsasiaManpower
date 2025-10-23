@@ -217,7 +217,9 @@ const AdminClientLogos: React.FC = () => {
         ) : (
           <div className="admin-logo-grid">
             {clientLogos.length === 0 ? (
-              <p>No client logos found. Add some!</p>
+              <div className="admin-empty-state">
+                <p>No client logos found. Add some!</p>
+              </div>
             ) : (
               clientLogos.map((logo) => (
                 <div key={logo._id} className="admin-logo-item">

@@ -306,7 +306,9 @@ const AdminGallery: React.FC = () => {
         ) : (
           <div className="admin-gallery-grid">
             {galleryItems.length === 0 ? (
-              <p>No gallery items found. Add some!</p>
+              <div className="admin-empty-state">
+                <p>No gallery items found. Add some!</p>
+              </div>
             ) : (
               galleryItems.map((item) => (
                 <div key={item._id} className="admin-gallery-item">

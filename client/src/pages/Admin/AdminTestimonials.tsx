@@ -272,7 +272,9 @@ const AdminTestimonials: React.FC = () => {
         ) : (
           <div className="admin-testimonials-grid">
             {testimonials.length === 0 ? (
-              <p>No testimonials found. Add some!</p>
+              <div className="admin-empty-state">
+                <p>No testimonials found. Add some!</p>
+              </div>
             ) : (
               testimonials.map((testimonial) => (
                 <div key={testimonial._id} className="admin-testimonial-item">

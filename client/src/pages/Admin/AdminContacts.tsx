@@ -136,7 +136,9 @@ const AdminContacts: React.FC = () => {
         ) : (
           <div className="admin-contacts-container">
             {contacts.length === 0 ? (
-              <p>No contact submissions found.</p>
+              <div className="admin-empty-state">
+                <p>No contact submissions found.</p>
+              </div>
             ) : (
               <table className="admin-contacts-table">
                 <thead>
