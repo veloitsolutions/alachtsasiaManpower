@@ -9,7 +9,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ scrolled }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
-  const isHomePage = location.pathname === '/';
+  const isHomePage = location.pathname === '/home';
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -24,7 +24,7 @@ const Header: React.FC<HeaderProps> = ({ scrolled }) => {
       <div className="container header-container">
         {/* Logo Section */}
         <div className="logo-section" onClick={closeMenu}>
-          <NavLink to="/" className="logo-link">
+          <NavLink to="/home" className="logo-link">
             <div className="logo-container">
               <img className="logo-img" src="/logo.png" alt="Alikhtsasy for Manpower" />
               <div className="logo-text-container">
@@ -50,7 +50,7 @@ const Header: React.FC<HeaderProps> = ({ scrolled }) => {
         <nav className={`nav-menu ${menuOpen ? 'open' : ''}`}>
           <ul className="nav-list">
             <li className="nav-item">
-              <NavLink to="/" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
+              <NavLink to="/home" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
                 Home
               </NavLink>
             </li>

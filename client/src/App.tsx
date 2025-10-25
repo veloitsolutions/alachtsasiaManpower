@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation  } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate  } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 // Components
@@ -50,8 +50,8 @@ function App() {
     };
   }, [scrolled]);
 
-  // Check if current route is homepage
-  const isHomePage = location.pathname === '/';
+  // Check if current route is homepage (only for top bar display)
+  const isHomePage = location.pathname === '/home';
   
   // Check if current route starts with /admin
   const isAdminRoute = location.pathname.startsWith('/admin');
@@ -63,7 +63,8 @@ function App() {
       <main className={`main-content ${isHomePage ? 'home-page' : ''}`}>
         <ScrollToTop/>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<ServicesPage />} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/journey" element={<JourneyPage />} />
           <Route path="/services" element={<ServicesPage />} />
