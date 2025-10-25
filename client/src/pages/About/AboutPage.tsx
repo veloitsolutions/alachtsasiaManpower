@@ -15,7 +15,7 @@ const AboutPage: React.FC = () => {
       <section className="about-hero-section">
         <div className="container">
           <div className="about-hero-content">
-            <h1>About Alachtsasi</h1>
+            <h1>About Alikhtsasy</h1>
             <p>Learn about our journey, values, and commitment to excellence</p>
           </div>
         </div>
@@ -28,7 +28,7 @@ const AboutPage: React.FC = () => {
             <div className="who-we-are-text">
               <h2 className="section-title">Who We Are</h2>
               <p>
-                Alachtsasi for Manpower is a specialized recruitment agency dedicated to connecting 
+                Alikhtsasy for Manpower is a specialized recruitment agency dedicated to connecting 
                 exceptional talent with outstanding opportunities across various industries and regions.
               </p>
               <p>
@@ -54,7 +54,7 @@ const AboutPage: React.FC = () => {
             <div className="who-we-are-image">
               <img 
               src="/img/2.webp" 
-              alt="Alachtsasi team meeting" 
+              alt="Alikhtsasy team meeting" 
               />
               </div>
           </div>
@@ -110,7 +110,7 @@ const AboutPage: React.FC = () => {
             <div className="approach-image">
               <img 
                 src="https://images.pexels.com/photos/5673488/pexels-photo-5673488.jpeg?auto=compress&cs=tinysrgb&w=800" 
-                alt="Alachtsasi recruitment process" 
+                alt="Alikhtsasy recruitment process" 
               />
             </div>
             <div className="approach-text">
@@ -174,7 +174,7 @@ const AboutPage: React.FC = () => {
       <section className="section about-cta-section">
         <div className="container">
           <div className="about-cta-content">
-            <h2>Ready to experience the Alachtsasi difference?</h2>
+            <h2>Ready to experience the Alikhtsasy difference?</h2>
             <p>
               Let us help you find the perfect staff for your home or business.
             </p>

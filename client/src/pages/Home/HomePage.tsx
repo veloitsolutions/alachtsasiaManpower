@@ -85,7 +85,7 @@ const HomePage: React.FC = () => {
         <div className="hero-content">
           <div className="hero-text">
             <h1 className="hero-title">
-              Alachtsasi for Manpower
+              Alikhtsasy for Manpower
             </h1>
             <p className="hero-description">
               Your trusted partner in connecting exceptional talent with outstanding opportunities 
@@ -134,11 +134,11 @@ const HomePage: React.FC = () => {
       {/* Welcome Section */}
       <section className="section welcome-section">
         <div className="container">
-          <h2 className="section-title">About Alachtsasi</h2>
+          <h2 className="section-title">About Alikhtsasy</h2>
           <div className="welcome-content">
             <div className="welcome-text">
               <p>
-                Alachtsasi for Manpower is a specialized recruitment agency dedicated to connecting 
+                Alikhtsasy for Manpower is a specialized recruitment agency dedicated to connecting 
                 exceptional talent with outstanding opportunities. We focus on providing reliable 
                 domestic staffing, skilled professionals, and comprehensive business services.
               </p>
@@ -171,7 +171,7 @@ const HomePage: React.FC = () => {
             <div className="welcome-image-container">
               <img 
                 src="/office.jpg" 
-                alt="Professional team at Alachtsasi" 
+                alt="Professional team at Alikhtsasy" 
                 className="welcome-image"
               />
             </div>
@@ -219,7 +219,7 @@ const HomePage: React.FC = () => {
           <div className="testimonials-container">
             <div className="testimonial-card">
               <div className="testimonial-text">
-                "Alachtsasi helped us find the perfect staff for our hotel. Their attention to detail and understanding of our needs was impressive."
+                "Alikhtsasy helped us find the perfect staff for our hotel. Their attention to detail and understanding of our needs was impressive."
               </div>
               <div className="testimonial-author">
                 <img 
@@ -236,7 +236,7 @@ const HomePage: React.FC = () => {
 
             <div className="testimonial-card">
               <div className="testimonial-text">
-                "We've been working with Alachtsasi for over 5 years now. They consistently provide reliable staff and excellent service."
+                "We've been working with Alikhtsasy for over 5 years now. They consistently provide reliable staff and excellent service."
               </div>
               <div className="testimonial-author">
                 <img 
@@ -253,7 +253,7 @@ const HomePage: React.FC = () => {
 
             <div className="testimonial-card">
               <div className="testimonial-text">
-                "Finding the right domestic help was made easy thanks to Alachtsasi. Their staff is professional, well-trained, and reliable."
+                "Finding the right domestic help was made easy thanks to Alikhtsasy. Their staff is professional, well-trained, and reliable."
               </div>
               <div className="testimonial-author">
                 <img 

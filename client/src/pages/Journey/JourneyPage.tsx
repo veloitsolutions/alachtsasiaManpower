@@ -79,7 +79,7 @@ const JourneyPage: React.FC = () => {
         <div className="container">
           <div className="journey-hero-content">
             <h1>Our Journey</h1>
-            <p>Explore the milestones that have shaped Alachtsasi since 1994</p>
+            <p>Explore the milestones that have shaped Alikhtsasy since 1994</p>
           </div>
         </div>
       </section>
@@ -90,7 +90,7 @@ const JourneyPage: React.FC = () => {
           <div className="journey-intro-content">
             <h2 className="section-title">Our Growth Story</h2>
             <p className="journey-intro-text">
-              Since our founding in 1994, Alachtsasi has evolved from a small recruitment agency into a 
+              Since our founding in 1994, Alikhtsasy has evolved from a small recruitment agency into a 
               multi-service international company. Our growth journey reflects our commitment to excellence, 
               adaptability, and understanding of market needs across different regions.
             </p>
@@ -127,7 +127,7 @@ const JourneyPage: React.FC = () => {
             <TimelineItem 
               year="1994"
               title="Foundation"
-              description="Alachtsasi was established on September 19, 1994, focusing on domestic staff recruitment for local households."
+              description="Alikhtsasy was established on September 19, 1994, focusing on domestic staff recruitment for local households."
               isLeft={true}
             />
             
@@ -190,7 +190,7 @@ const JourneyPage: React.FC = () => {
             <TimelineItem 
               year="Present"
               title="Continued Growth"
-              description="Today, Alachtsasi continues to expand its services and global reach, adapting to market demands and technological advancements."
+              description="Today, Alikhtsasy continues to expand its services and global reach, adapting to market demands and technological advancements."
               isLeft={false}
             />
           </div>
@@ -228,12 +228,12 @@ const JourneyPage: React.FC = () => {
             <div className="future-image">
               <img 
                 src="/img/7.webp" 
-                alt="Future planning at Alachtsasi" 
+                alt="Future planning at Alikhtsasy" 
               />
             </div>
             <div className="future-text">
               <p>
-                As we look to the future, Alachtsasi remains committed to innovation and excellence. 
+                As we look to the future, Alikhtsasy remains committed to innovation and excellence. 
                 Our strategic plans include:
               </p>
               <ul className="future-list">

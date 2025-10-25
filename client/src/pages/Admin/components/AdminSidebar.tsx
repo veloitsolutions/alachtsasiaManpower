@@ -18,7 +18,7 @@ const AdminSidebar: React.FC = () => {
   return (
     <div className="admin-sidebar">
       <div className="admin-sidebar-header">
-        <h2>Alachtsasi Admin</h2>
+        <h2>Alikhtsasy Admin</h2>
       </div>
       <nav className="admin-sidebar-nav">
         <ul>

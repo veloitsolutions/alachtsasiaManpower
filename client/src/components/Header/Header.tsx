@@ -26,9 +26,9 @@ const Header: React.FC<HeaderProps> = ({ scrolled }) => {
         <div className="logo-section" onClick={closeMenu}>
           <NavLink to="/" className="logo-link">
             <div className="logo-container">
-              <img className="logo-img" src="/logo.png" alt="Alachtsasi for Manpower" />
+              <img className="logo-img" src="/logo.png" alt="Alikhtsasy for Manpower" />
               <div className="logo-text-container">
-                <span className="logo-text">Alachtsasi</span>
+                <span className="logo-text">Alikhtsasy</span>
                 <span className="logo-subtext">Manpower</span>
               </div>
             </div>

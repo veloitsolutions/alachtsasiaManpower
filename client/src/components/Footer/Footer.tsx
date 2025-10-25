@@ -20,12 +20,12 @@ const Footer: React.FC = () => {
               <img
                 className="logo"
                 src="/logo.png"
-                alt="Alachtsasi for Manpower"
+                alt="Alikhtsasy for Manpower"
               />
-              <h3 className="footer-logo-text">Alachtsasi Manpower</h3>
+              <h3 className="footer-logo-text">Alikhtsasy Manpower</h3>
             </NavLink>
             <p className="footer-description">
-              Alachtsasi for Manpower is a specialized recruitment agency dedicated to 
+              Alikhtsasy for Manpower is a specialized recruitment agency dedicated to 
               providing quality manpower solutions with excellence in recruitment and 
               business services.
             </p>
@@ -117,7 +117,7 @@ const Footer: React.FC = () => {
 
         <div className="footer-bottom">
           <p>
-            &copy; {currentYear} Alachtsasi for Manpower. All rights reserved.
+            &copy; {currentYear} Alikhtsasy for Manpower. All rights reserved.
           </p>
         </div>
       </div>
