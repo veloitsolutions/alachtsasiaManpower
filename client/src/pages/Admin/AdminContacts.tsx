@@ -32,6 +32,12 @@ const AdminContacts: React.FC = () => {
   }, [token]);
 
   const fetchContacts = async () => {
+    if (!token) {
+      setError('No authentication token found');
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       const response = await fetch(API_ENDPOINTS.CONTACT, {

@@ -26,20 +26,17 @@ const AdminChatNumbers: React.FC = () => {
   const [error, setError] = useState('');
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
 
-  const userInfo = localStorage.getItem('userInfo');
-  const token = userInfo ? JSON.parse(userInfo).token : null;
+  const userInfoString = localStorage.getItem('userInfo');
+  const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
+  const token = userInfo?.token;
 
   useEffect(() => {
     fetchConversations();
-  }, []);
+  }, [token]);
 
   const fetchConversations = async () => {
     try {
       setLoading(true);
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-      
       const response = await fetch(API_ENDPOINTS.CHAT_NUMBERS, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -49,7 +46,7 @@ const AdminChatNumbers: React.FC = () => {
       }
       
       const data = await response.json();
-      setConversations(data.success ? data.data : data.data || data || []);
+      setConversations(Array.isArray(data) ? data : []);
     } catch (error) {
       setError('Failed to load conversations');
       console.error('Error fetching conversations:', error);
@@ -65,10 +62,6 @@ const AdminChatNumbers: React.FC = () => {
     }
 
     try {
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-      
       const response = await fetch(`${API_ENDPOINTS.CHAT_NUMBERS}/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
@@ -91,7 +84,7 @@ const AdminChatNumbers: React.FC = () => {
       <AdminSidebar />
       <div className="admin-content">
         <div className="admin-header">
-          <h1>Chat Conversations</h1>
+          <h1>Chat Numbers</h1>
         </div>
 
         {error && <div className="admin-error-message">{error}</div>}
@@ -127,7 +120,7 @@ const AdminChatNumbers: React.FC = () => {
           <div className="admin-modal">
             <div className="admin-modal-content">
               <div className="admin-modal-header">
-                <h2>Chat Conversation</h2>
+                <h2>Chat Details</h2>
                 <button 
                   onClick={() => setSelectedConversation(null)}
                   className="admin-modal-close"
@@ -146,14 +139,17 @@ const AdminChatNumbers: React.FC = () => {
 
                 <h4>Messages</h4>
                 <div className="messages">
-                  {selectedConversation.messages.map((message, index) => (
-                    <div key={index} className={`message ${message.isBot ? 'bot' : 'user'}`}>
-                      <div className="message-content">{message.text}</div>
-                      <div className="message-time">
-                        {new Date(message.timestamp).toLocaleTimeString()}
+                  {selectedConversation.messages.map((message, index) => {
+                    const displayText = message.text;
+                    return (
+                      <div key={index} className={`message ${message.isBot ? 'bot' : 'user'}`}>
+                        <div className="message-content">{displayText}</div>
+                        <div className="message-time">
+                          {new Date(message.timestamp).toLocaleTimeString()}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 

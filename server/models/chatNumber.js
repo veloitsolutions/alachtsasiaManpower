@@ -1,47 +1,48 @@
 import mongoose from 'mongoose';
 
-const chatNumberSchema = mongoose.Schema(
-  {
-    sessionId: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    mobile: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-    },
-    messages: [{
-      text: String,
-      isBot: Boolean,
-      timestamp: {
-        type: Date,
-        default: Date.now,
-      }
-    }],
-    status: {
-      type: String,
-      enum: ['active', 'completed'],
-      default: 'active',
-    },
-    isRead: {
-      type: Boolean,
-      default: false,
-    },
+const messageSchema = new mongoose.Schema({
+  text: {
+    type: String,
+    required: true
   },
-  {
-    timestamps: true,
+  isBot: {
+    type: Boolean,
+    required: true
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now
   }
-);
+});
 
-const ChatNumber = mongoose.model('ChatNumber', chatNumberSchema);
+const chatNumberSchema = new mongoose.Schema({
+  sessionId: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  name: {
+    type: String,
+    default: ''
+  },
+  mobile: {
+    type: String,
+    default: ''
+  },
+  email: {
+    type: String,
+    default: ''
+  },
+  messages: [messageSchema],
+  status: {
+    type: String,
+    enum: ['active', 'completed'],
+    default: 'active'
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
 
-export default ChatNumber;
+export default mongoose.model('ChatNumber', chatNumberSchema);

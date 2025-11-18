@@ -50,20 +50,13 @@ const ChatBot: React.FC = () => {
           mobile: userData.mobile,
           email: userData.email,
           messages,
-          status: step === 4 ? 'completed' : 'active'
+          status: 'completed'
         })
       });
     } catch (error) {
       console.error('Error saving conversation:', error);
     }
   };
-
-  useEffect(() => {
-    const userMessages = messages.filter(msg => !msg.isBot);
-    if (userMessages.length > 0) {
-      saveConversation();
-    }
-  }, [messages, userData, step]);
 
   const handleToggle = () => {
     if (isOpen) {
@@ -103,9 +96,30 @@ const ChatBot: React.FC = () => {
         addMessage('Great! May I also have your email address?', true);
         setStep(3);
       } else if (step === 3) {
-        setUserData(prev => ({ ...prev, email: userInput }));
+        const updatedUserData = { ...userData, email: userInput };
+        setUserData(updatedUserData);
         addMessage('Perfect! Thank you for providing your details. Our team will contact you shortly to discuss your manpower requirements. Have a great day!', true);
         setStep(4);
+        
+        // Save conversation only when complete
+        setTimeout(async () => {
+          try {
+            await fetch(API_ENDPOINTS.CHAT_NUMBERS, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                sessionId,
+                name: updatedUserData.name,
+                mobile: updatedUserData.mobile,
+                email: updatedUserData.email,
+                messages: [...messages, { text: userInput, isBot: false, timestamp: new Date() }, { text: 'Perfect! Thank you for providing your details. Our team will contact you shortly to discuss your manpower requirements. Have a great day!', isBot: true, timestamp: new Date() }],
+                status: 'completed'
+              })
+            });
+          } catch (error) {
+            console.error('Error saving conversation:', error);
+          }
+        }, 100);
       }
     }, 1500);
   };
