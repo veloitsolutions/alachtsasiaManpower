@@ -5,6 +5,12 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { protect, admin } from '../middleware/authMiddleware.js';
 import Testimonial from '../models/testimonial.js';
+import {
+  getTestimonials,
+  getTestimonialById,
+  updateTestimonial,
+  deleteTestimonial,
+} from '../controllers/testimonialController.js';
 
 const router = express.Router();
 
@@ -29,23 +35,23 @@ const upload = multer({
     fileSize: 5 * 1024 * 1024, // 5MB limit
   },
   fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
+    const allowedTypes = [
+      'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp',
+      'image/webp', 'image/svg+xml', 'image/tiff', 'image/ico', 'image/avif'
+    ];
+    if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Only image files are allowed'), false);
+      cb(new Error('Only image files are allowed (JPEG, PNG, GIF, BMP, WebP, SVG, TIFF, ICO, AVIF)'), false);
     }
   }
 });
 
 // Get all testimonials (public)
-router.get('/', async (req, res) => {
-  try {
-    const testimonials = await Testimonial.find({}).sort({ createdAt: -1 });
-    res.json(testimonials);
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+router.get('/', getTestimonials);
+
+// Get single testimonial
+router.get('/:id', getTestimonialById);
 
 // Error handling middleware for multer
 const handleMulterError = (err, req, res, next) => {
@@ -90,21 +96,11 @@ router.post('/', protect, admin, upload.single('image'), handleMulterError, asyn
   }
 });
 
-// Delete a testimonial (admin only)
-router.delete('/:id', protect, admin, async (req, res) => {
-  try {
-    const testimonial = await Testimonial.findById(req.params.id);
-    
-    if (!testimonial) {
-      return res.status(404).json({ message: 'Testimonial not found' });
-    }
+// Update a testimonial (admin only)
+router.put('/:id', protect, admin, upload.single('image'), handleMulterError, updateTestimonial);
 
-    await testimonial.deleteOne();
-    res.json({ message: 'Testimonial removed' });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+// Delete a testimonial (admin only)
+router.delete('/:id', protect, admin, deleteTestimonial);
 
 export default router;
 

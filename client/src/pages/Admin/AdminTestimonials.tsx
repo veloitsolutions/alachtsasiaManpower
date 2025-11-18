@@ -18,6 +18,7 @@ const AdminTestimonials: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingTestimonial, setEditingTestimonial] = useState<Testimonial | null>(null);
   
   // Form state
   const [name, setName] = useState('');
@@ -69,16 +70,35 @@ const AdminTestimonials: React.FC = () => {
     }
   };
 
+  const handleEdit = (testimonial: Testimonial) => {
+    setEditingTestimonial(testimonial);
+    setName(testimonial.name);
+    setPosition(testimonial.position);
+    setRating(testimonial.rating);
+    setReview(testimonial.review);
+    setShowAddForm(true);
+  };
+
+  const resetForm = () => {
+    setName('');
+    setPosition('');
+    setRating(5);
+    setReview('');
+    setImage(null);
+    setEditingTestimonial(null);
+    setShowAddForm(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!image) {
+    if (!image && !editingTestimonial) {
       setFormError('Please select an image');
       return;
     }
 
     // Check review length
-    const maxReviewLength = 200;
+    const maxReviewLength = 100;
     if (review.length > maxReviewLength) {
       setFormError(`Review is too long. Maximum ${maxReviewLength} characters allowed.`);
       return;
@@ -88,43 +108,84 @@ const AdminTestimonials: React.FC = () => {
       setFormLoading(true);
       setFormError('');
 
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('position', position);
-      formData.append('rating', rating.toString());
-      formData.append('review', review);
-      if (image) {
-        formData.append('image', image);
-      }
+      if (editingTestimonial) {
+        // For updates, use JSON if no new image
+        if (!image) {
+          const updateData = {
+            name,
+            position,
+            rating,
+            review
+          };
 
-      const response = await fetch(API_ENDPOINTS.TESTIMONIALS, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData,
-      });
+          const response = await fetch(`${API_ENDPOINTS.TESTIMONIALS}/${editingTestimonial._id}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updateData),
+          });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        if (response.status === 401) {
-          throw new Error('Unauthorized. Please log in again.');
+          if (!response.ok) {
+            throw new Error('Failed to update testimonial');
+          }
+        } else {
+          // If new image, use FormData
+          const formData = new FormData();
+          formData.append('name', name);
+          formData.append('position', position);
+          formData.append('rating', rating.toString());
+          formData.append('review', review);
+          formData.append('image', image);
+
+          const response = await fetch(`${API_ENDPOINTS.TESTIMONIALS}/${editingTestimonial._id}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            },
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to update testimonial');
+          }
         }
-        throw new Error(errorData.message || 'Failed to add testimonial');
+      } else {
+        // Create new testimonial
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('position', position);
+        formData.append('rating', rating.toString());
+        formData.append('review', review);
+        if (image) {
+          formData.append('image', image);
+        }
+
+        const response = await fetch(API_ENDPOINTS.TESTIMONIALS, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          if (response.status === 401) {
+            throw new Error('Unauthorized. Please log in again.');
+          }
+          throw new Error(errorData.message || 'Failed to add testimonial');
+        }
       }
 
       // Reset form
-      setName('');
-      setPosition('');
-      setRating(5);
-      setReview('');
-      setImage(null);
-      setShowAddForm(false);
+      resetForm();
 
       // Refresh testimonials list
       fetchTestimonials();
     } catch (error) {
-      setFormError(error instanceof Error ? error.message : 'Failed to add testimonial');
+      setFormError(error instanceof Error ? error.message : 'Failed to save testimonial');
       console.error(error);
     } finally {
       setFormLoading(false);
@@ -178,7 +239,13 @@ const AdminTestimonials: React.FC = () => {
 
         <div className="admin-actions">
           <button
-            onClick={() => setShowAddForm(!showAddForm)}
+            onClick={() => {
+              if (showAddForm) {
+                resetForm();
+              } else {
+                setShowAddForm(true);
+              }
+            }}
             className="admin-add-button"
           >
             {showAddForm ? 'Cancel' : 'Add New Testimonial'}
@@ -187,7 +254,7 @@ const AdminTestimonials: React.FC = () => {
 
         {showAddForm && (
           <div className="admin-form-container">
-            <h2>Add New Testimonial</h2>
+            <h2>{editingTestimonial ? 'Edit Testimonial' : 'Add New Testimonial'}</h2>
             {formError && <div className="admin-error-message">{formError}</div>}
             <form onSubmit={handleSubmit} className="admin-form">
               <div className="admin-form-group">
@@ -236,10 +303,10 @@ const AdminTestimonials: React.FC = () => {
                   onChange={(e) => setReview(e.target.value)}
                   rows={4}
                   required
-                  maxLength={200}
+                  maxLength={100}
                 />
-                <small className={review.length > 180 ? "admin-char-count warning" : "admin-char-count"}>
-                  {review.length}/200 characters
+                <small className={review.length > 80 ? "admin-char-count warning" : "admin-char-count"}>
+                  {review.length}/100 characters
                 </small>
               </div>
 
@@ -248,10 +315,13 @@ const AdminTestimonials: React.FC = () => {
                 <input
                   type="file"
                   id="image"
-                  accept="image/*"
+                  accept="image/jpeg,image/jpg,image/png,image/gif,image/bmp,image/webp,image/svg+xml,image/tiff,image/ico,image/avif"
                   onChange={handleFileChange}
-                  required
+                  required={!editingTestimonial}
                 />
+                {editingTestimonial && (
+                  <small>Current image will be kept if no new file is selected</small>
+                )}
               </div>
 
               <button
@@ -259,7 +329,7 @@ const AdminTestimonials: React.FC = () => {
                 className="admin-submit-button"
                 disabled={formLoading}
               >
-                {formLoading ? 'Saving...' : 'Save Testimonial'}
+                {formLoading ? 'Saving...' : editingTestimonial ? 'Update Testimonial' : 'Save Testimonial'}
               </button>
             </form>
           </div>
@@ -297,12 +367,20 @@ const AdminTestimonials: React.FC = () => {
                   </div>
                   <div className="admin-testimonial-footer">
                     <p>Added: {new Date(testimonial.createdAt).toLocaleDateString()}</p>
-                    <button
-                      onClick={() => handleDelete(testimonial._id)}
-                      className="admin-delete-button"
-                    >
-                      Delete
-                    </button>
+                    <div className="admin-item-actions">
+                      <button
+                        onClick={() => handleEdit(testimonial)}
+                        className="admin-edit-button"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(testimonial._id)}
+                        className="admin-delete-button"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))

@@ -6,6 +6,7 @@ import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 import WhatsAppButton from './components/WhatsAppButton/WhatsAppButton';
+import ChatBot from './components/ChatBot/ChatBot';
 import TopBar from './components/TopBar/TopBar';
 
 // Pages
@@ -27,6 +28,7 @@ import AdminContacts from './pages/Admin/AdminContacts';
 import AdminRoute from './components/AdminRoute/AdminRoute';
 import AdminTestimonials from './pages/Admin/AdminTestimonials';
 import AdminTeamMembers from './pages/Admin/AdminTeamMembers';
+import AdminChatNumbers from './pages/Admin/AdminChatNumbers';
 
 // Global Styles
 import ContactPage from './pages/Contact/ContactPage';
@@ -80,6 +82,7 @@ function App() {
           <Route path="/admin/gallery" element={<AdminRoute><AdminGallery /></AdminRoute>} />
           <Route path="/admin/clients" element={<AdminRoute><AdminClientLogos /></AdminRoute>} />
           <Route path="/admin/contacts" element={<AdminRoute><AdminContacts /></AdminRoute>} />
+          <Route path="/admin/chat-numbers" element={<AdminRoute><AdminChatNumbers /></AdminRoute>} />
           <Route path="/admin/testimonials" element={<AdminRoute><AdminTestimonials /></AdminRoute>} />
           <Route path="/admin/team-members" element={<AdminRoute><AdminTeamMembers /></AdminRoute>} />
 
@@ -88,6 +91,7 @@ function App() {
       </main>
       <Footer />
       {!isAdminRoute && <WhatsAppButton />}
+      {!isAdminRoute && <ChatBot />}
     </div>
   );
 }

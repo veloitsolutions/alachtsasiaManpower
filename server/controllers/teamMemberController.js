@@ -50,7 +50,6 @@ const createTeamMember = asyncHandler(async (req, res) => {
 // @route   PUT /api/team-members/:id
 // @access  Private/Admin
 const updateTeamMember = asyncHandler(async (req, res) => {
-  // const { name, role, bio } = req.body;
   const { name, role } = req.body;
 
   const teamMember = await TeamMember.findById(req.params.id);
@@ -58,7 +57,18 @@ const updateTeamMember = asyncHandler(async (req, res) => {
   if (teamMember) {
     teamMember.name = name || teamMember.name;
     teamMember.role = role || teamMember.role;
-    // teamMember.bio = bio || teamMember.bio;
+
+    // If new image is uploaded
+    if (req.file) {
+      // Delete old image if it exists
+      if (teamMember.image) {
+        const oldImagePath = path.join(__dirname, '..', teamMember.image);
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
+      teamMember.image = `/uploads/team-members/${req.file.filename}`;
+    }
 
     const updatedMember = await teamMember.save();
     res.json(updatedMember);

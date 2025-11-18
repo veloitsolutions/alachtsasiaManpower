@@ -19,6 +19,7 @@ const AdminGallery: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingItem, setEditingItem] = useState<GalleryItem | null>(null);
 
   // Form states
   const [type, setType] = useState<'image' | 'video'>('image');
@@ -79,13 +80,31 @@ const AdminGallery: React.FC = () => {
     }
   };
 
+  const handleEdit = (item: GalleryItem) => {
+    setEditingItem(item);
+    setType(item.type);
+    setCaption(item.caption);
+    setVideoUrl(item.type === 'video' ? item.src : '');
+    setShowAddForm(true);
+  };
+
+  const resetForm = () => {
+    setType('image');
+    setCaption('');
+    setFile(null);
+    setVideoUrl('');
+    setThumbnailFile(null);
+    setEditingItem(null);
+    setShowAddForm(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError('');
     setFormLoading(true);
 
     try {
-      if (type === 'image' && !file) {
+      if (type === 'image' && !file && !editingItem) {
         throw new Error('Please select an image file');
       }
 
@@ -103,12 +122,12 @@ const AdminGallery: React.FC = () => {
         finalVideoUrl = videoId;
       }
 
-      if (type === 'video' && !thumbnailFile) {
+      if (type === 'video' && !thumbnailFile && !editingItem?.thumbnail) {
         throw new Error('Please select a thumbnail image for the video');
       }
 
-      let imagePath = '';
-      let thumbnailPath = '';
+      let imagePath = editingItem?.src || '';
+      let thumbnailPath = editingItem?.thumbnail || '';
 
       // Upload image file if present
       if (file) {
@@ -152,7 +171,7 @@ const AdminGallery: React.FC = () => {
         thumbnailPath = uploadData.filePath;
       }
 
-      // Create gallery item
+      // Create or update gallery item
       const galleryData = {
         type,
         src: type === 'image' ? imagePath : finalVideoUrl,
@@ -160,8 +179,11 @@ const AdminGallery: React.FC = () => {
         thumbnail: type === 'video' ? thumbnailPath : undefined,
       };
 
-      const response = await fetch(API_ENDPOINTS.GALLERY, {
-        method: 'POST',
+      const url = editingItem ? `${API_ENDPOINTS.GALLERY}/${editingItem._id}` : API_ENDPOINTS.GALLERY;
+      const method = editingItem ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -170,16 +192,11 @@ const AdminGallery: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create gallery item');
+        throw new Error(`Failed to ${editingItem ? 'update' : 'create'} gallery item`);
       }
 
       // Reset form
-      setType('image');
-      setCaption('');
-      setFile(null);
-      setVideoUrl('');
-      setThumbnailFile(null);
-      setShowAddForm(false);
+      resetForm();
 
       // Refresh gallery items
       fetchGalleryItems();
@@ -226,7 +243,13 @@ const AdminGallery: React.FC = () => {
 
         <div className="admin-actions">
           <button
-            onClick={() => setShowAddForm(!showAddForm)}
+            onClick={() => {
+              if (showAddForm) {
+                resetForm();
+              } else {
+                setShowAddForm(true);
+              }
+            }}
             className="admin-action-button"
           >
             {showAddForm ? 'Cancel' : 'Add New Item'}
@@ -235,7 +258,7 @@ const AdminGallery: React.FC = () => {
 
         {showAddForm && (
           <div className="admin-form-container">
-            <h2>Add New Gallery Item</h2>
+            <h2>{editingItem ? 'Edit Gallery Item' : 'Add New Gallery Item'}</h2>
             {formError && <div className="admin-error-message">{formError}</div>}
             <form onSubmit={handleSubmit} className="admin-form">
               <div className="admin-form-group">
@@ -268,10 +291,13 @@ const AdminGallery: React.FC = () => {
                   <input
                     type="file"
                     id="image"
-                    accept="image/*"
+                    accept="image/jpeg,image/jpg,image/png,image/gif,image/bmp,image/webp,image/svg+xml,image/tiff,image/ico,image/avif"
                     onChange={handleFileChange}
-                    required
+                    required={!editingItem}
                   />
+                  {editingItem && editingItem.type === 'image' && (
+                    <small>Current image will be kept if no new file is selected</small>
+                  )}
                 </div>
               ) : (
                 <>
@@ -294,10 +320,13 @@ const AdminGallery: React.FC = () => {
                     <input
                       type="file"
                       id="thumbnail"
-                      accept="image/*"
+                      accept="image/jpeg,image/jpg,image/png,image/gif,image/bmp,image/webp,image/svg+xml,image/tiff,image/ico,image/avif"
                       onChange={handleThumbnailChange}
-                      required
+                      required={!editingItem?.thumbnail}
                     />
+                    {editingItem?.thumbnail && (
+                      <small>Current thumbnail will be kept if no new file is selected</small>
+                    )}
                   </div>
                 </>
               )}
@@ -307,7 +336,7 @@ const AdminGallery: React.FC = () => {
                 className="admin-submit-button"
                 disabled={formLoading}
               >
-                {formLoading ? 'Saving...' : 'Save Item'}
+                {formLoading ? 'Saving...' : editingItem ? 'Update Item' : 'Save Item'}
               </button>
             </form>
           </div>
@@ -347,12 +376,20 @@ const AdminGallery: React.FC = () => {
                     <h3>{item.caption}</h3>
                     <p>Type: {item.type}</p>
                     <p>Added: {new Date(item.createdAt).toLocaleDateString()}</p>
-                    <button
-                      onClick={() => handleDelete(item._id)}
-                      className="admin-delete-button"
-                    >
-                      Delete
-                    </button>
+                    <div className="admin-item-actions">
+                      <button
+                        onClick={() => handleEdit(item)}
+                        className="admin-edit-button"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item._id)}
+                        className="admin-delete-button"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))

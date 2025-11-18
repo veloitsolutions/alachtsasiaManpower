@@ -17,6 +17,7 @@ const AdminTeamMembers: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
   
   // Form state
   const [name, setName] = useState('');
@@ -67,10 +68,25 @@ const AdminTeamMembers: React.FC = () => {
     }
   };
 
+  const handleEdit = (member: TeamMember) => {
+    setEditingMember(member);
+    setName(member.name);
+    setRole(member.role);
+    setShowAddForm(true);
+  };
+
+  const resetForm = () => {
+    setName('');
+    setRole('');
+    setImage(null);
+    setEditingMember(null);
+    setShowAddForm(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!image) {
+    if (!image && !editingMember) {
       setFormError('Please select an image');
       return;
     }
@@ -79,41 +95,78 @@ const AdminTeamMembers: React.FC = () => {
       setFormLoading(true);
       setFormError('');
 
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('role', role);
-      // formData.append('bio', bio);
-      if (image) {
-        formData.append('image', image);
-      }
+      if (editingMember) {
+        // For updates, use JSON if no new image
+        if (!image) {
+          const updateData = {
+            name,
+            role
+          };
 
-      const response = await fetch(API_ENDPOINTS.TEAM_MEMBERS, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData,
-      });
+          const response = await fetch(`${API_ENDPOINTS.TEAM_MEMBERS}/${editingMember._id}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updateData),
+          });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        if (response.status === 401) {
-          throw new Error('Unauthorized. Please log in again.');
+          if (!response.ok) {
+            throw new Error('Failed to update team member');
+          }
+        } else {
+          // If new image, use FormData
+          const formData = new FormData();
+          formData.append('name', name);
+          formData.append('role', role);
+          formData.append('image', image);
+
+          const response = await fetch(`${API_ENDPOINTS.TEAM_MEMBERS}/${editingMember._id}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            },
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to update team member');
+          }
         }
-        throw new Error(errorData.message || 'Failed to add team member');
+      } else {
+        // Create new team member
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('role', role);
+        if (image) {
+          formData.append('image', image);
+        }
+
+        const response = await fetch(API_ENDPOINTS.TEAM_MEMBERS, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          if (response.status === 401) {
+            throw new Error('Unauthorized. Please log in again.');
+          }
+          throw new Error(errorData.message || 'Failed to add team member');
+        }
       }
 
       // Reset form
-      setName('');
-      setRole('');
-      // setBio('');
-      setImage(null);
-      setShowAddForm(false);
+      resetForm();
 
       // Refresh team members list
       fetchTeamMembers();
     } catch (error) {
-      setFormError(error instanceof Error ? error.message : 'Failed to add team member');
+      setFormError(error instanceof Error ? error.message : 'Failed to save team member');
       console.error(error);
     } finally {
       setFormLoading(false);
@@ -155,7 +208,13 @@ const AdminTeamMembers: React.FC = () => {
 
         <div className="admin-actions">
           <button
-            onClick={() => setShowAddForm(!showAddForm)}
+            onClick={() => {
+              if (showAddForm) {
+                resetForm();
+              } else {
+                setShowAddForm(true);
+              }
+            }}
             className="admin-add-button"
           >
             {showAddForm ? 'Cancel' : 'Add New Team Member'}
@@ -164,7 +223,7 @@ const AdminTeamMembers: React.FC = () => {
 
         {showAddForm && (
           <div className="admin-form-container">
-            <h2>Add New Team Member</h2>
+            <h2>{editingMember ? 'Edit Team Member' : 'Add New Team Member'}</h2>
             {formError && <div className="admin-error-message">{formError}</div>}
             <form onSubmit={handleSubmit} className="admin-form">
               <div className="admin-form-group">
@@ -206,10 +265,13 @@ const AdminTeamMembers: React.FC = () => {
                 <input
                   type="file"
                   id="image"
-                  accept="image/*"
+                  accept="image/jpeg,image/jpg,image/png,image/gif,image/bmp,image/webp,image/svg+xml,image/tiff,image/ico,image/avif"
                   onChange={handleFileChange}
-                  required
+                  required={!editingMember}
                 />
+                {editingMember && (
+                  <small>Current image will be kept if no new file is selected</small>
+                )}
               </div>
 
               <button
@@ -217,7 +279,7 @@ const AdminTeamMembers: React.FC = () => {
                 className="admin-submit-button"
                 disabled={formLoading}
               >
-                {formLoading ? 'Saving...' : 'Save Team Member'}
+                {formLoading ? 'Saving...' : editingMember ? 'Update Team Member' : 'Save Team Member'}
               </button>
             </form>
           </div>
@@ -250,12 +312,20 @@ const AdminTeamMembers: React.FC = () => {
                   </div>
                   <div className="admin-team-footer">
                     <p>Added: {new Date(member.createdAt).toLocaleDateString()}</p>
-                    <button
-                      onClick={() => handleDelete(member._id)}
-                      className="admin-delete-button"
-                    >
-                      Delete
-                    </button>
+                    <div className="admin-item-actions">
+                      <button
+                        onClick={() => handleEdit(member)}
+                        className="admin-edit-button"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(member._id)}
+                        className="admin-delete-button"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))

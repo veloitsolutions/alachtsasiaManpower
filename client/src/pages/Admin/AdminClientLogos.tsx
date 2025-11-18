@@ -16,6 +16,7 @@ const AdminClientLogos: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingLogo, setEditingLogo] = useState<ClientLogo | null>(null);
 
   // Form states
   const [name, setName] = useState('');
@@ -67,43 +68,63 @@ const AdminClientLogos: React.FC = () => {
     }
   };
 
+  const handleEdit = (logo: ClientLogo) => {
+    setEditingLogo(logo);
+    setName(logo.name);
+    setShowAddForm(true);
+  };
+
+  const resetForm = () => {
+    setName('');
+    setFile(null);
+    setEditingLogo(null);
+    setShowAddForm(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError('');
     setFormLoading(true);
 
     try {
-      if (!file) {
+      if (!file && !editingLogo) {
         throw new Error('Please select a logo image');
       }
 
-      // Upload logo file
-      const formData = new FormData();
-      formData.append('file', file);
+      let logoPath = editingLogo?.logo || '';
+
+      // Upload logo file if present
+      if (file) {
+        const formData = new FormData();
+        formData.append('file', file);
 
         const uploadResponse = await fetch(API_ENDPOINTS.UPLOAD, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
 
-      if (!uploadResponse.ok) {
-        throw new Error('Failed to upload logo');
+        if (!uploadResponse.ok) {
+          throw new Error('Failed to upload logo');
+        }
+
+        const uploadData = await uploadResponse.json();
+        logoPath = uploadData.filePath;
       }
 
-      const uploadData = await uploadResponse.json();
-      const logoPath = uploadData.filePath;
-
-      // Create client logo
+      // Create or update client logo
       const clientData = {
         name,
         logo: logoPath,
       };
 
-      const response = await fetch(API_ENDPOINTS.CLIENTS, {
-        method: 'POST',
+      const url = editingLogo ? `${API_ENDPOINTS.CLIENTS}/${editingLogo._id}` : API_ENDPOINTS.CLIENTS;
+      const method = editingLogo ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -112,13 +133,11 @@ const AdminClientLogos: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create client logo');
+        throw new Error(`Failed to ${editingLogo ? 'update' : 'create'} client logo`);
       }
 
       // Reset form
-      setName('');
-      setFile(null);
-      setShowAddForm(false);
+      resetForm();
 
       // Refresh client logos
       fetchClientLogos();
@@ -165,7 +184,13 @@ const AdminClientLogos: React.FC = () => {
 
         <div className="admin-actions">
           <button
-            onClick={() => setShowAddForm(!showAddForm)}
+            onClick={() => {
+              if (showAddForm) {
+                resetForm();
+              } else {
+                setShowAddForm(true);
+              }
+            }}
             className="admin-action-button"
           >
             {showAddForm ? 'Cancel' : 'Add New Logo'}
@@ -174,7 +199,7 @@ const AdminClientLogos: React.FC = () => {
 
         {showAddForm && (
           <div className="admin-form-container">
-            <h2>Add New Client Logo</h2>
+            <h2>{editingLogo ? 'Edit Client Logo' : 'Add New Client Logo'}</h2>
             {formError && <div className="admin-error-message">{formError}</div>}
             <form onSubmit={handleSubmit} className="admin-form">
               <div className="admin-form-group">
@@ -193,10 +218,13 @@ const AdminClientLogos: React.FC = () => {
                 <input
                   type="file"
                   id="logo"
-                  accept="image/*"
+                  accept="image/jpeg,image/jpg,image/png,image/gif,image/bmp,image/webp,image/svg+xml,image/tiff,image/ico,image/avif"
                   onChange={handleFileChange}
-                  required
+                  required={!editingLogo}
                 />
+                {editingLogo && (
+                  <small>Current logo will be kept if no new file is selected</small>
+                )}
               </div>
 
               <button
@@ -204,7 +232,7 @@ const AdminClientLogos: React.FC = () => {
                 className="admin-submit-button"
                 disabled={formLoading}
               >
-                {formLoading ? 'Saving...' : 'Save Logo'}
+                {formLoading ? 'Saving...' : editingLogo ? 'Update Logo' : 'Save Logo'}
               </button>
             </form>
           </div>
@@ -231,12 +259,20 @@ const AdminClientLogos: React.FC = () => {
                   <div className="admin-logo-details">
                     <h3>{logo.name}</h3>
                     <p>Added: {new Date(logo.createdAt).toLocaleDateString()}</p>
-                    <button
-                      onClick={() => handleDelete(logo._id)}
-                      className="admin-delete-button"
-                    >
-                      Delete
-                    </button>
+                    <div className="admin-item-actions">
+                      <button
+                        onClick={() => handleEdit(logo)}
+                        className="admin-edit-button"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(logo._id)}
+                        className="admin-delete-button"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))

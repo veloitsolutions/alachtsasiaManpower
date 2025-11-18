@@ -32,14 +32,16 @@ const storage = multer.diskStorage({
 
 // Check file type
 function checkFileType(file, cb) {
-  const filetypes = /jpg|jpeg|png|gif|mp4|webm|mov/;
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
-
-  if (extname && mimetype) {
+  const allowedTypes = [
+    'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp',
+    'image/webp', 'image/svg+xml', 'image/tiff', 'image/ico', 'image/avif',
+    'video/mp4', 'video/webm', 'video/mov', 'video/avi'
+  ];
+  
+  if (allowedTypes.includes(file.mimetype)) {
     return cb(null, true);
   } else {
-    cb('Error: Images and Videos only!');
+    cb('Error: Only image files (JPEG, PNG, GIF, BMP, WebP, SVG, TIFF, ICO, AVIF) and video files are allowed!');
   }
 }
 

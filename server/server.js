@@ -14,6 +14,7 @@ import userRoutes from './routes/userRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import testimonialRoutes from './routes/testimonialRoutes.js';
 import teamMemberRoutes from './routes/teamMemberRoutes.js';
+import chatNumberRoutes from './routes/chatNumberRoutes.js';
 
 // Middleware
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
@@ -55,6 +56,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/team-members', teamMemberRoutes);
+app.use('/api/chat-numbers', chatNumberRoutes);
 
 // Make uploads folder static
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));

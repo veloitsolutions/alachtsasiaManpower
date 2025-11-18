@@ -36,10 +36,14 @@ const upload = multer({
     fileSize: 5 * 1024 * 1024, // 5MB limit
   },
   fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
+    const allowedTypes = [
+      'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp',
+      'image/webp', 'image/svg+xml', 'image/tiff', 'image/ico', 'image/avif'
+    ];
+    if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Only image files are allowed'), false);
+      cb(new Error('Only image files are allowed (JPEG, PNG, GIF, BMP, WebP, SVG, TIFF, ICO, AVIF)'), false);
     }
   }
 });

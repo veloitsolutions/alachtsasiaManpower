@@ -70,6 +70,14 @@ const AdminSidebar: React.FC = () => {
               Contact Submissions
             </Link>
           </li>
+          <li>
+            <Link
+              to="/admin/chat-numbers"
+              className={`admin-sidebar-link ${isActive('/admin/chat-numbers') ? 'active' : ''}`}
+            >
+              Chat Conversations
+            </Link>
+          </li>
           {/* <li>
             <Link
               to="/"
