@@ -19,6 +19,10 @@ import NotFoundPage from './pages/NotFound/NotFoundPage';
 import GalleryPage from './pages/Gallery/GalleryPage';
 import HomePage from './pages/Home/HomePage';
 
+// Manpower Pages
+import ManpowerPage from './pages/Manpower/ManpowerPage';
+import ManpowerDetails from './pages/Manpower/ManpowerDetails';
+
 // Admin Pages
 import AdminLoginPage from './pages/Admin/AdminLoginPage';
 import AdminDashboard from './pages/Admin/AdminDashboard';
@@ -29,6 +33,7 @@ import AdminRoute from './components/AdminRoute/AdminRoute';
 import AdminTestimonials from './pages/Admin/AdminTestimonials';
 import AdminTeamMembers from './pages/Admin/AdminTeamMembers';
 import AdminChatNumbers from './pages/Admin/AdminChatNumbers';
+import AdminManpower from './pages/Admin/AdminManpower';
 
 // Global Styles
 import ContactPage from './pages/Contact/ContactPage';
@@ -76,6 +81,10 @@ function App() {
           <Route path="/gallery" element={<GalleryPage />} />
           <Route path="/contact" element={<ContactPage />} />
 
+          {/* Manpower Routes */}
+          <Route path="/manpower" element={<ManpowerPage />} />
+          <Route path="/manpower/:id" element={<ManpowerDetails />} />
+
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
@@ -85,6 +94,7 @@ function App() {
           <Route path="/admin/chat-numbers" element={<AdminRoute><AdminChatNumbers /></AdminRoute>} />
           <Route path="/admin/testimonials" element={<AdminRoute><AdminTestimonials /></AdminRoute>} />
           <Route path="/admin/team-members" element={<AdminRoute><AdminTeamMembers /></AdminRoute>} />
+          <Route path="/admin/manpower" element={<AdminRoute><AdminManpower /></AdminRoute>} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

@@ -1,0 +1,218 @@
+.manpower-page {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding-bottom: 60px;
+}
+
+/* Manpower Hero Section */
+.manpower-hero-section {
+  height: 400px;
+  background-image: url('/img/5.webp');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-top: 70px;
+}
+
+.manpower-hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
+}
+
+.manpower-hero-content {
+  position: relative;
+  z-index: 1;
+  color: var(--neutral-white);
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+.manpower-hero-content h1 {
+  font-size: 3rem;
+  margin-bottom: var(--space-sm);
+  animation: fadeInDown 1s ease-out;
+}
+
+.manpower-hero-content p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  animation: fadeInUp 1s ease-out 0.3s forwards;
+  opacity: 0;
+}
+
+/* Manpower Section */
+.manpower-section {
+  background-color: var(--neutral-white);
+  padding: var(--space-xl) 0;
+}
+
+.manpower-section .section-title {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+  font-size: 2.5rem;
+  color: var(--neutral-black);
+}
+
+.manpower-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+.manpower-sidebar {
+  position: relative;
+}
+
+.manpower-main {
+  min-height: 600px;
+}
+
+.manpower-header {
+  margin-bottom: 30px;
+}
+
+.manpower-header h2 {
+  font-size: 1.75rem;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.manpower-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  gap: 20px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e5e7eb;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-state p {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  background: white;
+  border-radius: 12px;
+  gap: 16px;
+}
+
+.empty-state svg {
+  color: #cbd5e1;
+}
+
+.empty-state h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #1a1a1a;
+}
+
+.empty-state p {
+  margin: 0;
+  color: #666;
+  font-size: 1rem;
+}
+
+.error-message {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.error-message p {
+  margin: 0;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+@media (max-width: 1090px) {
+  .manpower-layout {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .manpower-sidebar {
+    position: static;
+  }
+
+  .manpower-grid {
+    /* grid-template-columns: 1fr; */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+    .manpower-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .manpower-hero-section {
+    height: 300px;
+  }
+
+  .manpower-hero-content h1 {
+    font-size: 2.5rem;
+  }
+
+  .manpower-hero-content p {
+    font-size: 1.1rem;
+  }
+
+  .manpower-header h2 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .manpower-page {
+    padding-bottom: 40px;
+  }
+
+  .hero-content h1 {
+    font-size: 1.75rem;
+  }
+
+  .manpower-grid {
+    /* grid-template-columns: 1fr; */
+    gap: 16px;
+  }
+}

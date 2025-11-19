@@ -64,6 +64,9 @@
 
 .contact-details {
   margin-bottom: var(--space-lg);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
 }
 
 .contact-detail-item {
@@ -269,6 +272,10 @@
   .contact-hero-section {
     height: 200px;
     margin-top: 90px;
+  }
+
+  .contact-details {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .contact-detail-item {

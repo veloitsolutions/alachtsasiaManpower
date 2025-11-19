@@ -12,6 +12,7 @@ export const API_ENDPOINTS = {
   USERS: `${API_BASE_URL}/api/users`,
   TEAM_MEMBERS: `${API_BASE_URL}/api/team-members`,
   CHAT_NUMBERS: `${API_BASE_URL}/api/chat-numbers`,
+  MANPOWER: `${API_BASE_URL}/api/manpower`,
 };
 
 export const ASSETS_CONFIG = {

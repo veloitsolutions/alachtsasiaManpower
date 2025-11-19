@@ -56,17 +56,22 @@ const Header: React.FC<HeaderProps> = ({ scrolled }) => {
             </li>
             <li className="nav-item">
               <NavLink to="/about" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
-                About Us
+                About
               </NavLink>
             </li>
             <li className="nav-item">
               <NavLink to="/journey" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
-                Our Journey
+                Journey
               </NavLink>
             </li>
             <li className="nav-item">
               <NavLink to="/services" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
-                Our Services
+                Services
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink to="/manpower" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
+                Manpower
               </NavLink>
             </li>
             <li className="nav-item">

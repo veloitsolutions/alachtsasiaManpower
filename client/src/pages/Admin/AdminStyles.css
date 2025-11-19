@@ -1458,3 +1458,79 @@
 }
 
 
+.  
+ 
+/* Form row for side-by-side fields */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Manpower form specific styles */
+.manpower-form .admin-form-group small {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+/* Admin table image styles */
+.admin-table-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-red);
+}
+
+/* Status badges for availability */
+.status-badge.available {
+  background: rgba(76, 175, 80, 0.1);
+  color: #388e3c;
+}
+
+.status-badge.on-assignment {
+  background: rgba(255, 193, 7, 0.1);
+  color: #ff8f00;
+}
+
+.status-badge.not-available {
+  background: rgba(244, 67, 54, 0.1);
+  color: #f44336;
+}
+
+
+/* Override form-row for large devices */
+@media (min-width: 1025px) {
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* 3-column form row */
+.form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 1024px) {
+  .form-row-3 {
+    grid-template-columns: 1fr;
+  }
+}
