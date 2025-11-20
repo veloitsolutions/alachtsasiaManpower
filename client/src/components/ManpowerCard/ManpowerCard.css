@@ -66,7 +66,7 @@
 }
 
 .detail-row svg {
-  color: #1e40af;
+  color: var(--primary-red);
   flex-shrink: 0;
 }
 
@@ -83,7 +83,7 @@
 }
 
 .salary-text {
-  color: #1e40af;
+  color: var(--primary-red);
   font-weight: 700;
   font-size: 0.95rem;
 }
@@ -91,7 +91,7 @@
 .manpower-card-view-btn {
   width: 100%;
   padding: 8px 16px;
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-red-light) 100%);
   color: white;
   border: none;
   border-radius: 6px;
@@ -103,9 +103,9 @@
 }
 
 .manpower-card-view-btn:hover {
-  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  background: linear-gradient(135deg, var(--primary-red-dark) 0%, var(--primary-red) 100%);
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.3);
+  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.3);
 }
 
 .manpower-card-view-btn:active {
@@ -115,12 +115,13 @@
 @media (max-width: 768px) {
   .manpower-card {
     flex-direction: row;
+    height: auto;
   }
 
   .manpower-card-image-wrapper {
     width: 120px;
     min-width: 120px;
-    height: 160px;
+    height: 100%;
   }
 
   .manpower-card-content {
@@ -134,23 +135,31 @@
   .detail-row {
     font-size: 0.75rem;
   }
-
-
 }
 
 @media (max-width: 480px) {
+  .manpower-card {
+    height: auto;
+  }
+
   .manpower-card-image-wrapper {
     width: 100px;
     min-width: 100px;
-    height: 140px;
+    height: 100%;
   }
 
   .manpower-card-content {
     padding: 10px;
+    gap: 8px;
   }
 
   .manpower-card-name {
     font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+
+  .manpower-card-details {
+    gap: 4px;
   }
 
   .detail-row {
@@ -161,5 +170,6 @@
   .manpower-card-view-btn {
     padding: 6px 12px;
     font-size: 0.75rem;
+    margin-top: 6px;
   }
 }

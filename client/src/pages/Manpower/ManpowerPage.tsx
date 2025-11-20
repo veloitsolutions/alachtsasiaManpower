@@ -126,7 +126,7 @@ const ManpowerPage: React.FC = () => {
       {/* Manpower Section */}
       <section className="section manpower-section">
         <div className="container">
-          <h2 className="section-title">Available Workers</h2>
+          <h2 className="section-title">Available Workers ({loading ? '...' : workers.length})</h2>
           <div className="manpower-layout">
           <aside className="manpower-sidebar">
             <ManpowerFilter
@@ -137,11 +137,12 @@ const ManpowerPage: React.FC = () => {
           </aside>
 
           <main className="manpower-main">
-            <div className="manpower-header">
+
+            {/* <div className="manpower-header">
               <h2>
-                {loading ? 'Loading...' : `${workers.length} Worker${workers.length !== 1 ? 's' : ''} Found`}
+                Available Workers ({loading ? '...' : workers.length})
               </h2>
-            </div>
+            </div> */}
 
             {error && (
               <div className="error-message">
