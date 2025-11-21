@@ -99,7 +99,7 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
-      <Footer />
+      {!isAdminRoute && <Footer />}
       {!isAdminRoute && <WhatsAppButton />}
       {!isAdminRoute && <ChatBot />}
     </div>

@@ -41,10 +41,23 @@ interface Filters {
   search: string;
 }
 
+interface PaginationData {
+  page: number;
+  limit: number;
+  total: number;
+  pages: number;
+}
+
 const ManpowerPage: React.FC = () => {
   const [workers, setWorkers] = useState<Worker[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [pagination, setPagination] = useState<PaginationData>({
+    page: 1,
+    limit: 20,
+    total: 0,
+    pages: 0
+  });
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({
     types: [],
     nationalities: [],
@@ -67,7 +80,7 @@ const ManpowerPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    fetchWorkers();
+    fetchWorkers(1);
   }, [filters]);
 
   const fetchFilterOptions = async () => {
@@ -81,7 +94,7 @@ const ManpowerPage: React.FC = () => {
     }
   };
 
-  const fetchWorkers = async () => {
+  const fetchWorkers = async (page = 1) => {
     try {
       setLoading(true);
       const queryParams = new URLSearchParams();
@@ -91,14 +104,23 @@ const ManpowerPage: React.FC = () => {
           queryParams.append(key, value);
         }
       });
+      
+      queryParams.append('page', String(page));
+      queryParams.append('limit', '20');
 
-      const url = `${API_ENDPOINTS.MANPOWER}${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
+      const url = `${API_ENDPOINTS.MANPOWER}?${queryParams.toString()}`;
       const response = await fetch(url);
 
       if (!response.ok) throw new Error('Failed to fetch workers');
 
-      const data = await response.json();
-      setWorkers(data);
+      const result = await response.json();
+      
+      if (result.data && result.pagination) {
+        setWorkers(result.data);
+        setPagination(result.pagination);
+      } else {
+        setWorkers(Array.isArray(result) ? result : []);
+      }
     } catch (error) {
       setError('Failed to load workers');
       console.error(error);
@@ -162,11 +184,35 @@ const ManpowerPage: React.FC = () => {
                 <p>Try adjusting your filters to see more results</p>
               </div>
             ) : (
-              <div className="manpower-grid">
-                {workers.map((worker) => (
-                  <ManpowerCard key={worker._id} worker={worker} />
-                ))}
-              </div>
+              <>
+                <div className="manpower-grid">
+                  {workers.map((worker) => (
+                    <ManpowerCard key={worker._id} worker={worker} />
+                  ))}
+                </div>
+                
+                {pagination.pages > 1 && (
+                  <div className="pagination" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', marginTop: '2rem' }}>
+                    <button 
+                      onClick={() => fetchWorkers(pagination.page - 1)} 
+                      disabled={pagination.page === 1}
+                      style={{ padding: '0.5rem 1rem', cursor: pagination.page === 1 ? 'not-allowed' : 'pointer', opacity: pagination.page === 1 ? 0.5 : 1 }}
+                    >
+                      Previous
+                    </button>
+                    <span>
+                      Page {pagination.page} of {pagination.pages} ({pagination.total} total)
+                    </span>
+                    <button 
+                      onClick={() => fetchWorkers(pagination.page + 1)} 
+                      disabled={pagination.page === pagination.pages}
+                      style={{ padding: '0.5rem 1rem', cursor: pagination.page === pagination.pages ? 'not-allowed' : 'pointer', opacity: pagination.page === pagination.pages ? 0.5 : 1 }}
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </main>
           </div>

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AdminSidebar from './components/AdminSidebar';
+import AdminManpowerForm from './AdminManpowerForm';
+import ManpowerCard from '../../components/ManpowerCard/ManpowerCard';
 import './AdminStyles.css';
 import { API_ENDPOINTS, ASSETS_CONFIG } from '../../config/api';
 
@@ -21,47 +23,40 @@ interface Worker {
   photo: string;
   resume: string;
   aboutWorker: string;
-  // Legacy fields for backward compatibility
-  image?: string;
   type?: string;
-  occupation?: string;
   skills?: string[];
   education?: string;
   description?: string;
-
-
   createdAt: string;
+}
+
+interface FormData {
+  jobTitle: string[];
+  jobType: string;
+  nameEng: string;
+  nameArabic: string;
+  nationality: string;
+  religion: string;
+  languages: string[];
+  gender: string;
+  age: number | null;
+  maritalStatus: string;
+  numberOfChildren: number | null;
+  salary: string;
+  manpowerFees: string;
+  experience: string;
+  aboutWorker: string;
+  photo: File | null;
+  resume: File | null;
 }
 
 const AdminManpower: React.FC = () => {
   const [workers, setWorkers] = useState<Worker[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [editingWorker, setEditingWorker] = useState<Worker | null>(null);
-  
-  const [formData, setFormData] = useState({
-    name: '',
-    jobTitle: '',
-    workerCategory: 'Domestic Worker',
-    nationality: '',
-    religion: '',
-    languages: '',
-    gender: 'Male',
-    maritalStatus: 'Single',
-    numberOfChildren: '',
-    age: '',
-    experience: '',
-    salary: '',
-    manpowerFees: '',
-    aboutWorker: '',
-
-  });
-
-  const [photo, setPhoto] = useState<File | null>(null);
-  const [resume, setResume] = useState<File | null>(null);
   const [formLoading, setFormLoading] = useState(false);
-  const [formError, setFormError] = useState('');
 
   const userInfoString = localStorage.getItem('userInfo');
   const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
@@ -89,7 +84,7 @@ const AdminManpower: React.FC = () => {
       }
 
       const data = await response.json();
-      setWorkers(data);
+      setWorkers(Array.isArray(data) ? data : []);
     } catch (error) {
       setError('Failed to load workers');
       console.error(error);
@@ -98,101 +93,83 @@ const AdminManpower: React.FC = () => {
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setPhoto(e.target.files[0]);
-    }
-  };
-
-  const handleResumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setResume(e.target.files[0]);
-    }
-  };
-
-  const handleEdit = (worker: Worker) => {
-    setEditingWorker(worker);
-    setFormData({
-      name: worker.name,
-      jobTitle: worker.jobTitle || worker.occupation || '',
-      workerCategory: worker.workerCategory || worker.type || 'Domestic Worker',
-      nationality: worker.nationality,
-      religion: worker.religion || '',
-      languages: worker.languages?.join(', ') || '',
-      gender: worker.gender,
-      maritalStatus: worker.maritalStatus,
-      numberOfChildren: worker.numberOfChildren?.toString() || '0',
-      age: worker.age.toString(),
-      experience: worker.experience,
-      salary: worker.salary,
-      manpowerFees: worker.manpowerFees,
-      aboutWorker: worker.aboutWorker || worker.description || '',
-
-    });
-    setShowAddForm(true);
-  };
-
-  const resetForm = () => {
-    setFormData({
-      name: '',
-      jobTitle: '',
-      workerCategory: 'Domestic Worker',
-      nationality: '',
-      religion: '',
-      languages: '',
-      gender: 'Male',
-      maritalStatus: 'Single',
-      numberOfChildren: '',
-      age: '',
-      experience: '',
-      salary: '',
-      manpowerFees: '',
-      aboutWorker: '',
-
-    });
-    setPhoto(null);
-    setResume(null);
-    setEditingWorker(null);
-    setShowAddForm(false);
-    setFormError('');
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!photo && !editingWorker) {
-      setFormError('Please select a worker photo');
-      return;
-    }
-
-    if (!formData.age || parseInt(formData.age) < 18 || parseInt(formData.age) > 65) {
-      setFormError('Age must be between 18 and 65');
-      return;
-    }
-
+  const handleFormSubmit = async (formData: any, photo: File | null, resume: File | null, fullPhoto?: File | null) => {
     try {
       setFormLoading(true);
-      setFormError('');
+      setError('');
 
-      const formDataToSend = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        formDataToSend.append(key, value);
-      });
-
-      if (photo) {
-        formDataToSend.append('photo', photo);
+      const submitData = new FormData();
+      
+      // Basic Info
+      if (formData.nameEng) submitData.append('nameEng', formData.nameEng);
+      if (formData.nameArabic) submitData.append('nameArabic', formData.nameArabic);
+      if (formData.jobTitle) submitData.append('jobTitle', JSON.stringify(formData.jobTitle));
+      if (formData.jobType) submitData.append('jobType', formData.jobType);
+      
+      // Nationality & Religion
+      if (formData.nationality) submitData.append('nationality', formData.nationality);
+      if (formData.religion) submitData.append('religion', formData.religion);
+      
+      // Languages
+      if (formData.languages) submitData.append('languages', JSON.stringify(formData.languages));
+      
+      // Personal Details
+      if (formData.gender) submitData.append('gender', formData.gender);
+      if (formData.age) submitData.append('age', String(formData.age));
+      if (formData.maritalStatus) submitData.append('maritalStatus', formData.maritalStatus);
+      if (formData.numberOfChildren !== null) submitData.append('numberOfChildren', String(formData.numberOfChildren || 0));
+      
+      // Experience
+      if (formData.experience) submitData.append('experience', formData.experience);
+      if (formData.gulfExperience) submitData.append('gulfExperience', JSON.stringify(formData.gulfExperience));
+      
+      // Salary & Fees
+      if (formData.salary) submitData.append('salary', formData.salary);
+      if (formData.salaryCurrency) submitData.append('salaryCurrency', formData.salaryCurrency);
+      if (formData.manpowerFees) submitData.append('manpowerFees', formData.manpowerFees);
+      if (formData.manpowerFeesCurrency) submitData.append('manpowerFeesCurrency', formData.manpowerFeesCurrency);
+      if (formData.agencyFeeOption) submitData.append('agencyFeeOption', formData.agencyFeeOption);
+      if (formData.hourlyRate) submitData.append('hourlyRate', String(formData.hourlyRate));
+      if (formData.hourlyRateCurrency) submitData.append('hourlyRateCurrency', formData.hourlyRateCurrency);
+      
+      // Contact Information
+      if (formData.candidateContactNumber) submitData.append('candidateContactNumber', formData.candidateContactNumber);
+      if (formData.candidateContactNumber2) submitData.append('candidateContactNumber2', formData.candidateContactNumber2);
+      if (formData.countryCode) submitData.append('countryCode', formData.countryCode);
+      if (formData.countryCode2) submitData.append('countryCode2', formData.countryCode2);
+      submitData.append('isContactNumberVisible', String(formData.isContactNumberVisible || false));
+      if (formData.whatsappNumber) submitData.append('whatsappNumber', formData.whatsappNumber);
+      
+      // Worker Category
+      if (formData.workerCategory) submitData.append('workerCategory', formData.workerCategory);
+      if (formData.otherWorkerCategory) submitData.append('otherWorkerCategory', formData.otherWorkerCategory);
+      if (formData.companyWorker) submitData.append('companyWorker', formData.companyWorker);
+      if (formData.otherCompanyWorker) submitData.append('otherCompanyWorker', formData.otherCompanyWorker);
+      
+      // Location
+      if (formData.currentLocation) submitData.append('currentLocation', formData.currentLocation);
+      if (formData.drivingLicense) submitData.append('drivingLicense', JSON.stringify(formData.drivingLicense));
+      
+      // Other Details
+      if (formData.horoscope) submitData.append('horoscope', formData.horoscope);
+      if (formData.probationPeriod !== null) submitData.append('probationPeriod', String(formData.probationPeriod || 0));
+      if (formData.referenceName) submitData.append('referenceName', formData.referenceName);
+      submitData.append('isReferenceNameVisible', String(formData.isReferenceNameVisible || false));
+      if (formData.offer) submitData.append('offer', formData.offer);
+      if (formData.aboutWorker) submitData.append('aboutWorker', formData.aboutWorker);
+      if (formData.videoFile) submitData.append('videoFile', formData.videoFile);
+      
+      // Other Countries Details
+      if (formData.otherCountriesWorkersDetails) {
+        submitData.append('otherCountriesWorkersDetails', JSON.stringify(formData.otherCountriesWorkersDetails));
       }
 
-      if (resume) {
-        formDataToSend.append('resume', resume);
-      }
+      // Files
+      if (photo) submitData.append('photo', photo);
+      if (fullPhoto) submitData.append('fullPhoto', fullPhoto);
+      if (resume) submitData.append('resume', resume);
 
-      const url = editingWorker 
+      const url = editingWorker
         ? `${API_ENDPOINTS.MANPOWER}/${editingWorker._id}`
         : API_ENDPOINTS.MANPOWER;
 
@@ -203,7 +180,7 @@ const AdminManpower: React.FC = () => {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
-        body: formDataToSend,
+        body: submitData,
       });
 
       if (!response.ok) {
@@ -217,11 +194,16 @@ const AdminManpower: React.FC = () => {
       resetForm();
       fetchWorkers();
     } catch (error) {
-      setFormError(error instanceof Error ? error.message : 'Failed to save worker');
+      setError(error instanceof Error ? error.message : 'Failed to save worker');
       console.error(error);
     } finally {
       setFormLoading(false);
     }
+  };
+
+  const handleEdit = (worker: Worker) => {
+    setEditingWorker(worker);
+    setShowForm(true);
   };
 
   const handleDelete = async (id: string) => {
@@ -248,6 +230,61 @@ const AdminManpower: React.FC = () => {
     }
   };
 
+  const resetForm = () => {
+    setEditingWorker(null);
+    setShowForm(false);
+    setError('');
+  };
+
+  const getInitialData = () => {
+    if (!editingWorker) return undefined;
+    return {
+      nameEng: (editingWorker as any).nameEng || editingWorker.name,
+      nameArabic: (editingWorker as any).nameArabic || '',
+      jobTitle: Array.isArray((editingWorker as any).jobTitle) ? (editingWorker as any).jobTitle : editingWorker.jobTitle.split(', '),
+      jobType: (editingWorker as any).jobType || 'full-time',
+      nationality: editingWorker.nationality,
+      religion: editingWorker.religion,
+      languages: editingWorker.languages,
+      gender: editingWorker.gender,
+      age: editingWorker.age,
+      maritalStatus: editingWorker.maritalStatus,
+      numberOfChildren: editingWorker.numberOfChildren,
+      experience: editingWorker.experience,
+      gulfExperience: (editingWorker as any).gulfExperience || [],
+      salary: editingWorker.salary,
+      salaryCurrency: (editingWorker as any).salaryCurrency || 'QAR',
+      manpowerFees: editingWorker.manpowerFees,
+      manpowerFeesCurrency: (editingWorker as any).manpowerFeesCurrency || 'QAR',
+      agencyFeeOption: (editingWorker as any).agencyFeeOption || '',
+      hourlyRate: (editingWorker as any).hourlyRate || null,
+      hourlyRateCurrency: (editingWorker as any).hourlyRateCurrency || 'QAR',
+      candidateContactNumber: (editingWorker as any).candidateContactNumber || '',
+      candidateContactNumber2: (editingWorker as any).candidateContactNumber2 || '',
+      countryCode: (editingWorker as any).countryCode || '+966',
+      countryCode2: (editingWorker as any).countryCode2 || '+966',
+      isContactNumberVisible: (editingWorker as any).isContactNumberVisible || false,
+      whatsappNumber: (editingWorker as any).whatsappNumber || '',
+      workerCategory: (editingWorker as any).workerCategory || editingWorker.workerCategory,
+      otherWorkerCategory: (editingWorker as any).otherWorkerCategory || '',
+      companyWorker: (editingWorker as any).companyWorker || '',
+      otherCompanyWorker: (editingWorker as any).otherCompanyWorker || '',
+      currentLocation: (editingWorker as any).currentLocation || '',
+      drivingLicense: (editingWorker as any).drivingLicense || [],
+      horoscope: (editingWorker as any).horoscope || '',
+      probationPeriod: (editingWorker as any).probationPeriod || null,
+      referenceName: (editingWorker as any).referenceName || '',
+      isReferenceNameVisible: (editingWorker as any).isReferenceNameVisible || false,
+      offer: (editingWorker as any).offer || '',
+      aboutWorker: editingWorker.aboutWorker,
+      videoFile: (editingWorker as any).videoFile || '',
+      existingPhoto: editingWorker.photo,
+      existingFullPhoto: (editingWorker as any).fullPhoto || '',
+      existingResume: editingWorker.resume,
+      otherCountriesWorkersDetails: (editingWorker as any).otherCountriesWorkersDetails || [],
+    };
+  };
+
   return (
     <div className="admin-container">
       <AdminSidebar />
@@ -259,266 +296,25 @@ const AdminManpower: React.FC = () => {
         <div className="admin-actions">
           <button
             onClick={() => {
-              if (showAddForm) {
+              if (showForm) {
                 resetForm();
               } else {
-                setShowAddForm(true);
+                setShowForm(true);
               }
             }}
             className="admin-add-button"
           >
-            {showAddForm ? 'Cancel' : 'Add New Worker'}
+            {showForm ? 'Cancel' : 'Add New Worker'}
           </button>
         </div>
 
-        {showAddForm && (
-          <div className="admin-form-container">
-            <h2>{editingWorker ? 'Edit Worker' : 'Add New Worker'}</h2>
-            {formError && <div className="admin-error-message">{formError}</div>}
-            <form onSubmit={handleSubmit} className="admin-form manpower-form">
-              {/* Name - Age */}
-              <div className="form-row">
-                <div className="admin-form-group">
-                  <label htmlFor="name">Name *</label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-
-                <div className="admin-form-group">
-                  <label htmlFor="age">Age *</label>
-                  <input
-                    type="number"
-                    id="age"
-                    name="age"
-                    value={formData.age}
-                    onChange={handleInputChange}
-                    min="18"
-                    max="65"
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Job Title */}
-              <div className="admin-form-group">
-                <label htmlFor="jobTitle">Job Title * (separate with commas)</label>
-                <input
-                  type="text"
-                  id="jobTitle"
-                  name="jobTitle"
-                  value={formData.jobTitle}
-                  onChange={handleInputChange}
-                  placeholder="e.g., Housekeeper, Cook, Driver, Nurse"
-                  required
-                />
-              </div>
-
-              {/* Worker Category */}
-              <div className="admin-form-group">
-                <label htmlFor="workerCategory">Worker Category *</label>
-                <select
-                  id="workerCategory"
-                  name="workerCategory"
-                  value={formData.workerCategory}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="Domestic Worker">Domestic Worker</option>
-                  <option value="Recruitment worker">Recruitment worker</option>
-                  <option value="Returned labor">Returned labor</option>
-                  <option value="Monthly contract labor">Monthly contract labor</option>
-                  <option value="Multi Skilled Labour">Multi Skilled Labour</option>
-                  <option value="Company Worker">Company Worker</option>
-                </select>
-              </div>
-
-              {/* Nationality - Religion */}
-              <div className="form-row">
-                <div className="admin-form-group">
-                  <label htmlFor="nationality">Nationality *</label>
-                  <input
-                    type="text"
-                    id="nationality"
-                    name="nationality"
-                    value={formData.nationality}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-
-                <div className="admin-form-group">
-                  <label htmlFor="religion">Religion</label>
-                  <input
-                    type="text"
-                    id="religion"
-                    name="religion"
-                    value={formData.religion}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
-
-              {/* Languages */}
-              <div className="admin-form-group">
-                <label htmlFor="languages">Languages (separate with commas)</label>
-                <input
-                  type="text"
-                  id="languages"
-                  name="languages"
-                  value={formData.languages}
-                  onChange={handleInputChange}
-                  placeholder="e.g., English, Arabic, Hindi"
-                />
-              </div>
-
-              {/* Gender - Marital Status - Number of Children */}
-              <div className="form-row-3">
-                <div className="admin-form-group">
-                  <label htmlFor="gender">Gender *</label>
-                  <select
-                    id="gender"
-                    name="gender"
-                    value={formData.gender}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-
-                <div className="admin-form-group">
-                  <label htmlFor="maritalStatus">Marital Status *</label>
-                  <select
-                    id="maritalStatus"
-                    name="maritalStatus"
-                    value={formData.maritalStatus}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="Single">Single</option>
-                    <option value="Married">Married</option>
-                    <option value="Divorced">Divorced</option>
-                    <option value="Widowed">Widowed</option>
-                  </select>
-                </div>
-
-                <div className="admin-form-group">
-                  <label htmlFor="numberOfChildren">Number of Children</label>
-                  <input
-                    type="number"
-                    id="numberOfChildren"
-                    name="numberOfChildren"
-                    value={formData.numberOfChildren}
-                    onChange={handleInputChange}
-                    min="0"
-                    max="20"
-                  />
-                </div>
-              </div>
-
-              {/* Experience (Years) */}
-              <div className="admin-form-group">
-                <label htmlFor="experience">Experience (Years) *</label>
-                <input
-                  type="text"
-                  id="experience"
-                  name="experience"
-                  value={formData.experience}
-                  onChange={handleInputChange}
-                  placeholder="e.g., 5 years, 2-3 years"
-                  required
-                />
-              </div>
-
-              {/* Salary - Manpower Fees */}
-              <div className="form-row">
-                <div className="admin-form-group">
-                  <label htmlFor="salary">Salary *</label>
-                  <input
-                    type="text"
-                    id="salary"
-                    name="salary"
-                    value={formData.salary}
-                    onChange={handleInputChange}
-                    placeholder="e.g., $800-$1000, AED 2000"
-                    required
-                  />
-                </div>
-
-                <div className="admin-form-group">
-                  <label htmlFor="manpowerFees">Manpower Fees *</label>
-                  <input
-                    type="text"
-                    id="manpowerFees"
-                    name="manpowerFees"
-                    value={formData.manpowerFees}
-                    onChange={handleInputChange}
-                    placeholder="e.g., $500, AED 1500"
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Photo - Resume */}
-              <div className="form-row">
-                <div className="admin-form-group">
-                  <label htmlFor="photo">Photo *</label>
-                  <input
-                    type="file"
-                    id="photo"
-                    accept="image/jpeg,image/jpg,image/png,image/gif,image/bmp,image/webp,image/svg+xml,image/tiff,image/ico,image/avif"
-                    onChange={handlePhotoChange}
-                    required={!editingWorker}
-                  />
-                  {editingWorker && (
-                    <small>Current photo will be kept if no new file is selected</small>
-                  )}
-                </div>
-
-                <div className="admin-form-group">
-                  <label htmlFor="resume">Resume</label>
-                  <input
-                    type="file"
-                    id="resume"
-                    accept=".pdf,.doc,.docx,.txt,.rtf"
-                    onChange={handleResumeChange}
-                  />
-                  {editingWorker && editingWorker.resume && (
-                    <small>Current resume will be kept if no new file is selected</small>
-                  )}
-                </div>
-              </div>
-
-              {/* About Worker */}
-              <div className="admin-form-group">
-                <label htmlFor="aboutWorker">About Worker</label>
-                <textarea
-                  id="aboutWorker"
-                  name="aboutWorker"
-                  value={formData.aboutWorker}
-                  onChange={handleInputChange}
-                  rows={4}
-                  placeholder="Brief description about the worker..."
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="admin-submit-button"
-                disabled={formLoading}
-              >
-                {formLoading ? 'Saving...' : editingWorker ? 'Update Worker' : 'Save Worker'}
-              </button>
-            </form>
-          </div>
+        {showForm && (
+          <AdminManpowerForm
+            onSubmit={handleFormSubmit}
+            onCancel={resetForm}
+            initialData={getInitialData()}
+            isLoading={formLoading}
+          />
         )}
 
         {error && <div className="admin-error-message">{error}</div>}
@@ -526,68 +322,38 @@ const AdminManpower: React.FC = () => {
         {loading ? (
           <div className="admin-loading">Loading...</div>
         ) : (
-          <div className="admin-table-container">
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Photo</th>
-                  <th>Name</th>
-                  <th>Job Title</th>
-                  <th>Nationality</th>
-                  <th>Age/Gender</th>
-
-                  <th>Salary</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {workers.length === 0 ? (
-                  <tr>
-                    <td colSpan={8} className="admin-empty-state">
-                      No workers found. Add some!
-                    </td>
-                  </tr>
-                ) : (
-                  workers.map((worker) => (
-                    <tr key={worker._id}>
-                      <td>
-                        <img
-                          src={`${ASSETS_CONFIG.BASE_URL}${worker.photo || worker.image}`}
-                          alt={worker.name}
-                          className="admin-table-image"
-                        />
-                      </td>
-                      <td>
-                        <strong>{worker.name}</strong>
-                        <br />
-                        <small>{worker.jobTitle || worker.occupation}</small>
-                      </td>
-                      <td>{worker.jobTitle || worker.occupation}</td>
-                      <td>{worker.nationality}</td>
-                      <td>{worker.age} yrs • {worker.gender}</td>
-
-                      <td>{worker.salary}</td>
-                      <td>
-                        <div className="admin-item-actions">
-                          <button
-                            onClick={() => handleEdit(worker)}
-                            className="admin-edit-button"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDelete(worker._id)}
-                            className="admin-delete-button"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+          <div className="admin-manpower-grid">
+            {workers.length === 0 ? (
+              <div className="admin-empty-state">
+                No workers found. Add some!
+              </div>
+            ) : (
+              workers.map((worker) => (
+                <div key={worker._id} className="admin-manpower-card-wrapper">
+                  <ManpowerCard worker={worker} />
+                  <div className="admin-card-actions">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEdit(worker);
+                      }}
+                      className="admin-edit-button"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(worker._id);
+                      }}
+                      className="admin-delete-button"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         )}
       </div>

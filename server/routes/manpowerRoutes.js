@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import { protect, admin } from '../middleware/authMiddleware.js';
 import Manpower from '../models/manpower.js';
+import { validateImageFile, validateResumeFile, generateSecureFilename } from '../utils/fileValidation.js';
 import {
   getManpower,
   getManpowerById,
@@ -59,39 +60,30 @@ const upload = multer({
       cb(null, uploadPath);
     },
     filename: function (req, file, cb) {
-      const prefix = file.fieldname === 'resume' ? 'resume' : 'worker';
-      cb(null, `${prefix}-${Date.now()}${path.extname(file.originalname)}`);
+      const secureFilename = generateSecureFilename(file.originalname);
+      cb(null, secureFilename);
     }
   }),
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB limit
   },
   fileFilter: (req, file, cb) => {
-    if (file.fieldname === 'image' || file.fieldname === 'photo') {
-      const allowedImageTypes = [
-        'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp',
-        'image/webp', 'image/svg+xml', 'image/tiff', 'image/ico', 'image/avif'
-      ];
-      if (allowedImageTypes.includes(file.mimetype)) {
+    if (file.fieldname === 'photo' || file.fieldname === 'passportPhoto' || file.fieldname === 'fullPhoto') {
+      const validation = validateImageFile(file);
+      if (validation.valid) {
         cb(null, true);
       } else {
-        cb(new Error('Only image files are allowed for profile picture'), false);
+        cb(new Error(validation.error), false);
       }
     } else if (file.fieldname === 'resume') {
-      const allowedResumeTypes = [
-        'application/pdf',
-        'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'text/plain', // for .txt files
-        'application/rtf', // for .rtf files
-      ];
-      if (allowedResumeTypes.includes(file.mimetype)) {
+      const validation = validateResumeFile(file);
+      if (validation.valid) {
         cb(null, true);
       } else {
-        cb(new Error('Only PDF, DOC, DOCX, TXT, and RTF files are allowed for resume'), false);
+        cb(new Error(validation.error), false);
       }
     } else {
-      cb(null, true);
+      cb(new Error('Invalid field name'), false);
     }
   }
 });
@@ -121,15 +113,12 @@ router.get('/:id', getManpowerById);
 
 // Create a new manpower (admin only)
 router.post('/', protect, admin, upload.fields([
-  { name: 'image', maxCount: 1 },
   { name: 'photo', maxCount: 1 },
+  { name: 'passportPhoto', maxCount: 1 },
+  { name: 'fullPhoto', maxCount: 1 },
   { name: 'resume', maxCount: 1 }
 ]), handleMulterError, async (req, res) => {
   try {
-    // Use the controller function instead of duplicating logic
-    req.body.photo = req.files?.photo || req.files?.image;
-    req.body.resume = req.files?.resume;
-    
     await createManpower(req, res);
   } catch (error) {
     console.error('Manpower creation error:', error);
@@ -139,12 +128,12 @@ router.post('/', protect, admin, upload.fields([
 
 // Update a manpower (admin only)
 router.put('/:id', protect, admin, upload.fields([
-  { name: 'image', maxCount: 1 },
   { name: 'photo', maxCount: 1 },
+  { name: 'passportPhoto', maxCount: 1 },
+  { name: 'fullPhoto', maxCount: 1 },
   { name: 'resume', maxCount: 1 }
 ]), handleMulterError, async (req, res) => {
   try {
-    // Use the controller function instead of duplicating logic
     await updateManpower(req, res);
   } catch (error) {
     console.error('Manpower update error:', error);

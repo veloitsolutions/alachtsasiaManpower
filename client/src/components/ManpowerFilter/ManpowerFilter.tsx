@@ -109,7 +109,7 @@ const ManpowerFilter: React.FC<ManpowerFilterProps> = ({
             className="filter-select"
           >
             <option value="">All Categories</option>
-            {filterOptions.types.map((type) => (
+            {filterOptions?.types?.map((type) => (
               <option key={type} value={type}>
                 {type}
               </option>
@@ -126,7 +126,7 @@ const ManpowerFilter: React.FC<ManpowerFilterProps> = ({
             className="filter-select"
           >
             <option value="">All Job Titles</option>
-            {filterOptions.occupations.map((occupation) => (
+            {filterOptions?.occupations?.map((occupation) => (
               <option key={occupation} value={occupation}>
                 {occupation}
               </option>
@@ -143,7 +143,7 @@ const ManpowerFilter: React.FC<ManpowerFilterProps> = ({
             className="filter-select"
           >
             <option value="">All Nationalities</option>
-            {filterOptions.nationalities.map((nationality) => (
+            {filterOptions?.nationalities?.map((nationality) => (
               <option key={nationality} value={nationality}>
                 {nationality}
               </option>
@@ -160,7 +160,7 @@ const ManpowerFilter: React.FC<ManpowerFilterProps> = ({
             className="filter-select"
           >
             <option value="">All Genders</option>
-            {filterOptions.genders.map((gender) => (
+            {filterOptions?.genders?.map((gender) => (
               <option key={gender} value={gender}>
                 {gender}
               </option>

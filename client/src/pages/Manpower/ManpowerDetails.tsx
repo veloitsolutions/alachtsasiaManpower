@@ -11,20 +11,31 @@ const capitalizeFirst = (str: string) => str.charAt(0).toUpperCase() + str.slice
 
 interface Worker {
   _id: string;
+  nameEng?: string;
+  nameArabic?: string;
   name: string;
-  image?: string;
   photo?: string;
+  passportPhoto?: string;
+  fullPhoto?: string;
   nationality: string;
-  occupation?: string;
-  jobTitle?: string;
+  jobTitle?: string | string[];
+  jobType?: string;
   age: number;
   gender: string;
   experience: string;
+  gulfExperience?: string[];
   salary: string;
+  salaryCurrency?: string;
   manpowerFees: string;
-
+  manpowerFeesCurrency?: string;
+  agencyFeeOption?: string;
+  hourlyRate?: number;
+  hourlyRateCurrency?: string;
   type?: string;
   workerCategory?: string;
+  otherWorkerCategory?: string;
+  companyWorker?: string;
+  otherCompanyWorker?: string;
   maritalStatus: string;
   numberOfChildren?: number;
   religion: string;
@@ -33,9 +44,30 @@ interface Worker {
   education?: string;
   description?: string;
   aboutWorker?: string;
-  contactNumber: string;
-  previousEmployers: string;
-  resume: string;
+  candidateContactNumber?: string;
+  candidateContactNumber2?: string;
+  countryCode?: string;
+  countryCode2?: string;
+  isContactNumberVisible?: boolean;
+  whatsappNumber?: string;
+  previousEmployers?: string;
+  resume?: string;
+  video?: string;
+  videoFile?: string;
+  currentLocation?: string;
+  drivingLicense?: string[];
+  horoscope?: string;
+  probationPeriod?: number;
+  referenceName?: string;
+  isReferenceNameVisible?: boolean;
+  offer?: string;
+  otherCountriesWorkersDetails?: Array<{
+    country: string;
+    salary: string;
+    salaryCurrency: string;
+    manpowerFees: string;
+    manpowerFeesCurrency: string;
+  }>;
 }
 
 const ManpowerDetails: React.FC = () => {
@@ -44,6 +76,7 @@ const ManpowerDetails: React.FC = () => {
   const [worker, setWorker] = useState<Worker | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const fromAdmin = new URLSearchParams(window.location.search).get('from') === 'admin';
 
   useEffect(() => {
     if (id) {
@@ -88,8 +121,8 @@ const ManpowerDetails: React.FC = () => {
           <div className="error-state">
             <h2>Worker Not Found</h2>
             <p>{error || 'The requested worker could not be found.'}</p>
-            <button onClick={() => navigate('/manpower')} className="back-btn">
-              Back to Manpower
+            <button onClick={() => navigate(fromAdmin ? '/admin/manpower' : '/manpower')} className="back-btn">
+              Back to {fromAdmin ? 'Admin Panel' : 'Manpower'}
             </button>
           </div>
         </div>
@@ -100,16 +133,16 @@ const ManpowerDetails: React.FC = () => {
   return (
     <div className="manpower-details-page">
       <div className="container">
-        <button onClick={() => navigate('/manpower')} className="back-button">
+        <button onClick={() => navigate(fromAdmin ? '/admin/manpower' : '/manpower')} className="back-button">
           <ArrowLeft size={20} />
-          <span>Back to Workers</span>
+          <span>Back to {fromAdmin ? 'Admin Panel' : 'Workers'}</span>
         </button>
 
         <div className="worker-details-grid">
           <div className="worker-sidebar">
             <div className="worker-image-section">
               <img
-                src={`${ASSETS_CONFIG.BASE_URL}${worker.photo || worker.image}`}
+                src={`${ASSETS_CONFIG.BASE_URL}${worker.photo}`}
                 alt={worker.name}
                 className="worker-image"
                 onError={(e) => {
@@ -121,11 +154,12 @@ const ManpowerDetails: React.FC = () => {
             </div>
 
             <div className="worker-quick-info">
-              <h1>{capitalizeFirst(worker.name)}</h1>
+              <h1>{worker.nameEng || worker.name}</h1>
+              {worker.nameArabic && <h2 className="arabic-name">{worker.nameArabic}</h2>}
               <div className="tags-container" style={{ marginBottom: '24px' }}>
-                {(worker.jobTitle || worker.occupation)?.split(',').map((job, index) => (
+                {(Array.isArray(worker.jobTitle) ? worker.jobTitle : worker.jobTitle?.split(',')).map((job, index) => (
                   <span key={index} className="tag skill-tag">
-                    {capitalizeFirst(job.trim())}
+                    {capitalizeFirst(typeof job === 'string' ? job.trim() : job)}
                   </span>
                 ))}
               </div>
@@ -158,18 +192,29 @@ const ManpowerDetails: React.FC = () => {
               </div>
 
               <div className="pricing-section">
-                <div className="price-item">
-                  <DollarSign size={20} />
-                  <div>
-                    <span className="label">Monthly Salary</span>
-                    <span className="price">{worker.salary}</span>
+                {worker.jobType !== 'hourlybasis' ? (
+                  <div className="price-item">
+                    <DollarSign size={20} />
+                    <div>
+                      <span className="label">Monthly Salary</span>
+                      <span className="price">{worker.salary} {worker.salaryCurrency || ''}</span>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="price-item">
+                    <DollarSign size={20} />
+                    <div>
+                      <span className="label">Hourly Rate</span>
+                      <span className="price">{worker.hourlyRate} {worker.hourlyRateCurrency || ''}/hr</span>
+                    </div>
+                  </div>
+                )}
                 <div className="price-item">
                   <Award size={20} />
                   <div>
                     <span className="label">Manpower Fees</span>
-                    <span className="price">{worker.manpowerFees}</span>
+                    <span className="price">{worker.manpowerFees} {worker.manpowerFeesCurrency || ''}</span>
+                    {worker.agencyFeeOption && <span className="fee-option">({worker.agencyFeeOption})</span>}
                   </div>
                 </div>
               </div>
@@ -192,6 +237,16 @@ const ManpowerDetails: React.FC = () => {
             <section className="details-section">
               <h2>Personal Information</h2>
               <div className="details-grid">
+                {worker.jobType && (
+                  <div className="detail-item">
+                    <Briefcase size={18} />
+                    <div>
+                      <span className="label">Job Type</span>
+                      <span className="value">{worker.jobType}</span>
+                    </div>
+                  </div>
+                )}
+                
                 <div className="detail-item">
                   <Heart size={18} />
                   <div>
@@ -199,6 +254,16 @@ const ManpowerDetails: React.FC = () => {
                     <span className="value">{worker.maritalStatus}</span>
                   </div>
                 </div>
+                
+                {worker.numberOfChildren !== undefined && (
+                  <div className="detail-item">
+                    <User size={18} />
+                    <div>
+                      <span className="label">Number of Children</span>
+                      <span className="value">{worker.numberOfChildren}</span>
+                    </div>
+                  </div>
+                )}
                 
                 {worker.religion && (
                   <div className="detail-item">
@@ -214,45 +279,128 @@ const ManpowerDetails: React.FC = () => {
                   <FileText size={18} />
                   <div>
                     <span className="label">Worker Category</span>
-                    <span className="value">{worker.workerCategory || worker.type}</span>
+                    <span className="value">{worker.otherWorkerCategory || worker.workerCategory || worker.type}</span>
                   </div>
                 </div>
                 
-                {worker.numberOfChildren !== undefined && worker.numberOfChildren > 0 && (
+                {worker.companyWorker && (
                   <div className="detail-item">
-                    <User size={18} />
+                    <Briefcase size={18} />
                     <div>
-                      <span className="label">Number of Children</span>
-                      <span className="value">{worker.numberOfChildren}</span>
+                      <span className="label">Company Worker Type</span>
+                      <span className="value">{worker.otherCompanyWorker || worker.companyWorker}</span>
+                    </div>
+                  </div>
+                )}
+                
+                {worker.currentLocation && (
+                  <div className="detail-item">
+                    <MapPin size={18} />
+                    <div>
+                      <span className="label">Current Location</span>
+                      <span className="value">{worker.currentLocation}</span>
+                    </div>
+                  </div>
+                )}
+                
+                {worker.horoscope && (
+                  <div className="detail-item">
+                    <Award size={18} />
+                    <div>
+                      <span className="label">Horoscope</span>
+                      <span className="value">{worker.horoscope}</span>
+                    </div>
+                  </div>
+                )}
+                
+                {worker.probationPeriod && (
+                  <div className="detail-item">
+                    <Calendar size={18} />
+                    <div>
+                      <span className="label">Probation Period</span>
+                      <span className="value">{worker.probationPeriod} months</span>
                     </div>
                   </div>
                 )}
 
-                {worker.contactNumber && (
+                {worker.isContactNumberVisible && worker.candidateContactNumber && (
                   <div className="detail-item">
                     <Phone size={18} />
                     <div>
-                      <span className="label">Contact</span>
-                      <span className="value">{worker.contactNumber}</span>
+                      <span className="label">Contact Number</span>
+                      <span className="value">{worker.countryCode} {worker.candidateContactNumber}</span>
+                    </div>
+                  </div>
+                )}
+                
+                {worker.isContactNumberVisible && worker.candidateContactNumber2 && (
+                  <div className="detail-item">
+                    <Phone size={18} />
+                    <div>
+                      <span className="label">Contact Number 2</span>
+                      <span className="value">{worker.countryCode2} {worker.candidateContactNumber2}</span>
+                    </div>
+                  </div>
+                )}
+                
+                {worker.whatsappNumber && (
+                  <div className="detail-item">
+                    <Phone size={18} />
+                    <div>
+                      <span className="label">WhatsApp</span>
+                      <span className="value">{worker.whatsappNumber}</span>
+                    </div>
+                  </div>
+                )}
+                
+                {worker.isReferenceNameVisible && worker.referenceName && (
+                  <div className="detail-item">
+                    <User size={18} />
+                    <div>
+                      <span className="label">Reference Name</span>
+                      <span className="value">{worker.referenceName}</span>
                     </div>
                   </div>
                 )}
               </div>
             </section>
 
-            {(worker.jobTitle || worker.occupation) && (
+            {worker.gulfExperience && worker.gulfExperience.length > 0 && (
               <section className="details-section">
                 <h2>
-                  <Briefcase size={20} />
-                  Job Titles
+                  <Award size={20} />
+                  Gulf Experience
                 </h2>
                 <div className="tags-container">
-                  {(worker.jobTitle || worker.occupation)?.split(',').map((job, index) => (
+                  {worker.gulfExperience.map((country, index) => (
                     <span key={index} className="tag skill-tag">
-                      {capitalizeFirst(job.trim())}
+                      {capitalizeFirst(country)}
                     </span>
                   ))}
                 </div>
+              </section>
+            )}
+            
+            {worker.drivingLicense && worker.drivingLicense.length > 0 && (
+              <section className="details-section">
+                <h2>
+                  <Award size={20} />
+                  Driving License
+                </h2>
+                <div className="tags-container">
+                  {worker.drivingLicense.map((license, index) => (
+                    <span key={index} className="tag skill-tag">
+                      {capitalizeFirst(license)}
+                    </span>
+                  ))}
+                </div>
+              </section>
+            )}
+            
+            {worker.offer && (
+              <section className="details-section">
+                <h2>Special Offer</h2>
+                <p className="description">{worker.offer}</p>
               </section>
             )}
 
@@ -288,6 +436,72 @@ const ManpowerDetails: React.FC = () => {
                       {capitalizeFirst(language)}
                     </span>
                   ))}
+                </div>
+              </section>
+            )}
+            
+            {worker.otherCountriesWorkersDetails && worker.otherCountriesWorkersDetails.length > 0 && worker.otherCountriesWorkersDetails.some(detail => detail.country && detail.salary && detail.manpowerFees) && (
+              <section className="details-section">
+                <h2>
+                  <Globe size={20} />
+                  Other Countries Details
+                </h2>
+                <div className="details-grid">
+                  {worker.otherCountriesWorkersDetails.filter(detail => detail.country && detail.salary && detail.manpowerFees).map((detail, index) => (
+                    <div key={index} className="detail-item">
+                      <MapPin size={18} />
+                      <div>
+                        <span className="label">{detail.country}</span>
+                        <span className="value">Salary: {detail.salary} {detail.salaryCurrency}</span>
+                        <span className="value">Fees: {detail.manpowerFees} {detail.manpowerFeesCurrency}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+            
+            {worker.fullPhoto && (
+              <section className="details-section">
+                <h2>Full Photo</h2>
+                <div className="video-container">
+                  <img
+                    src={`${ASSETS_CONFIG.BASE_URL}${worker.fullPhoto}`}
+                    alt={`${worker.name} - Full Photo`}
+                    style={{ width: '100%', maxHeight: '600px', objectFit: 'contain', borderRadius: '8px' }}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              </section>
+            )}
+            
+            {(worker.videoFile || worker.video) && (
+              <section className="details-section">
+                <h2>Video</h2>
+                <div className="video-container">
+                  <iframe
+                    width="100%"
+                    height="400"
+                    src={(() => {
+                      const url = worker.videoFile || worker.video || '';
+                      if (url.includes('youtube.com/watch')) {
+                        const videoId = url.split('v=')[1]?.split('&')[0];
+                        return `https://www.youtube.com/embed/${videoId}`;
+                      }
+                      if (url.includes('youtu.be/')) {
+                        const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+                        return `https://www.youtube.com/embed/${videoId}`;
+                      }
+                      if (url.includes('youtube.com/embed/')) return url;
+                      return url;
+                    })()}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
                 </div>
               </section>
             )}

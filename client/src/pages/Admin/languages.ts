@@ -1,0 +1,123 @@
+
+
+// src/constants/languages.tsx
+interface LanguageOption {
+    value: string; // e.g. 'Arabic'
+    label: {
+      en: string;
+      ar: string;
+    };
+  }
+
+  export const primaryLanguagesData: LanguageOption[] = [
+    { value: 'Arabic', label: { en: 'Arabic', ar: 'العربية' } },
+    { value: 'English', label: { en: 'English', ar: 'الإنجليزية' } },
+    { value: 'Hindi', label: { en: 'Hindi', ar: 'الهندية' } },
+    { value: 'Bengali', label: { en: 'Bengali', ar: 'البنغالية' } },
+    { value: 'Tagalog', label: { en: 'Tagalog', ar: 'التاغالوغية' } }, // Philippines
+    { value: 'Indonesian', label: { en: 'Indonesian', ar: 'الإندونيسية' } }, // Indonesia
+    { value: 'Swahili', label: { en: 'Swahili', ar: 'السواحيلية' } }, // Kenya, Uganda
+    { value: 'Nepali', label: { en: 'Nepali', ar: 'النيبالية' } }, // Nepal
+    { value: 'Sinhala', label: { en: 'Sinhala', ar: 'السنهالية' } }, // Sri Lanka
+    { value: 'Amharic', label: { en: 'Amharic', ar: 'الأمهرية' } }, // Ethiopia
+  ];
+
+  export const allLanguagesData: LanguageOption[] = [
+    { value: "English", label: { en: "English", ar: "الإنجليزية" } },
+    { value: "Arabic", label: { en: "Arabic", ar: "العربية" } },
+    { value: "French", label: { en: "French", ar: "الفرنسية" } },
+    { value: "Spanish", label: { en: "Spanish", ar: "الإسبانية" } },
+    { value: "Portuguese", label: { en: "Portuguese", ar: "البرتغالية" } },
+    { value: "Russian", label: { en: "Russian", ar: "الروسية" } },
+    { value: "German", label: { en: "German", ar: "الألمانية" } },
+    { value: "Italian", label: { en: "Italian", ar: "الإيطالية" } },
+    { value: "Dutch", label: { en: "Dutch", ar: "الهولندية" } },
+    { value: "Mandarin Chinese", label: { en: "Mandarin Chinese", ar: "الصينية (الماندرين)" } },
+    { value: "Hindi", label: { en: "Hindi", ar: "الهندية" } },
+    { value: "Bengali", label: { en: "Bengali", ar: "البنغالية" } },
+    { value: "Urdu", label: { en: "Urdu", ar: "الأردية" } },
+    { value: "Swahili", label: { en: "Swahili", ar: "السواحيلية" } },
+    { value: "Turkish", label: { en: "Turkish", ar: "التركية" } },
+    { value: "Persian", label: { en: "Persian", ar: "الفارسية" } },
+    { value: "Malay", label: { en: "Malay", ar: "الملايو" } },
+    { value: "Indonesian", label: { en: "Indonesian", ar: "الإندونيسية" } },
+    { value: "Filipino", label: { en: "Filipino", ar: "الفلبينية" } },
+    { value: "Japanese", label: { en: "Japanese", ar: "اليابانية" } },
+    { value: "Korean", label: { en: "Korean", ar: "الكورية" } },
+    { value: "Vietnamese", label: { en: "Vietnamese", ar: "الفيتنامية" } },
+    { value: "Thai", label: { en: "Thai", ar: "التايلاندية" } },
+    { value: "Greek", label: { en: "Greek", ar: "اليونانية" } },
+    { value: "Polish", label: { en: "Polish", ar: "البولندية" } },
+    { value: "Romanian", label: { en: "Romanian", ar: "الرومانية" } },
+    { value: "Czech", label: { en: "Czech", ar: "التشيكية" } },
+    { value: "Hungarian", label: { en: "Hungarian", ar: "الهنغارية" } },
+    { value: "Slovak", label: { en: "Slovak", ar: "السلوفاكية" } },
+    { value: "Bulgarian", label: { en: "Bulgarian", ar: "البلغارية" } },
+    { value: "Serbian", label: { en: "Serbian", ar: "الصربية" } },
+    { value: "Croatian", label: { en: "Croatian", ar: "الكرواتية" } },
+    { value: "Bosnian", label: { en: "Bosnian", ar: "البوسنية" } },
+    { value: "Slovene", label: { en: "Slovene", ar: "السلوفينية" } },
+    { value: "Albanian", label: { en: "Albanian", ar: "الألبانية" } },
+    { value: "Macedonian", label: { en: "Macedonian", ar: "المقدونية" } },
+    { value: "Montenegrin", label: { en: "Montenegrin", ar: "الجبل الأسود" } },
+    { value: "Ukrainian", label: { en: "Ukrainian", ar: "الأوكرانية" } },
+    { value: "Belarusian", label: { en: "Belarusian", ar: "البيلاروسية" } },
+    { value: "Georgian", label: { en: "Georgian", ar: "الجورجية" } },
+    { value: "Armenian", label: { en: "Armenian", ar: "الأرمنية" } },
+    { value: "Azerbaijani", label: { en: "Azerbaijani", ar: "الأذربيجانية" } },
+    { value: "Kazakh", label: { en: "Kazakh", ar: "الكازاخية" } },
+    { value: "Uzbek", label: { en: "Uzbek", ar: "الأوزبكية" } },
+    { value: "Turkmen", label: { en: "Turkmen", ar: "التركمانية" } },
+    { value: "Kyrgyz", label: { en: "Kyrgyz", ar: "القيرغيزية" } },
+    { value: "Tajik", label: { en: "Tajik", ar: "الطاجيكية" } },
+    { value: "Pashto", label: { en: "Pashto", ar: "البشتو" } },
+    { value: "Dari", label: { en: "Dari", ar: "الداري" } },
+    { value: "Nepali", label: { en: "Nepali", ar: "النيبالية" } },
+    { value: "Sinhala", label: { en: "Sinhala", ar: "السنهالية" } },
+    { value: "Tamil", label: { en: "Tamil", ar: "التاميلية" } },
+    { value: "Burmese", label: { en: "Burmese", ar: "البورمية" } },
+    { value: "Khmer", label: { en: "Khmer", ar: "الخميرية" } },
+    { value: "Lao", label: { en: "Lao", ar: "اللاوية" } },
+    { value: "Mongolian", label: { en: "Mongolian", ar: "المنغولية" } },
+    { value: "Hebrew", label: { en: "Hebrew", ar: "العبرية" } },
+    { value: "Amharic", label: { en: "Amharic", ar: "الأمهرية" } },
+    { value: "Tigrinya", label: { en: "Tigrinya", ar: "التغرينية" } },
+    { value: "Somali", label: { en: "Somali", ar: "الصومالية" } },
+    { value: "Oromo", label: { en: "Oromo", ar: "الأورومية" } },
+    { value: "Afar", label: { en: "Afar", ar: "العفرية" } },
+    { value: "Swedish", label: { en: "Swedish", ar: "السويدية" } },
+    { value: "Norwegian", label: { en: "Norwegian", ar: "النرويجية" } },
+    { value: "Danish", label: { en: "Danish", ar: "الدنماركية" } },
+    { value: "Finnish", label: { en: "Finnish", ar: "الفنلندية" } },
+    { value: "Icelandic", label: { en: "Icelandic", ar: "الأيسلندية" } },
+    { value: "Estonian", label: { en: "Estonian", ar: "الإستونية" } },
+    { value: "Latvian", label: { en: "Latvian", ar: "اللاتفية" } },
+    { value: "Lithuanian", label: { en: "Lithuanian", ar: "الليتوانية" } },
+    { value: "Irish", label: { en: "Irish", ar: "الأيرلندية" } },
+    { value: "Welsh", label: { en: "Welsh", ar: "الويلزية" } },
+    { value: "Scottish Gaelic", label: { en: "Scottish Gaelic", ar: "الغيلية الاسكتلندية" } },
+    { value: "Luxembourgish", label: { en: "Luxembourgish", ar: "اللوكسمبرجية" } },
+    { value: "Maltese", label: { en: "Maltese", ar: "المالطية" } },
+    { value: "Catalan", label: { en: "Catalan", ar: "الكتالونية" } },
+    { value: "Basque", label: { en: "Basque", ar: "الباسكية" } },
+    { value: "Galician", label: { en: "Galician", ar: "الجاليكية" } },
+    { value: "Sami", label: { en: "Sami", ar: "السامي" } },
+    { value: "Dzongkha", label: { en: "Dzongkha", ar: "الدزونخا" } },
+    { value: "Tetum", label: { en: "Tetum", ar: "التيتوم" } },
+    { value: "Maori", label: { en: "Maori", ar: "الماورية" } },
+    { value: "Samoan", label: { en: "Samoan", ar: "الساموية" } },
+    { value: "Tongan", label: { en: "Tongan", ar: "التونغية" } },
+    { value: "Fijian", label: { en: "Fijian", ar: "الفيجية" } },
+    { value: "Bislama", label: { en: "Bislama", ar: "البيسلامية" } },
+    { value: "Haitian Creole", label: { en: "Haitian Creole", ar: "الكريولية الهايتية" } },
+    { value: "Javanese", label: { en: "Javanese", ar: "الجاوية" } },
+    { value: "Tagalog", label: { en: "Tagalog", ar: "التاغالوغية" } },
+    { value: "Zulu", label: { en: "Zulu", ar: "الزولو" } },
+    { value: "Afrikaans", label: { en: "Afrikaans", ar: "الأفريكانية" } },
+    { value: "Xhosa", label: { en: "Xhosa", ar: "الخوسا" } },
+    { value: "Setswana", label: { en: "Setswana", ar: "السيتسوانا" } },
+    { value: "Sesotho", label: { en: "Sesotho", ar: "السيسوتو" } },
+    { value: "Swazi", label: { en: "Swazi", ar: "السوازي" } },
+    { value: "Venda", label: { en: "Venda", ar: "الفندا" } },
+  ];
+  
