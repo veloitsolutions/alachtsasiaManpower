@@ -18,7 +18,7 @@ const manpowerSchema = new mongoose.Schema(
     
     // Nationality & Religion
     nationality: { type: String },
-    religion: { type: String },
+    religion: { type: String, required: true },
     
     // Languages
     languages: { type: [String], default: [] },
@@ -30,7 +30,7 @@ const manpowerSchema = new mongoose.Schema(
     numberOfChildren: { type: Number, default: 0, min: 0 },
     
     // Experience
-    experience: { type: String, required: true },
+    experience: { type: String },
     gulfExperience: { type: [String], default: [] },
     
     // Salary & Fees
