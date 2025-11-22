@@ -19,6 +19,40 @@
   height: 100vh;
 }
 
+/* Mobile Hamburger Button */
+.mobile-menu-toggle {
+  display: none;
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 1001;
+  background: var(--primary-red);
+  color: white;
+  border: none;
+  padding: 0.6rem;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.mobile-menu-toggle:hover {
+  background: #c2185b;
+  transform: scale(1.05);
+}
+
+/* Mobile Overlay */
+.mobile-menu-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
 /* Sidebar */
 .admin-sidebar {
   width: 250px;
@@ -31,7 +65,8 @@
   top: 0;
   height: 100vh;
   overflow-y: auto;
-  z-index: 100;
+  z-index: 1000;
+  transition: transform 0.3s ease;
 }
 
 .admin-sidebar-header {
@@ -679,19 +714,32 @@
     flex-direction: column;
   }
 
+  /* Show hamburger button on mobile */
+  .mobile-menu-toggle {
+    display: block;
+  }
+
+  /* Hide sidebar by default on mobile */
   .admin-sidebar {
-    width: 100%;
-    padding: 1rem 0;
-    position: static;
-    height: auto;
-    overflow-y: visible;
+    transform: translateX(-100%);
+    width: 280px;
+  }
+
+  /* Show sidebar when mobile menu is open */
+  .admin-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  /* Show overlay when mobile menu is open */
+  .mobile-menu-overlay {
+    display: block;
   }
 
   .admin-content {
     padding: 1rem;
     margin-left: 0;
     height: auto;
-    padding-top: 1rem;
+    padding-top: 4rem;
   }
 
   .admin-header {
@@ -3197,13 +3245,11 @@
   }
 
   .admin-card-actions {
-    flex-direction: column;
     padding: 8px;
   }
 
   .admin-card-actions .admin-edit-button,
   .admin-card-actions .admin-delete-button {
-    width: 100%;
     padding: 8px;
     font-size: 0.75rem;
   }

@@ -4,6 +4,7 @@ import { ASSETS_CONFIG } from '../../config/api';
 import { jobTypes, genders, maritalStatuses, jobTitles, workerCategories, companyWorkerTypes, religionsData, horoscopeOptions } from './workerOptions';
 import { primaryCountriesData1, primaryCountriesData2, allCountriesData } from './location';
 import { primaryLanguagesData, allLanguagesData } from './languages';
+import CustomAlert from '../../components/CustomAlert';
 
 interface OtherCountryWorkerDetail {
   country: string;
@@ -125,6 +126,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
   const [resume, setResume] = useState<File | null>(null);
   const [resumeName, setResumeName] = useState<string>(initialData?.existingResume ? initialData.existingResume.split('/').pop() || 'Existing Resume' : '');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showAlert, setShowAlert] = useState(false);
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({});
   const [isOtherCountriesOpen, setIsOtherCountriesOpen] = useState(false);
   const [otherCountriesDropdownStates, setOtherCountriesDropdownStates] = useState<boolean[]>([]);
@@ -197,16 +199,22 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
     e.preventDefault();
     const newErrors: Record<string, string> = {};
 
-    if (!formData.nameEng && !formData.nameArabic) newErrors.name = 'At least one name is required';
-    if (!formData.age || formData.age < 18) newErrors.age = 'Age must be at least 18';
-    if (!formData.jobTitle.length) newErrors.jobTitle = 'Job title is required';
-    if (!formData.nationality) newErrors.nationality = 'Nationality is required';
-    if (!formData.salary) newErrors.salary = 'Salary is required';
-    if (!formData.manpowerFees) newErrors.manpowerFees = 'Manpower fees are required';
-    if (!photo && !initialData?.existingPhoto) newErrors.photo = 'Photo is required';
+    if (!formData.nameEng && !formData.nameArabic) newErrors['nameEng'] = 'At least one name (English or Arabic) is required';
+    if (!formData.age || formData.age < 18) newErrors['age'] = 'Age must be at least 18 years old';
+    if (!formData.jobTitle.length) newErrors['jobTitle'] = 'Please select at least one job title';
+    if (!formData.nationality) newErrors['nationality'] = 'Please select a nationality';
+    if (!formData.gender) newErrors['gender'] = 'Please select a gender';
+    if (!formData.maritalStatus) newErrors['maritalStatus'] = 'Please select a marital status';
+    if (!formData.experience) newErrors['experience'] = 'Experience is required';
+    if (!formData.workerCategory && !formData.otherWorkerCategory) newErrors['workerCategory'] = 'Please select a worker category';
+    if (!formData.salary) newErrors['salary'] = 'Salary amount is required';
+    if (!formData.manpowerFees) newErrors['manpowerFees'] = 'Manpower fees amount is required';
+    if (!photo && !initialData?.existingPhoto) newErrors['photo'] = 'Worker photo is required';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      setShowAlert(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
@@ -266,20 +274,22 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
 
   return (
     <div className="modern-form-container">
+      <CustomAlert
+        isOpen={showAlert}
+        onClose={() => setShowAlert(false)}
+        title="Form Validation Error"
+        errors={errors}
+      />
+      
       <div className="form-header" style={{ background: 'linear-gradient(135deg, var(--primary-red) 0%, #c2185b 100%)' }}>
         <h2>{initialData ? 'Edit Worker' : 'Add New Worker'}</h2>
       </div>
-
-      {Object.keys(errors).length > 0 && (
-        <div className="form-error-banner">
-          <p>Please fill in all required fields</p>
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="modern-form">
         {/* Job Title */}
         <div className="form-group">
           <label><span>Job Title *</span> {formData.jobTitle.length > 0 && <Check className="check-icon" />}</label>
+          {errors.jobTitle && <div className="text-red-500 text-sm mt-1 mb-2">{errors.jobTitle}</div>}
           <div className="grid grid-cols-3 gap-3 mb-2">
             {jobTitles.slice(0, 9).map(job => (
               <button
@@ -319,6 +329,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
           <div className="form-group">
             <label><span>Name in English *</span> {formData.nameEng && <Check className="check-icon" />}</label>
             <input type="text" name="nameEng" value={formData.nameEng} onChange={handleInputChange} className="form-input" />
+            {errors.nameEng && <div className="text-red-500 text-sm mt-1">{errors.nameEng}</div>}
           </div>
           <div className="form-group">
             <label><span>Name in Arabic</span> {formData.nameArabic && <Check className="check-icon" />}</label>
@@ -329,6 +340,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
         {/* Nationality */}
         <div className="form-group">
           <label><span>Select Nationality *</span> {formData.nationality && <Check className="check-icon" />}</label>
+          {errors.nationality && <div className="text-red-500 text-sm mt-1 mb-2">{errors.nationality}</div>}
           <div className="grid grid-cols-5 gap-3 mb-2">
             {primaryCountriesData1.slice(0, 5).map(c => (
               <button
@@ -416,6 +428,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
         {/* Gender */}
         <div className="form-group">
           <label><span>Gender *</span> {formData.gender && <Check className="check-icon" />}</label>
+          {errors.gender && <div className="text-red-500 text-sm mt-1 mb-2">{errors.gender}</div>}
           <div className="grid grid-cols-3 gap-3">
             {genders.map(g => (
               <button
@@ -444,6 +457,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
         {/* Marital Status */}
         <div className="form-group">
           <label><span>Marital Status *</span> {formData.maritalStatus && <Check className="check-icon" />}</label>
+          {errors.maritalStatus && <div className="text-red-500 text-sm mt-1 mb-2">{errors.maritalStatus}</div>}
           <div className="grid grid-cols-6 gap-3">
             {maritalStatuses.slice(0, 6).map(m => (
               <button
@@ -480,10 +494,12 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
           <div className="form-group">
             <label><span>Age *</span> {formData.age && <Check className="check-icon" />}</label>
             <input type="number" name="age" value={formData.age || ''} onChange={handleInputChange} min="18" className="form-input" />
+            {errors.age && <div className="text-red-500 text-sm mt-1">{errors.age}</div>}
           </div>
           <div className="form-group">
             <label><span>Experience (Years) *</span> {formData.experience && <Check className="check-icon" />}</label>
             <input type="text" name="experience" value={formData.experience} onChange={handleInputChange} className="form-input" />
+            {errors.experience && <div className="text-red-500 text-sm mt-1">{errors.experience}</div>}
           </div>
           <div className="form-group">
             <label><span>Gulf Experience</span> {formData.gulfExperience.length > 0 && <Check className="check-icon" />}</label>
@@ -501,6 +517,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
                 {currencyOptions.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
+            {errors.salary && <div className="text-red-500 text-sm mt-1">{errors.salary}</div>}
           </div>
           <div className="form-group">
             <label><span>Manpower Fees *</span> {formData.manpowerFees && <Check className="check-icon" />}</label>
@@ -510,6 +527,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
                 {currencyOptions.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
+            {errors.manpowerFees && <div className="text-red-500 text-sm mt-1">{errors.manpowerFees}</div>}
           </div>
           <div className="form-group">
             <label><span>Manpower Fee Option</span> {formData.agencyFeeOption && <Check className="check-icon" />}</label>
@@ -580,7 +598,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
               {/* Small-sized photo */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 text-center">Small-sized photo</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2 text-center">Small-sized photo *</label>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-2 text-center hover:border-blue-400 transition-colors">
                   <input type="file" id="passportPhoto" accept="image/*" onChange={handlePhotoChange} className="hidden" />
                   <label htmlFor="passportPhoto" className="cursor-pointer block">
@@ -591,6 +609,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
                     )}
                   </label>
                 </div>
+                {errors.photo && <div className="text-red-500 text-sm mt-1 text-center">{errors.photo}</div>}
               </div>
               
               {/* Full-sized photo */}
@@ -636,7 +655,8 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
 
         {/* Worker Category */}
         <div className="form-group">
-          <label><span>Worker Category</span> {(formData.workerCategory || formData.otherWorkerCategory) && <Check className="check-icon" />}</label>
+          <label><span>Worker Category *</span> {(formData.workerCategory || formData.otherWorkerCategory) && <Check className="check-icon" />}</label>
+          {errors.workerCategory && <div className="text-red-500 text-sm mt-1 mb-2">{errors.workerCategory}</div>}
           <div className="grid grid-cols-3 gap-3 mb-2">
             {workerCategories.map(cat => (
               <button

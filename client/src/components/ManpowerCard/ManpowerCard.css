@@ -6,7 +6,7 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: row;
-  height: 250px;
+  height: 220px;
   cursor: pointer;
   position: relative;
 }
@@ -18,8 +18,8 @@
 
 .manpower-card-image-wrapper {
   position: relative;
-  width: 180px;
-  min-width: 180px;
+  width: 150px;
+  min-width: 150px;
   height: 100%;
   overflow: hidden;
   background: #f5f5f5;
@@ -32,37 +32,37 @@
   object-fit: cover;
 }
 
-
-
 .manpower-card-content {
-  padding: 16px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
   flex: 1;
+  overflow: hidden;
 }
 
 .manpower-card-name {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #1a1a1a;
-  margin: 0 0 6px 0;
-  line-height: 1.3;
+  margin: 0 0 8px 0;
+  line-height: 1.2;
 }
 
 .manpower-card-details {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
   flex: 1;
+  overflow: visible;
 }
 
 .detail-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
+  gap: 6px;
+  font-size: 0.8rem;
   color: #666;
+  line-height: 1.3;
 }
 
 .detail-row svg {
@@ -77,29 +77,30 @@
 }
 
 .salary-row {
-  margin-top: 4px;
-  padding-top: 6px;
+  margin-top: 2px;
+  padding-top: 5px;
   border-top: 1px solid #f0f0f0;
 }
 
 .salary-text {
   color: var(--primary-red);
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .manpower-card-view-btn {
   width: 100%;
-  padding: 8px 16px;
+  padding: 6px 12px;
   background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-red-light) 100%);
   color: white;
   border: none;
   border-radius: 6px;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: auto;
+  margin-top: 8px;
+  flex-shrink: 0;
 }
 
 .manpower-card-view-btn:hover {
@@ -114,22 +115,20 @@
 
 @media (max-width: 768px) {
   .manpower-card {
-    flex-direction: row;
-    height: auto;
+    height: 200px;
   }
 
   .manpower-card-image-wrapper {
     width: 120px;
     min-width: 120px;
-    height: 100%;
   }
 
   .manpower-card-content {
-    padding: 12px;
+    padding: 10px 12px;
   }
 
   .manpower-card-name {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
   }
 
   .detail-row {
@@ -139,23 +138,21 @@
 
 @media (max-width: 480px) {
   .manpower-card {
-    height: auto;
+    height: 180px;
   }
 
   .manpower-card-image-wrapper {
     width: 100px;
     min-width: 100px;
-    height: 100%;
   }
 
   .manpower-card-content {
-    padding: 10px;
-    gap: 8px;
+    padding: 8px 10px;
   }
 
   .manpower-card-name {
-    font-size: 0.9rem;
-    margin-bottom: 4px;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
   }
 
   .manpower-card-details {
@@ -164,12 +161,12 @@
 
   .detail-row {
     font-size: 0.7rem;
-    gap: 6px;
+    gap: 5px;
   }
 
   .manpower-card-view-btn {
-    padding: 6px 12px;
-    font-size: 0.75rem;
+    padding: 5px 8px;
+    font-size: 0.7rem;
     margin-top: 6px;
   }
 }

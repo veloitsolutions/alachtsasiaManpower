@@ -66,8 +66,8 @@ function App() {
   return (
     <div className="app">
       {isHomePage && <TopBar />}
-      <Header scrolled={scrolled} />
-      <main className={`main-content ${isHomePage ? 'home-page' : ''}`}>
+      {!isAdminRoute && <Header scrolled={scrolled} />}
+      <main className={`main-content ${isHomePage ? 'home-page' : ''} ${isAdminRoute ? 'admin-route' : ''}`}>
         <ScrollToTop/>
         <Routes>
           <Route path="/" element={<ServicesPage />} />

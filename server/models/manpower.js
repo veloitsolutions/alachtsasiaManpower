@@ -26,7 +26,7 @@ const manpowerSchema = new mongoose.Schema(
     // Personal Details
     gender: { type: String, required: true },
     age: { type: Number, required: true, min: 18 },
-    maritalStatus: { type: String },
+    maritalStatus: { type: String, required: true },
     numberOfChildren: { type: Number, default: 0, min: 0 },
     
     // Experience
@@ -59,7 +59,7 @@ const manpowerSchema = new mongoose.Schema(
     videoFile: { type: String },
     
     // Worker Category
-    workerCategory: { type: String },
+    workerCategory: { type: String, required: true },
     otherWorkerCategory: { type: String },
     companyWorker: { type: String },
     otherCompanyWorker: { type: String },

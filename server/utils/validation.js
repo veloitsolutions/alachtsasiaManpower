@@ -21,9 +21,9 @@ export const manpowerValidationSchema = Joi.object({
     Joi.array().items(Joi.string().trim()),
     Joi.string().trim()
   ).allow(''),
-  gender: Joi.string().valid('Male', 'Female').required(),
+  gender: Joi.string().valid('Male', 'Female', 'Other').required(),
   age: Joi.number().integer().min(18).max(100).required(),
-  maritalStatus: Joi.string().valid('Single', 'Married', 'Divorced', 'Widowed').allow(''),
+  maritalStatus: Joi.string().valid('Single', 'Married', 'Divorcee', 'Widow', 'SingleMother', 'Separated').required(),
   numberOfChildren: Joi.number().integer().min(0).max(20).allow(null),
   experience: Joi.string().trim().max(50).required(),
   gulfExperience: Joi.alternatives().try(
@@ -47,7 +47,7 @@ export const manpowerValidationSchema = Joi.object({
   countryCode2: Joi.string().pattern(/^\+[0-9]{1,4}$/).default('+966'),
   isContactNumberVisible: Joi.boolean().default(false),
   whatsappNumber: Joi.string().trim().pattern(/^[0-9+\s()-]+$/).max(20).allow(''),
-  workerCategory: Joi.string().max(100).allow(''),
+  workerCategory: Joi.string().max(100).required(),
   otherWorkerCategory: Joi.string().max(100).allow(''),
   companyWorker: Joi.string().max(100).allow(''),
   otherCompanyWorker: Joi.string().max(100).allow(''),

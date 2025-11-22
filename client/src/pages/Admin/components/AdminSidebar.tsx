@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
 import '../AdminStyles.css';
 
 const AdminSidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -15,17 +17,40 @@ const AdminSidebar: React.FC = () => {
     navigate('/admin/login');
   };
 
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
-    <div className="admin-sidebar">
-      <div className="admin-sidebar-header">
-        <h2>Alikhtsasy Admin</h2>
-      </div>
-      <nav className="admin-sidebar-nav">
-        <ul>
+    <>
+      {/* Mobile Hamburger Button */}
+      <button 
+        className="mobile-menu-toggle"
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+      >
+        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="mobile-menu-overlay" 
+          onClick={closeMobileMenu}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div className={`admin-sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
+        <div className="admin-sidebar-header">
+          <h2>Alikhtsasy Admin</h2>
+        </div>
+        <nav className="admin-sidebar-nav">
+          <ul>
           <li>
             <Link
               to="/admin"
               className={`admin-sidebar-link ${isActive('/admin') ? 'active' : ''}`}
+              onClick={closeMobileMenu}
             >
               Dashboard
             </Link>
@@ -34,6 +59,7 @@ const AdminSidebar: React.FC = () => {
             <Link
               to="/admin/gallery"
               className={`admin-sidebar-link ${isActive('/admin/gallery') ? 'active' : ''}`}
+              onClick={closeMobileMenu}
             >
               Gallery Management
             </Link>
@@ -42,6 +68,7 @@ const AdminSidebar: React.FC = () => {
             <Link
               to="/admin/clients"
               className={`admin-sidebar-link ${isActive('/admin/clients') ? 'active' : ''}`}
+              onClick={closeMobileMenu}
             >
               Client Logos
             </Link>
@@ -50,6 +77,7 @@ const AdminSidebar: React.FC = () => {
             <Link
               to="/admin/testimonials"
               className={`admin-sidebar-link ${isActive('/admin/testimonials') ? 'active' : ''}`}
+              onClick={closeMobileMenu}
             >
               Testimonials
             </Link>
@@ -58,6 +86,7 @@ const AdminSidebar: React.FC = () => {
             <Link
               to="/admin/team-members"
               className={`admin-sidebar-link ${isActive('/admin/team-members') ? 'active' : ''}`}
+              onClick={closeMobileMenu}
             >
               Team Members
             </Link>
@@ -66,6 +95,7 @@ const AdminSidebar: React.FC = () => {
             <Link
               to="/admin/manpower"
               className={`admin-sidebar-link ${isActive('/admin/manpower') ? 'active' : ''}`}
+              onClick={closeMobileMenu}
             >
               Manpower Management
             </Link>
@@ -74,6 +104,7 @@ const AdminSidebar: React.FC = () => {
             <Link
               to="/admin/contacts"
               className={`admin-sidebar-link ${isActive('/admin/contacts') ? 'active' : ''}`}
+              onClick={closeMobileMenu}
             >
               Contact Submissions
             </Link>
@@ -82,6 +113,7 @@ const AdminSidebar: React.FC = () => {
             <Link
               to="/admin/chat-numbers"
               className={`admin-sidebar-link ${isActive('/admin/chat-numbers') ? 'active' : ''}`}
+              onClick={closeMobileMenu}
             >
               Chat Conversations
             </Link>
@@ -117,6 +149,7 @@ const AdminSidebar: React.FC = () => {
         </ul>
       </nav>
     </div>
+    </>
   );
 };
 
