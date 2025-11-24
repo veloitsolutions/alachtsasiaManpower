@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Check, ChevronDown, ArrowLeft } from 'lucide-react';
+import { Check, ChevronDown, ArrowLeft, Search } from 'lucide-react';
 import { ASSETS_CONFIG } from '../../config/api';
 import { jobTypes, genders, maritalStatuses, jobTitles, workerCategories, companyWorkerTypes, religionsData, horoscopeOptions } from './workerOptions';
 import { primaryCountriesData1, primaryCountriesData2, allCountriesData } from './location';
@@ -130,6 +130,10 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({});
   const [isOtherCountriesOpen, setIsOtherCountriesOpen] = useState(false);
   const [otherCountriesDropdownStates, setOtherCountriesDropdownStates] = useState<boolean[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [nationalitySearchTerm, setNationalitySearchTerm] = useState('');
+  const [languageSearchTerm, setLanguageSearchTerm] = useState('');
+  const [currentLocationSearchTerm, setCurrentLocationSearchTerm] = useState('');
 
   const dropdownRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
@@ -184,6 +188,12 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
 
   const toggleDropdown = (key: string) => {
     setOpenDropdowns(prev => ({ ...prev, [key]: !prev[key] }));
+    if (!openDropdowns[key]) {
+      if (key === 'jobTitle') setSearchTerm('');
+      else if (key === 'nationality') setNationalitySearchTerm('');
+      else if (key === 'languages') setLanguageSearchTerm('');
+      else if (key === 'currentLocation') setCurrentLocationSearchTerm('');
+    }
   };
 
   const handleMultiSelect = (field: string, value: string) => {
@@ -203,9 +213,10 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
     if (!formData.age || formData.age < 18) newErrors['age'] = 'Age must be at least 18 years old';
     if (!formData.jobTitle.length) newErrors['jobTitle'] = 'Please select at least one job title';
     if (!formData.nationality) newErrors['nationality'] = 'Please select a nationality';
+    if (!formData.religion) newErrors['religion'] = 'Please select a religion';
     if (!formData.gender) newErrors['gender'] = 'Please select a gender';
     if (!formData.maritalStatus) newErrors['maritalStatus'] = 'Please select a marital status';
-    if (!formData.experience) newErrors['experience'] = 'Experience is required';
+
     if (!formData.workerCategory && !formData.otherWorkerCategory) newErrors['workerCategory'] = 'Please select a worker category';
     if (!formData.salary) newErrors['salary'] = 'Salary amount is required';
     if (!formData.manpowerFees) newErrors['manpowerFees'] = 'Manpower fees amount is required';
@@ -228,6 +239,21 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
   const renderDropdown = (key: string, options: any[], selectedValue: string | string[], isMulti = false) => {
     const isOpen = openDropdowns[key];
     const selected = Array.isArray(selectedValue) ? selectedValue : [selectedValue];
+    const isJobTitle = key === 'jobTitle';
+    const isNationality = key === 'nationality';
+    const isLanguage = key === 'languages';
+    const isCurrentLocation = key === 'currentLocation';
+    
+    let filteredOptions = options;
+    if (isJobTitle && searchTerm) {
+      filteredOptions = options.filter(opt => opt.label.en.replace(/\s+/g, '').toLowerCase().includes(searchTerm.replace(/\s+/g, '').toLowerCase()));
+    } else if (isNationality && nationalitySearchTerm) {
+      filteredOptions = options.filter(opt => opt.label.en.replace(/\s+/g, '').toLowerCase().includes(nationalitySearchTerm.replace(/\s+/g, '').toLowerCase()));
+    } else if (isLanguage && languageSearchTerm) {
+      filteredOptions = options.filter(opt => opt.label.en.replace(/\s+/g, '').toLowerCase().includes(languageSearchTerm.replace(/\s+/g, '').toLowerCase()));
+    } else if (isCurrentLocation && currentLocationSearchTerm) {
+      filteredOptions = options.filter(opt => opt.label.en.replace(/\s+/g, '').toLowerCase().includes(currentLocationSearchTerm.replace(/\s+/g, '').toLowerCase()));
+    }
 
     return (
       <div className="custom-select" ref={el => { if (el) dropdownRefs.current[key] = el; }}>
@@ -246,7 +272,27 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
         </button>
         {isOpen && (
           <div className="select-dropdown">
-            {options.map(opt => (
+            {(isJobTitle || isNationality || isLanguage || isCurrentLocation) && (
+              <div className="p-2 border-b border-gray-200">
+                <div className="relative flex items-center">
+                  <Search className="absolute left-2 text-gray-400 w-4 h-4 pointer-events-none z-10" />
+                  <input
+                    type="text"
+                    placeholder={isJobTitle ? "Search job titles..." : isNationality ? "Search nationalities..." : isLanguage ? "Search languages..." : "Search locations..."}
+                    value={isJobTitle ? searchTerm : isNationality ? nationalitySearchTerm : isLanguage ? languageSearchTerm : currentLocationSearchTerm}
+                    onChange={(e) => {
+                      if (isJobTitle) setSearchTerm(e.target.value);
+                      else if (isNationality) setNationalitySearchTerm(e.target.value);
+                      else if (isLanguage) setLanguageSearchTerm(e.target.value);
+                      else if (isCurrentLocation) setCurrentLocationSearchTerm(e.target.value);
+                    }}
+                    className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none bg-gray-50"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
+              </div>
+            )}
+            {filteredOptions.map(opt => (
               <button
                 key={opt.value}
                 type="button"
@@ -257,6 +303,10 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
                     setFormData(prev => ({ ...prev, [key]: opt.value }));
                     toggleDropdown(key);
                   }
+                  if (isJobTitle) setSearchTerm('');
+                  else if (isNationality) setNationalitySearchTerm('');
+                  else if (isLanguage) setLanguageSearchTerm('');
+                  else if (isCurrentLocation) setCurrentLocationSearchTerm('');
                 }}
                 className="select-option"
               >
@@ -290,7 +340,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
         <div className="form-group">
           <label><span>Job Title *</span> {formData.jobTitle.length > 0 && <Check className="check-icon" />}</label>
           {errors.jobTitle && <div className="text-red-500 text-sm mt-1 mb-2">{errors.jobTitle}</div>}
-          <div className="grid grid-cols-3 gap-3 mb-2">
+          <div className="grid grid-cols-2 gap-3 mb-2">
             {jobTitles.slice(0, 9).map(job => (
               <button
                 key={job.value}
@@ -341,7 +391,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
         <div className="form-group">
           <label><span>Select Nationality *</span> {formData.nationality && <Check className="check-icon" />}</label>
           {errors.nationality && <div className="text-red-500 text-sm mt-1 mb-2">{errors.nationality}</div>}
-          <div className="grid grid-cols-5 gap-3 mb-2">
+          <div className="grid grid-cols-2 gap-3 mb-2">
             {primaryCountriesData1.slice(0, 5).map(c => (
               <button
                 key={c.value}
@@ -370,7 +420,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
         {/* Languages */}
         <div className="form-group">
           <label><span>Select Languages</span> {formData.languages.length > 0 && <Check className="check-icon" />}</label>
-          <div className="grid grid-cols-5 gap-3 mb-2">
+          <div className="grid grid-cols-2 gap-3 mb-2">
             {primaryLanguagesData.slice(0, 5).map(lang => (
               <button
                 key={lang.value}
@@ -398,8 +448,9 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
 
         {/* Religion */}
         <div className="form-group">
-          <label><span>Religion</span> {formData.religion && <Check className="check-icon" />}</label>
-          <div className="grid grid-cols-5 gap-3 mb-2">
+          <label><span>Religion *</span> {formData.religion && <Check className="check-icon" />}</label>
+          {errors.religion && <div className="text-red-500 text-sm mt-1 mb-2">{errors.religion}</div>}
+          <div className="grid grid-cols-2 gap-3 mb-2">
             {religionsData.slice(0, 5).map(r => (
               <button
                 key={r.value}
@@ -429,7 +480,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
         <div className="form-group">
           <label><span>Gender *</span> {formData.gender && <Check className="check-icon" />}</label>
           {errors.gender && <div className="text-red-500 text-sm mt-1 mb-2">{errors.gender}</div>}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             {genders.map(g => (
               <button
                 key={g.value}
@@ -458,7 +509,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
         <div className="form-group">
           <label><span>Marital Status *</span> {formData.maritalStatus && <Check className="check-icon" />}</label>
           {errors.maritalStatus && <div className="text-red-500 text-sm mt-1 mb-2">{errors.maritalStatus}</div>}
-          <div className="grid grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             {maritalStatuses.slice(0, 6).map(m => (
               <button
                 key={m.value}
@@ -497,7 +548,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
             {errors.age && <div className="text-red-500 text-sm mt-1">{errors.age}</div>}
           </div>
           <div className="form-group">
-            <label><span>Experience (Years) *</span> {formData.experience && <Check className="check-icon" />}</label>
+            <label><span>Experience (Years)</span> {formData.experience && <Check className="check-icon" />}</label>
             <input type="text" name="experience" value={formData.experience} onChange={handleInputChange} className="form-input" />
             {errors.experience && <div className="text-red-500 text-sm mt-1">{errors.experience}</div>}
           </div>
@@ -507,8 +558,8 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
           </div>
         </div>
 
-        {/* Salary, Fees, Fee Option */}
-        <div className="form-row-3">
+        {/* Salary and Manpower Fees */}
+        <div className="form-row-2">
           <div className="form-group">
             <label><span>Salary *</span> {formData.salary && <Check className="check-icon" />}</label>
             <div className="flex gap-2">
@@ -529,15 +580,17 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
             </div>
             {errors.manpowerFees && <div className="text-red-500 text-sm mt-1">{errors.manpowerFees}</div>}
           </div>
-          <div className="form-group">
-            <label><span>Manpower Fee Option</span> {formData.agencyFeeOption && <Check className="check-icon" />}</label>
-            <select name="agencyFeeOption" value={formData.agencyFeeOption || ''} onChange={handleInputChange} className="form-input">
-              <option value="">Select Option</option>
-              <option value="Negotiable">Negotiable</option>
-              <option value="No Manpower Fee">No Manpower Fee</option>
-              <option value="Free recruitment">Free recruitment</option>
-            </select>
-          </div>
+        </div>
+
+        {/* Manpower Fee Option */}
+        <div className="form-group">
+          <label><span>Manpower Fee Option</span> {formData.agencyFeeOption && <Check className="check-icon" />}</label>
+          <select name="agencyFeeOption" value={formData.agencyFeeOption || ''} onChange={handleInputChange} className="form-input">
+            <option value="">Select Option</option>
+            <option value="Negotiable">Negotiable</option>
+            <option value="No Manpower Fee">No Manpower Fee</option>
+            <option value="Free recruitment">Free recruitment</option>
+          </select>
         </div>
         
         {/* Candidate Contact Information */}
@@ -599,15 +652,16 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
               {/* Small-sized photo */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 text-center">Small-sized photo *</label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-2 text-center hover:border-blue-400 transition-colors">
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-blue-400 transition-colors" style={{ minHeight: '140px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                   <input type="file" id="passportPhoto" accept="image/*" onChange={handlePhotoChange} className="hidden" />
-                  <label htmlFor="passportPhoto" className="cursor-pointer block">
-                    {photoPreview ? (
-                      <img src={photoPreview} alt="Preview" style={{ maxHeight: '120px', width: '100%', objectFit: 'contain' }} className="rounded" />
-                    ) : (
-                      <div className="text-gray-500 text-sm py-6">Click to upload</div>
-                    )}
-                  </label>
+                  {photoPreview ? (
+                    <img src={photoPreview} alt="Preview" style={{ maxHeight: '80px', width: '100%', objectFit: 'contain' }} className="rounded" />
+                  ) : (
+                    <>
+                     
+                      <div className="text-gray-500 text-sm">Click to upload</div>
+                    </>
+                  )}
                 </div>
                 {errors.photo && <div className="text-red-500 text-sm mt-1 text-center">{errors.photo}</div>}
               </div>
@@ -615,25 +669,30 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
               {/* Full-sized photo */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 text-center">Full-sized photo</label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-2 text-center hover:border-blue-400 transition-colors">
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-blue-400 transition-colors" style={{ minHeight: '140px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                   <input type="file" id="fullPhoto" accept="image/*" onChange={handleFullPhotoChange} className="hidden" />
-                  <label htmlFor="fullPhoto" className="cursor-pointer block">
-                    {fullPhotoPreview ? (
-                      <img src={fullPhotoPreview} alt="Full Preview" style={{ maxHeight: '120px', width: '100%', objectFit: 'contain' }} className="rounded" />
-                    ) : (
-                      <div className="text-gray-500 text-sm py-6">Click to upload</div>
-                    )}
-                  </label>
+                  {fullPhotoPreview ? (
+                    <img src={fullPhotoPreview} alt="Full Preview" style={{ maxHeight: '80px', width: '100%', objectFit: 'contain' }} className="rounded" />
+                  ) : (
+                    <>
+                     
+                      <div className="text-gray-500 text-sm">Click to upload</div>
+                    </>
+                  )}
                 </div>
               </div>
               {/* Resume */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 text-center">Resume</label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-2 text-center hover:border-blue-400 transition-colors" style={{ minHeight: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-blue-400 transition-colors" style={{ minHeight: '140px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                   <input type="file" id="resume" accept=".pdf,.doc,.docx" onChange={handleResumeChange} className="hidden" />
-                  <label htmlFor="resume" className="cursor-pointer block">
-                    <div className="text-gray-500 text-sm py-6">{resumeName || 'Click to upload'}</div>
-                  </label>
+                  {resumeName ? (
+                    <div className="text-gray-700 text-sm font-medium">{resumeName}</div>
+                  ) : (
+                    <>
+                      <div className="text-gray-500 text-sm">Click to upload</div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -657,7 +716,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
         <div className="form-group">
           <label><span>Worker Category *</span> {(formData.workerCategory || formData.otherWorkerCategory) && <Check className="check-icon" />}</label>
           {errors.workerCategory && <div className="text-red-500 text-sm mt-1 mb-2">{errors.workerCategory}</div>}
-          <div className="grid grid-cols-3 gap-3 mb-2">
+          <div className="grid grid-cols-2 gap-3 mb-2">
             {workerCategories.map(cat => (
               <button
                 key={cat.value}
@@ -687,7 +746,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
         {formData.workerCategory === 'company worker' && (
           <div className="form-group">
             <label><span>Company Worker Type</span> {(formData.companyWorker || formData.otherCompanyWorker) && <Check className="check-icon" />}</label>
-            <div className="grid grid-cols-3 gap-3 mb-2">
+            <div className="grid grid-cols-2 gap-3 mb-2">
               {companyWorkerTypes.map(type => (
                 <button
                   key={type.value}

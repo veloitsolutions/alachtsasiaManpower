@@ -12,7 +12,7 @@ export const manpowerValidationSchema = Joi.object({
   jobType: Joi.string().valid('full-time', 'part-time', 'contract', 'hourlybasis').allow(''),
   country: Joi.string().trim().max(50),
   nationality: Joi.string().trim().max(50),
-  religion: Joi.string().trim().max(50).allow(''),
+  religion: Joi.string().trim().max(50).required(),
   language: Joi.alternatives().try(
     Joi.array().items(Joi.string().trim()),
     Joi.string().trim()
@@ -25,7 +25,7 @@ export const manpowerValidationSchema = Joi.object({
   age: Joi.number().integer().min(18).max(100).required(),
   maritalStatus: Joi.string().valid('Single', 'Married', 'Divorcee', 'Widow', 'SingleMother', 'Separated').required(),
   numberOfChildren: Joi.number().integer().min(0).max(20).allow(null),
-  experience: Joi.string().trim().max(50).required(),
+  experience: Joi.string().trim().max(50).allow(''),
   gulfExperience: Joi.alternatives().try(
     Joi.array().items(Joi.string().trim()),
     Joi.string().trim()

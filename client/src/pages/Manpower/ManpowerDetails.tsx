@@ -213,8 +213,9 @@ const ManpowerDetails: React.FC = () => {
                   <Award size={20} />
                   <div>
                     <span className="label">Manpower Fees</span>
-                    <span className="price">{worker.manpowerFees} {worker.manpowerFeesCurrency || ''}</span>
-                    {worker.agencyFeeOption && <span className="fee-option">({worker.agencyFeeOption})</span>}
+                    <span className="price">
+                      {worker.agencyFeeOption ? worker.agencyFeeOption : `${worker.manpowerFees} ${worker.manpowerFeesCurrency || ''}`}
+                    </span>
                   </div>
                 </div>
               </div>
