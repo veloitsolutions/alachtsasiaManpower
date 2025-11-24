@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, X, Send } from 'lucide-react';
+import { MessagesSquare, X, Send } from 'lucide-react';
 import { API_ENDPOINTS } from '../../config/api';
 import './ChatBot.css';
 
@@ -128,7 +128,7 @@ const ChatBot: React.FC = () => {
     <>
       <div className={`chat-toggle ${isOpen ? 'open' : ''}`} onClick={handleToggle}>
         <div className="chat-pulse"></div>
-        <MessageCircle size={24} />
+        <MessagesSquare size={24} />
       </div>
       
       {isOpen && (
