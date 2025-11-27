@@ -1,0 +1,84 @@
+.modern-form-container {
+  @apply bg-white rounded-xl shadow-lg border border-gray-100;
+}
+
+.form-header {
+  @apply p-6 rounded-t-xl;
+  background: linear-gradient(135deg, #E91E63 0%, #c2185b 100%);
+}
+
+.form-header h2 {
+  @apply text-2xl font-bold text-white m-0;
+}
+
+.modern-form {
+  @apply p-6 space-y-6;
+}
+
+.form-group {
+  @apply space-y-2;
+}
+
+.form-group label {
+  @apply flex items-center gap-2 text-sm font-medium text-gray-700;
+}
+
+.check-icon {
+  @apply w-4 h-4 text-green-500;
+}
+
+.form-input, .form-textarea {
+  @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all;
+}
+
+.form-textarea {
+  @apply resize-none;
+}
+
+.form-row-2 {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+}
+
+.form-row-3 {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-6;
+}
+
+.custom-select {
+  @apply relative;
+}
+
+.select-button {
+  @apply w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-left flex items-center justify-between hover:border-gray-400 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all;
+}
+
+.chevron {
+  @apply w-5 h-5 text-gray-400 transition-transform;
+}
+
+.chevron.open {
+  @apply rotate-180;
+}
+
+.select-dropdown {
+  @apply absolute z-50 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto;
+}
+
+.select-option {
+  @apply w-full px-4 py-3 text-left hover:bg-gray-100 transition-colors border-b border-gray-100 last:border-b-0;
+}
+
+.form-actions {
+  @apply flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200;
+}
+
+.btn-cancel {
+  @apply flex items-center justify-center gap-2 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-all font-medium;
+}
+
+.btn-submit {
+  @apply flex-1 px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-lg transition-all font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.font-arabic {
+  font-family: 'Arial', sans-serif;
+}

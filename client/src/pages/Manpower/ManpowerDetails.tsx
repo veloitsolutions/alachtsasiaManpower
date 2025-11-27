@@ -76,6 +76,7 @@ const ManpowerDetails: React.FC = () => {
   const [worker, setWorker] = useState<Worker | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
   const fromAdmin = new URLSearchParams(window.location.search).get('from') === 'admin';
 
   useEffect(() => {
@@ -145,12 +146,13 @@ const ManpowerDetails: React.FC = () => {
                 src={`${ASSETS_CONFIG.BASE_URL}${worker.photo}`}
                 alt={worker.name}
                 className="worker-image"
+                onClick={() => setIsPhotoModalOpen(true)}
+                style={{ cursor: 'pointer' }}
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = '/placeholder-avatar.png';
                 }}
               />
-
             </div>
 
             <div className="worker-quick-info">
@@ -533,6 +535,22 @@ const ManpowerDetails: React.FC = () => {
             </section>
           </div>
         </div>
+
+        {isPhotoModalOpen && (
+          <div className="photo-modal" onClick={() => setIsPhotoModalOpen(false)}>
+            <div className="photo-modal-content" onClick={(e) => e.stopPropagation()}>
+              <button className="photo-modal-close" onClick={() => setIsPhotoModalOpen(false)}>&times;</button>
+              <img
+                src={`${ASSETS_CONFIG.BASE_URL}${worker.photo}`}
+                alt={worker.name}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = '/placeholder-avatar.png';
+                }}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

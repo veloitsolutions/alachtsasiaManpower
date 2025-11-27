@@ -59,9 +59,9 @@ const ManpowerCard: React.FC<ManpowerCardProps> = ({ worker, hideViewButton = fa
             <span className="detail-text">Job - {capitalizeFirst(worker.jobTitle)}</span>
           </div>
           
-          <div className="detail-row">
-            <MapPin size={14} />
-            <span className="detail-text">Nationality - {capitalizeFirst(worker.nationality)}</span>
+         <div className="detail-row">
+            <Calendar size={14} />
+            <span className="detail-text">Experience - {worker.experience}</span>
           </div>
           
           {worker.religion && (
@@ -71,9 +71,11 @@ const ManpowerCard: React.FC<ManpowerCardProps> = ({ worker, hideViewButton = fa
             </div>
           )}
           
-          <div className="detail-row">
-            <Calendar size={14} />
-            <span className="detail-text">Experience - {worker.experience}</span>
+        
+
+             <div className="detail-row">
+            <MapPin size={14} />
+            <span className="detail-text">Nationality - {capitalizeFirst(worker.nationality)}</span>
           </div>
           
           <div className="detail-row salary-row">

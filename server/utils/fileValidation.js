@@ -1,7 +1,7 @@
 import path from 'path';
 import crypto from 'crypto';
 
-const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml', 'image/gif', 'image/bmp', 'image/x-icon', 'image/tiff'];
 const ALLOWED_RESUME_TYPES = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 const MAX_RESUME_SIZE = 10 * 1024 * 1024; // 10MB
@@ -9,8 +9,8 @@ const MAX_RESUME_SIZE = 10 * 1024 * 1024; // 10MB
 export const validateImageFile = (file) => {
   if (!file) return { valid: false, error: 'No file provided' };
   
-  if (!ALLOWED_IMAGE_TYPES.includes(file.mimetype)) {
-    return { valid: false, error: 'Only JPEG, PNG, and WebP images are allowed' };
+  if (!file.mimetype.startsWith('image/')) {
+    return { valid: false, error: 'Only image files are allowed' };
   }
   
   if (file.size > MAX_IMAGE_SIZE) {
@@ -18,8 +18,8 @@ export const validateImageFile = (file) => {
   }
   
   const ext = path.extname(file.originalname).toLowerCase();
-  if (!['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) {
-    return { valid: false, error: 'Invalid file extension' };
+  if (!['.jpg', '.jpeg', '.png', '.webp', '.svg', '.gif', '.bmp', '.ico', '.tiff', '.tif'].includes(ext)) {
+    return { valid: false, error: 'Invalid image file extension' };
   }
   
   return { valid: true };

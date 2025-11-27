@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AdminSidebar from './components/AdminSidebar';
-import './AdminStyles.css';
 import { API_ENDPOINTS, ASSETS_CONFIG } from '../../config/api';
+import { Plus, X, Loader2, Star, Edit2, Trash2, MessageSquare } from 'lucide-react';
 
 interface Testimonial {
   _id: string;
@@ -19,8 +19,6 @@ const AdminTestimonials: React.FC = () => {
   const [error, setError] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingTestimonial, setEditingTestimonial] = useState<Testimonial | null>(null);
-  
-  // Form state
   const [name, setName] = useState('');
   const [position, setPosition] = useState('');
   const [rating, setRating] = useState(5);
@@ -41,32 +39,15 @@ const AdminTestimonials: React.FC = () => {
     try {
       setLoading(true);
       const response = await fetch(API_ENDPOINTS.TESTIMONIALS, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
       });
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error('Unauthorized. Please log in again.');
-        }
-        throw new Error('Failed to fetch testimonials');
-      }
-
+      if (!response.ok) throw new Error('Failed to fetch testimonials');
       const data = await response.json();
       setTestimonials(data);
     } catch (error) {
       setError('Failed to load testimonials');
-      console.error(error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
     }
   };
 
@@ -87,6 +68,7 @@ const AdminTestimonials: React.FC = () => {
     setImage(null);
     setEditingTestimonial(null);
     setShowAddForm(false);
+    setFormError('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,10 +79,8 @@ const AdminTestimonials: React.FC = () => {
       return;
     }
 
-    // Check review length
-    const maxReviewLength = 100;
-    if (review.length > maxReviewLength) {
-      setFormError(`Review is too long. Maximum ${maxReviewLength} characters allowed.`);
+    if (review.length > 100) {
+      setFormError(`Review is too long. Maximum 100 characters allowed.`);
       return;
     }
 
@@ -109,293 +89,233 @@ const AdminTestimonials: React.FC = () => {
       setFormError('');
 
       if (editingTestimonial) {
-        // For updates, use JSON if no new image
         if (!image) {
-          const updateData = {
-            name,
-            position,
-            rating,
-            review
-          };
-
+          const updateData = { name, position, rating, review };
           const response = await fetch(`${API_ENDPOINTS.TESTIMONIALS}/${editingTestimonial._id}`, {
             method: 'PUT',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            },
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
             body: JSON.stringify(updateData),
           });
-
-          if (!response.ok) {
-            throw new Error('Failed to update testimonial');
-          }
+          if (!response.ok) throw new Error('Failed to update testimonial');
         } else {
-          // If new image, use FormData
           const formData = new FormData();
           formData.append('name', name);
           formData.append('position', position);
           formData.append('rating', rating.toString());
           formData.append('review', review);
           formData.append('image', image);
-
           const response = await fetch(`${API_ENDPOINTS.TESTIMONIALS}/${editingTestimonial._id}`, {
             method: 'PUT',
-            headers: {
-              'Authorization': `Bearer ${token}`
-            },
+            headers: { 'Authorization': `Bearer ${token}` },
             body: formData,
           });
-
-          if (!response.ok) {
-            throw new Error('Failed to update testimonial');
-          }
+          if (!response.ok) throw new Error('Failed to update testimonial');
         }
       } else {
-        // Create new testimonial
         const formData = new FormData();
         formData.append('name', name);
         formData.append('position', position);
         formData.append('rating', rating.toString());
         formData.append('review', review);
-        if (image) {
-          formData.append('image', image);
-        }
-
+        if (image) formData.append('image', image);
         const response = await fetch(API_ENDPOINTS.TESTIMONIALS, {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
+          headers: { 'Authorization': `Bearer ${token}` },
           body: formData,
         });
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          if (response.status === 401) {
-            throw new Error('Unauthorized. Please log in again.');
-          }
-          throw new Error(errorData.message || 'Failed to add testimonial');
-        }
+        if (!response.ok) throw new Error('Failed to add testimonial');
       }
 
-      // Reset form
       resetForm();
-
-      // Refresh testimonials list
       fetchTestimonials();
     } catch (error) {
       setFormError(error instanceof Error ? error.message : 'Failed to save testimonial');
-      console.error(error);
     } finally {
       setFormLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this testimonial?')) {
-      return;
-    }
+    if (!window.confirm('Are you sure you want to delete this testimonial?')) return;
 
     try {
       const response = await fetch(`${API_ENDPOINTS.TESTIMONIALS}/${id}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: { 'Authorization': `Bearer ${token}` },
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete testimonial');
-      }
-
-      // Remove from state
+      if (!response.ok) throw new Error('Failed to delete testimonial');
       setTestimonials(testimonials.filter(item => item._id !== id));
     } catch (error) {
       setError('Failed to delete testimonial');
-      console.error(error);
     }
   };
 
   const renderStars = (rating: number) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <span key={i} className={`admin-star ${i <= rating ? 'filled' : 'empty'}`}>
-          ★
-        </span>
-      );
-    }
-    return stars;
+    return Array.from({ length: 5 }, (_, i) => (
+      <Star key={i} size={16} className={i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'} />
+    ));
   };
 
   return (
-    <div className="admin-container">
+    <div className="flex min-h-screen bg-gray-50">
       <AdminSidebar />
-      <div className="admin-content">
-        <div className="admin-header">
-          <h1>Testimonials Management</h1>
-        </div>
-
-        <div className="admin-actions">
-          <button
-            onClick={() => {
-              if (showAddForm) {
-                resetForm();
-              } else {
-                setShowAddForm(true);
-              }
-            }}
-            className="admin-add-button"
-          >
-            {showAddForm ? 'Cancel' : 'Add New Testimonial'}
-          </button>
-        </div>
-
-        {showAddForm && (
-          <div className="admin-form-container">
-            <h2>{editingTestimonial ? 'Edit Testimonial' : 'Add New Testimonial'}</h2>
-            {formError && <div className="admin-error-message">{formError}</div>}
-            <form onSubmit={handleSubmit} className="admin-form">
-              <div className="admin-form-group">
-                <label htmlFor="name">Client Name</label>
-                <input
-                  type="text"
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
+      <main className="flex-1 p-4 lg:p-8 lg:ml-0 overflow-x-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-primary rounded-2xl p-6 shadow-lg mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-white mb-2">Testimonials Management</h1>
+                <p className="text-white/90 text-sm sm:text-base">Manage client testimonials and reviews</p>
               </div>
-
-              <div className="admin-form-group">
-                <label htmlFor="position">Position/Company</label>
-                <input
-                  type="text"
-                  id="position"
-                  value={position}
-                  onChange={(e) => setPosition(e.target.value)}
-                  placeholder="CEO, Company Name (Optional)"
-                />
-              </div>
-
-              <div className="admin-form-group">
-                <label htmlFor="rating">Rating (1-5 stars)</label>
-                <select
-                  id="rating"
-                  value={rating}
-                  onChange={(e) => setRating(Number(e.target.value))}
-                  required
-                >
-                  <option value="1">1 Star</option>
-                  <option value="2">2 Stars</option>
-                  <option value="3">3 Stars</option>
-                  <option value="4">4 Stars</option>
-                  <option value="5">5 Stars</option>
-                </select>
-              </div>
-
-              <div className="admin-form-group">
-                <label htmlFor="review">Review</label>
-                <textarea
-                  id="review"
-                  value={review}
-                  onChange={(e) => setReview(e.target.value)}
-                  rows={4}
-                  required
-                  maxLength={100}
-                />
-                <small className={review.length > 80 ? "admin-char-count warning" : "admin-char-count"}>
-                  {review.length}/100 characters
-                </small>
-              </div>
-
-              <div className="admin-form-group">
-                <label htmlFor="image">Client Photo</label>
-                <input
-                  type="file"
-                  id="image"
-                  accept="image/jpeg,image/jpg,image/png,image/gif,image/bmp,image/webp,image/svg+xml,image/tiff,image/ico,image/avif"
-                  onChange={handleFileChange}
-                  required={!editingTestimonial}
-                />
-                {editingTestimonial && (
-                  <small>Current image will be kept if no new file is selected</small>
-                )}
-              </div>
-
               <button
-                type="submit"
-                className="admin-submit-button"
-                disabled={formLoading}
+                onClick={() => showAddForm ? resetForm() : setShowAddForm(true)}
+                className="flex items-center gap-2 bg-white text-primary hover:bg-gray-100 px-6 py-3 rounded-lg transition-all shadow-lg font-semibold"
               >
-                {formLoading ? 'Saving...' : editingTestimonial ? 'Update Testimonial' : 'Save Testimonial'}
+                {showAddForm ? <X size={20} /> : <Plus size={20} />}
+                {showAddForm ? 'Cancel' : 'Add New Testimonial'}
               </button>
-            </form>
+            </div>
           </div>
-        )}
 
-        {error && <div className="admin-error-message">{error}</div>}
+          {showAddForm && (
+            <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-100">
+              <h2 className="text-2xl font-bold text-neutral-black mb-6">
+                {editingTestimonial ? 'Edit Testimonial' : 'Add New Testimonial'}
+              </h2>
+              {formError && (
+                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
+                  {formError}
+                </div>
+              )}
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-black mb-2">Client Name *</label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full px-4 py-3 border border-neutral-light-gray rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-black mb-2">Position/Company</label>
+                    <input
+                      type="text"
+                      value={position}
+                      onChange={(e) => setPosition(e.target.value)}
+                      placeholder="CEO, Company Name (Optional)"
+                      className="w-full px-4 py-3 border border-neutral-light-gray rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                    />
+                  </div>
+                </div>
 
-        {loading ? (
-          <div className="admin-loading">Loading...</div>
-        ) : (
-          <div className="admin-testimonials-grid">
-            {testimonials.length === 0 ? (
-              <div className="admin-empty-state">
-                <p>No testimonials found. Add some!</p>
-              </div>
-            ) : (
-              testimonials.map((testimonial) => (
-                <div key={testimonial._id} className="admin-testimonial-item">
-                  <div className="admin-testimonial-header">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-black mb-2">Rating (1-5 stars) *</label>
+                  <select
+                    value={rating}
+                    onChange={(e) => setRating(Number(e.target.value))}
+                    className="w-full px-4 py-3 border border-neutral-light-gray rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                    required
+                  >
+                    {[1, 2, 3, 4, 5].map(num => (
+                      <option key={num} value={num}>{num} Star{num > 1 ? 's' : ''}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-neutral-black mb-2">Review *</label>
+                  <textarea
+                    value={review}
+                    onChange={(e) => setReview(e.target.value)}
+                    rows={4}
+                    maxLength={100}
+                    className="w-full px-4 py-3 border border-neutral-light-gray rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                    required
+                  />
+                  <p className={`text-xs mt-2 ${review.length > 80 ? 'text-red-600' : 'text-neutral-gray'}`}>
+                    {review.length}/100 characters
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-neutral-black mb-2">Client Photo *</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => e.target.files && setImage(e.target.files[0])}
+                    className="w-full px-4 py-3 border border-neutral-light-gray rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                    required={!editingTestimonial}
+                  />
+                  {editingTestimonial && <p className="text-xs text-neutral-gray mt-2">Current image will be kept if no new file is selected</p>}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={formLoading}
+                  className="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                >
+                  {formLoading ? 'Saving...' : editingTestimonial ? 'Update Testimonial' : 'Save Testimonial'}
+                </button>
+              </form>
+            </div>
+          )}
+
+          {error && <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800">{error}</div>}
+
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="w-12 h-12 text-primary animate-spin" />
+            </div>
+          ) : testimonials.length === 0 ? (
+            <div className="text-center py-20 bg-white rounded-xl shadow-md">
+              <MessageSquare className="w-16 h-16 text-neutral-gray mx-auto mb-4" />
+              <p className="text-neutral-gray text-lg">No testimonials found. Add some!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {testimonials.map((testimonial) => (
+                <div key={testimonial._id} className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-6 border border-gray-100">
+                  <div className="flex items-start gap-4 mb-4">
                     <img
                       src={`${ASSETS_CONFIG.BASE_URL}${testimonial.image}`}
                       alt={testimonial.name}
-                      className="admin-testimonial-image"
+                      className="w-16 h-16 rounded-full object-cover"
                     />
-                    <div>
-                      <h3>{testimonial.name}</h3>
-                      {testimonial.position && <p>{testimonial.position}</p>}
-                      <div className="admin-testimonial-rating">
-                        {renderStars(testimonial.rating)}
-                      </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-neutral-black">{testimonial.name}</h3>
+                      {testimonial.position && <p className="text-sm text-neutral-gray">{testimonial.position}</p>}
+                      <div className="flex gap-1 mt-2">{renderStars(testimonial.rating)}</div>
                     </div>
                   </div>
-                  <div className="admin-testimonial-review">
-                    "{testimonial.review}"
-                  </div>
-                  <div className="admin-testimonial-footer">
-                    <p>Added: {new Date(testimonial.createdAt).toLocaleDateString()}</p>
-                    <div className="admin-item-actions">
-                      <button
-                        onClick={() => handleEdit(testimonial)}
-                        className="admin-edit-button"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(testimonial._id)}
-                        className="admin-delete-button"
-                      >
-                        Delete
-                      </button>
-                    </div>
+                  <p className="text-neutral-gray text-sm mb-4 italic">"{testimonial.review}"</p>
+                  <p className="text-xs text-neutral-gray mb-4">Added: {new Date(testimonial.createdAt).toLocaleDateString()}</p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleEdit(testimonial)}
+                      className="flex-1 flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-all text-sm font-medium"
+                    >
+                      <Edit2 size={16} />
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(testimonial._id)}
+                      className="flex-1 flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all text-sm font-medium"
+                    >
+                      <Trash2 size={16} />
+                      Delete
+                    </button>
                   </div>
                 </div>
-              ))
-            )}
-          </div>
-        )}
-      </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 };
 
 export default AdminTestimonials;
-
-
-
-
-
-

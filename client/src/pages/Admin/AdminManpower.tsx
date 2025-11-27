@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import AdminSidebar from './components/AdminSidebar';
 import AdminManpowerForm from './AdminManpowerForm';
 import ManpowerCard from '../../components/ManpowerCard/ManpowerCard';
-import './AdminStyles.css';
-import { API_ENDPOINTS, ASSETS_CONFIG } from '../../config/api';
+import { API_ENDPOINTS } from '../../config/api';
+import { Plus, X, Loader2, Briefcase } from 'lucide-react';
 
 interface Worker {
   _id: string;
@@ -28,26 +28,6 @@ interface Worker {
   education?: string;
   description?: string;
   createdAt: string;
-}
-
-interface FormData {
-  jobTitle: string[];
-  jobType: string;
-  nameEng: string;
-  nameArabic: string;
-  nationality: string;
-  religion: string;
-  languages: string[];
-  gender: string;
-  age: number | null;
-  maritalStatus: string;
-  numberOfChildren: number | null;
-  salary: string;
-  manpowerFees: string;
-  experience: string;
-  aboutWorker: string;
-  photo: File | null;
-  resume: File | null;
 }
 
 const AdminManpower: React.FC = () => {
@@ -77,9 +57,7 @@ const AdminManpower: React.FC = () => {
       });
 
       if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error('Unauthorized. Please log in again.');
-        }
+        if (response.status === 401) throw new Error('Unauthorized. Please log in again.');
         throw new Error('Failed to fetch workers');
       }
 
@@ -87,7 +65,6 @@ const AdminManpower: React.FC = () => {
       setWorkers(Array.isArray(data) ? data : []);
     } catch (error) {
       setError('Failed to load workers');
-      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -100,30 +77,19 @@ const AdminManpower: React.FC = () => {
 
       const submitData = new FormData();
       
-      // Basic Info
       if (formData.nameEng) submitData.append('nameEng', formData.nameEng);
       if (formData.nameArabic) submitData.append('nameArabic', formData.nameArabic);
       if (formData.jobTitle) submitData.append('jobTitle', JSON.stringify(formData.jobTitle));
       if (formData.jobType) submitData.append('jobType', formData.jobType);
-      
-      // Nationality & Religion
       if (formData.nationality) submitData.append('nationality', formData.nationality);
       if (formData.religion) submitData.append('religion', formData.religion);
-      
-      // Languages
       if (formData.languages) submitData.append('languages', JSON.stringify(formData.languages));
-      
-      // Personal Details
       if (formData.gender) submitData.append('gender', formData.gender);
       if (formData.age) submitData.append('age', String(formData.age));
       if (formData.maritalStatus) submitData.append('maritalStatus', formData.maritalStatus);
       if (formData.numberOfChildren !== null) submitData.append('numberOfChildren', String(formData.numberOfChildren || 0));
-      
-      // Experience
       if (formData.experience) submitData.append('experience', formData.experience);
       if (formData.gulfExperience) submitData.append('gulfExperience', JSON.stringify(formData.gulfExperience));
-      
-      // Salary & Fees
       if (formData.salary) submitData.append('salary', formData.salary);
       if (formData.salaryCurrency) submitData.append('salaryCurrency', formData.salaryCurrency);
       if (formData.manpowerFees) submitData.append('manpowerFees', formData.manpowerFees);
@@ -131,26 +97,18 @@ const AdminManpower: React.FC = () => {
       if (formData.agencyFeeOption) submitData.append('agencyFeeOption', formData.agencyFeeOption);
       if (formData.hourlyRate) submitData.append('hourlyRate', String(formData.hourlyRate));
       if (formData.hourlyRateCurrency) submitData.append('hourlyRateCurrency', formData.hourlyRateCurrency);
-      
-      // Contact Information
       if (formData.candidateContactNumber) submitData.append('candidateContactNumber', formData.candidateContactNumber);
       if (formData.candidateContactNumber2) submitData.append('candidateContactNumber2', formData.candidateContactNumber2);
       if (formData.countryCode) submitData.append('countryCode', formData.countryCode);
       if (formData.countryCode2) submitData.append('countryCode2', formData.countryCode2);
       submitData.append('isContactNumberVisible', String(formData.isContactNumberVisible || false));
       if (formData.whatsappNumber) submitData.append('whatsappNumber', formData.whatsappNumber);
-      
-      // Worker Category
       if (formData.workerCategory) submitData.append('workerCategory', formData.workerCategory);
       if (formData.otherWorkerCategory) submitData.append('otherWorkerCategory', formData.otherWorkerCategory);
       if (formData.companyWorker) submitData.append('companyWorker', formData.companyWorker);
       if (formData.otherCompanyWorker) submitData.append('otherCompanyWorker', formData.otherCompanyWorker);
-      
-      // Location
       if (formData.currentLocation) submitData.append('currentLocation', formData.currentLocation);
       if (formData.drivingLicense) submitData.append('drivingLicense', JSON.stringify(formData.drivingLicense));
-      
-      // Other Details
       if (formData.horoscope) submitData.append('horoscope', formData.horoscope);
       if (formData.probationPeriod !== null) submitData.append('probationPeriod', String(formData.probationPeriod || 0));
       if (formData.referenceName) submitData.append('referenceName', formData.referenceName);
@@ -158,13 +116,10 @@ const AdminManpower: React.FC = () => {
       if (formData.offer) submitData.append('offer', formData.offer);
       if (formData.aboutWorker) submitData.append('aboutWorker', formData.aboutWorker);
       if (formData.videoFile) submitData.append('videoFile', formData.videoFile);
-      
-      // Other Countries Details
       if (formData.otherCountriesWorkersDetails) {
         submitData.append('otherCountriesWorkersDetails', JSON.stringify(formData.otherCountriesWorkersDetails));
       }
 
-      // Files
       if (photo) submitData.append('photo', photo);
       if (fullPhoto) submitData.append('fullPhoto', fullPhoto);
       if (resume) submitData.append('resume', resume);
@@ -177,17 +132,13 @@ const AdminManpower: React.FC = () => {
 
       const response = await fetch(url, {
         method,
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: { 'Authorization': `Bearer ${token}` },
         body: submitData,
       });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        if (response.status === 401) {
-          throw new Error('Unauthorized. Please log in again.');
-        }
+        if (response.status === 401) throw new Error('Unauthorized. Please log in again.');
         throw new Error(errorData.message || 'Failed to save worker');
       }
 
@@ -195,7 +146,6 @@ const AdminManpower: React.FC = () => {
       fetchWorkers();
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to save worker');
-      console.error(error);
     } finally {
       setFormLoading(false);
     }
@@ -207,26 +157,19 @@ const AdminManpower: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this worker?')) {
-      return;
-    }
+    if (!window.confirm('Are you sure you want to delete this worker?')) return;
 
     try {
       const response = await fetch(`${API_ENDPOINTS.MANPOWER}/${id}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: { 'Authorization': `Bearer ${token}` },
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to delete worker');
-      }
+      if (!response.ok) throw new Error('Failed to delete worker');
 
       setWorkers(workers.filter(item => item._id !== id));
     } catch (error) {
       setError('Failed to delete worker');
-      console.error(error);
     }
   };
 
@@ -286,58 +229,60 @@ const AdminManpower: React.FC = () => {
   };
 
   return (
-    <div className="admin-container">
+    <div className="flex min-h-screen bg-gray-50">
       <AdminSidebar />
-      <div className="admin-content">
-        <div className="admin-header">
-          <h1>Manpower Management</h1>
-        </div>
-
-        <div className="admin-actions">
-          <button
-            onClick={() => {
-              if (showForm) {
-                resetForm();
-              } else {
-                setShowForm(true);
-              }
-            }}
-            className="admin-add-button"
-          >
-            {showForm ? 'Cancel' : 'Add New Worker'}
-          </button>
-        </div>
-
-        {showForm && (
-          <AdminManpowerForm
-            onSubmit={handleFormSubmit}
-            onCancel={resetForm}
-            initialData={getInitialData()}
-            isLoading={formLoading}
-          />
-        )}
-
-        {error && <div className="admin-error-message">{error}</div>}
-
-        {loading ? (
-          <div className="admin-loading">Loading...</div>
-        ) : (
-          <div className="admin-manpower-grid">
-            {workers.length === 0 ? (
-              <div className="admin-empty-state">
-                No workers found. Add some!
+      <main className="flex-1 p-4 lg:p-8 lg:ml-0 overflow-x-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-primary rounded-2xl p-6 shadow-lg mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-white mb-2">Manpower Management</h1>
+                <p className="text-white/90 text-sm sm:text-base">Manage your workers and manpower</p>
               </div>
-            ) : (
-              workers.map((worker) => (
-                <div key={worker._id} className="admin-manpower-card-wrapper">
+              <button
+                onClick={() => showForm ? resetForm() : setShowForm(true)}
+                className="flex items-center gap-2 bg-white text-primary hover:bg-gray-100 px-6 py-3 rounded-lg transition-all shadow-lg font-semibold"
+              >
+                {showForm ? <X size={20} /> : <Plus size={20} />}
+                {showForm ? 'Cancel' : 'Add New Worker'}
+              </button>
+            </div>
+          </div>
+
+          {showForm && (
+            <div className="mb-8">
+              <AdminManpowerForm
+                onSubmit={handleFormSubmit}
+                onCancel={resetForm}
+                initialData={getInitialData()}
+                isLoading={formLoading}
+              />
+            </div>
+          )}
+
+          {error && <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800">{error}</div>}
+
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="w-12 h-12 text-primary animate-spin" />
+            </div>
+          ) : workers.length === 0 ? (
+            <div className="text-center py-20 bg-white rounded-xl shadow-md">
+              <Briefcase className="w-16 h-16 text-neutral-gray mx-auto mb-4" />
+              <p className="text-neutral-gray text-lg">No workers found. Add some!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {workers.map((worker) => (
+                <div key={worker._id} className="flex flex-col gap-3">
                   <ManpowerCard worker={worker} />
-                  <div className="admin-card-actions">
+                  <div className="flex gap-2">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         handleEdit(worker);
                       }}
-                      className="admin-edit-button"
+                      className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-all text-sm font-medium shadow-lg"
                     >
                       Edit
                     </button>
@@ -346,17 +291,17 @@ const AdminManpower: React.FC = () => {
                         e.stopPropagation();
                         handleDelete(worker._id);
                       }}
-                      className="admin-delete-button"
+                      className="flex-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all text-sm font-medium shadow-lg"
                     >
                       Delete
                     </button>
                   </div>
                 </div>
-              ))
-            )}
-          </div>
-        )}
-      </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 };
