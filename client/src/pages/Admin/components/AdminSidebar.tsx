@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, LayoutDashboard, Image, Users, MessageSquare, Briefcase, Mail, MessageCircle, LogOut } from 'lucide-react';
+import { Menu, X, LayoutDashboard, Image, Users, MessageSquare, Briefcase, Mail, MessageCircle, LogOut, BarChart3 } from 'lucide-react';
 
 const AdminSidebar: React.FC = () => {
   const location = useLocation();

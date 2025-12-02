@@ -15,6 +15,7 @@ interface LanguageOption {
     { value: 'Hindi', label: { en: 'Hindi', ar: 'الهندية' } },
     { value: 'Bengali', label: { en: 'Bengali', ar: 'البنغالية' } },
     { value: 'Tagalog', label: { en: 'Tagalog', ar: 'التاغالوغية' } }, // Philippines
+    { value: 'Urdu', label: { en: 'Urdu', ar: 'الأردية' } },
     { value: 'Indonesian', label: { en: 'Indonesian', ar: 'الإندونيسية' } }, // Indonesia
     { value: 'Swahili', label: { en: 'Swahili', ar: 'السواحيلية' } }, // Kenya, Uganda
     { value: 'Nepali', label: { en: 'Nepali', ar: 'النيبالية' } }, // Nepal

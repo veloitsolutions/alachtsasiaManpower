@@ -447,7 +447,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
               {errors.jobTitle}
             </div>
           )}
-          <div className="grid grid-cols-2 gap-3 mb-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-2">
             {jobTitles.slice(0, 9).map((job) => (
               <button
                 key={job.value}
@@ -463,7 +463,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
                         boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                       }
                     : {
-                        background: "white",
+                        background: "#f3f4f6",
                         border: "2px solid #d1d5db",
                         color: "#374151",
                       }
@@ -540,8 +540,8 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
               {errors.nationality}
             </div>
           )}
-          <div className="grid grid-cols-2 gap-3 mb-2">
-            {primaryCountriesData1.slice(0, 5).map((c) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-2">
+            {primaryCountriesData1.slice(0, 6).map((c) => (
               <button
                 key={c.value}
                 type="button"
@@ -558,7 +558,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
                         boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                       }
                     : {
-                        background: "white",
+                        background: "#f3f4f6",
                         border: "2px solid #d1d5db",
                         color: "#374151",
                       }
@@ -583,8 +583,8 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
             <span>Select Languages</span>{" "}
             {formData.languages.length > 0 && <Check className="check-icon" />}
           </label>
-          <div className="grid grid-cols-2 gap-3 mb-2">
-            {primaryLanguagesData.slice(0, 5).map((lang) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-2">
+            {primaryLanguagesData.slice(0, 6).map((lang) => (
               <button
                 key={lang.value}
                 type="button"
@@ -599,7 +599,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
                         boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                       }
                     : {
-                        background: "white",
+                        background: "#f3f4f6",
                         border: "2px solid #d1d5db",
                         color: "#374151",
                       }
@@ -630,7 +630,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
               {errors.religion}
             </div>
           )}
-          <div className="grid grid-cols-2 gap-3 mb-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-2">
             {religionsData.slice(0, 5).map((r) => (
               <button
                 key={r.value}
@@ -648,7 +648,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
                         boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                       }
                     : {
-                        background: "white",
+                        background: "#f3f4f6",
                         border: "2px solid #d1d5db",
                         color: "#374151",
                       }
@@ -681,7 +681,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
               {errors.gender}
             </div>
           )}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             {genders.map((g) => (
               <button
                 key={g.value}
@@ -699,7 +699,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
                         boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                       }
                     : {
-                        background: "white",
+                        background: "#f3f4f6",
                         border: "2px solid #d1d5db",
                         color: "#374151",
                       }
@@ -724,7 +724,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
               {errors.maritalStatus}
             </div>
           )}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             {maritalStatuses.slice(0, 6).map((m) => (
               <button
                 key={m.value}
@@ -742,7 +742,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
                         boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                       }
                     : {
-                        background: "white",
+                        background: "#f3f4f6",
                         border: "2px solid #d1d5db",
                         color: "#374151",
                       }
@@ -1284,7 +1284,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
                         boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                       }
                     : {
-                        background: "white",
+                        background: "#f3f4f6",
                         border: "2px solid #d1d5db",
                         color: "#374151",
                       }

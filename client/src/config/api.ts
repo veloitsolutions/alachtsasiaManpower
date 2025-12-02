@@ -3,6 +3,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL;
 const ASSETS_BASE_URL = import.meta.env.VITE_ASSETS_URL;
 
 export const API_ENDPOINTS = {
+  BASE_URL: API_BASE_URL,
   TESTIMONIALS: `${API_BASE_URL}/api/testimonials`,
   CLIENTS: `${API_BASE_URL}/api/clients`,
   GALLERY: `${API_BASE_URL}/api/gallery`,
@@ -13,6 +14,7 @@ export const API_ENDPOINTS = {
   TEAM_MEMBERS: `${API_BASE_URL}/api/team-members`,
   CHAT_NUMBERS: `${API_BASE_URL}/api/chat-numbers`,
   MANPOWER: `${API_BASE_URL}/api/manpower`,
+  ANALYTICS: `${API_BASE_URL}/api/analytics`,
 };
 
 export const ASSETS_CONFIG = {

@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import AdminSidebar from './components/AdminSidebar';
 import AdminManpowerForm from './AdminManpowerForm';
 import ManpowerCard from '../../components/ManpowerCard/ManpowerCard';
+import AnalyticsDashboard from '../../analyticComponents/AnalyticsDashboard';
 import { API_ENDPOINTS } from '../../config/api';
-import { Plus, X, Loader2, Briefcase } from 'lucide-react';
+import { Plus, X, Loader2, Briefcase, BarChart3 } from 'lucide-react';
 
 interface Worker {
   _id: string;
@@ -35,6 +36,7 @@ const AdminManpower: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
   const [editingWorker, setEditingWorker] = useState<Worker | null>(null);
   const [formLoading, setFormLoading] = useState(false);
 
@@ -239,17 +241,48 @@ const AdminManpower: React.FC = () => {
                 <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-white mb-2">Manpower Management</h1>
                 <p className="text-white/90 text-sm sm:text-base">Manage your workers and manpower</p>
               </div>
-              <button
-                onClick={() => showForm ? resetForm() : setShowForm(true)}
-                className="flex items-center gap-2 bg-white text-primary hover:bg-gray-100 px-6 py-3 rounded-lg transition-all shadow-lg font-semibold"
-              >
-                {showForm ? <X size={20} /> : <Plus size={20} />}
-                {showForm ? 'Cancel' : 'Add New Worker'}
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => {
+                    setShowAnalytics(!showAnalytics);
+                    if (!showAnalytics) {
+                      setShowForm(false);
+                    }
+                  }}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all shadow-lg font-semibold ${
+                    showAnalytics
+                      ? 'bg-gray-800 text-white hover:bg-gray-700'
+                      : 'bg-white text-gray-800 hover:bg-gray-100'
+                  }`}
+                >
+                  {showAnalytics ? <X size={20} /> : <BarChart3 size={20} />}
+                  {showAnalytics ? 'Close Analytics' : 'Worker Analytics'}
+                </button>
+                <button
+                  onClick={() => {
+                    if (showForm) {
+                      resetForm();
+                    } else {
+                      setShowForm(true);
+                      setShowAnalytics(false);
+                    }
+                  }}
+                  className="flex items-center gap-2 bg-white text-primary hover:bg-gray-100 px-6 py-3 rounded-lg transition-all shadow-lg font-semibold"
+                >
+                  {showForm ? <X size={20} /> : <Plus size={20} />}
+                  {showForm ? 'Cancel' : 'Add New Worker'}
+                </button>
+              </div>
             </div>
           </div>
 
-          {showForm && (
+          {showAnalytics && (
+            <div className="mb-8">
+              <AnalyticsDashboard />
+            </div>
+          )}
+
+          {showForm && !showAnalytics && (
             <div className="mb-8">
               <AdminManpowerForm
                 onSubmit={handleFormSubmit}
@@ -262,41 +295,24 @@ const AdminManpower: React.FC = () => {
 
           {error && <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800">{error}</div>}
 
-          {loading ? (
+          {!showAnalytics && loading ? (
             <div className="flex justify-center items-center py-20">
               <Loader2 className="w-12 h-12 text-primary animate-spin" />
             </div>
-          ) : workers.length === 0 ? (
+          ) : !showAnalytics && workers.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-xl shadow-md">
               <Briefcase className="w-16 h-16 text-neutral-gray mx-auto mb-4" />
               <p className="text-neutral-gray text-lg">No workers found. Add some!</p>
             </div>
-          ) : (
+          ) : !showAnalytics && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {workers.map((worker) => (
-                <div key={worker._id} className="flex flex-col gap-3">
-                  <ManpowerCard worker={worker} />
-                  <div className="flex gap-2">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEdit(worker);
-                      }}
-                      className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-all text-sm font-medium shadow-lg"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(worker._id);
-                      }}
-                      className="flex-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all text-sm font-medium shadow-lg"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
+                <ManpowerCard
+                  key={worker._id}
+                  worker={worker}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
               ))}
             </div>
           )}

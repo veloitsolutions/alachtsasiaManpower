@@ -34,6 +34,7 @@ import AdminTestimonials from './pages/Admin/AdminTestimonials';
 import AdminTeamMembers from './pages/Admin/AdminTeamMembers';
 import AdminChatNumbers from './pages/Admin/AdminChatNumbers';
 import AdminManpower from './pages/Admin/AdminManpower';
+import AdminAnalytics from './pages/Admin/AdminAnalytics';
 
 // Global Styles
 import ContactPage from './pages/Contact/ContactPage';
@@ -95,6 +96,7 @@ function App() {
           <Route path="/admin/testimonials" element={<AdminRoute><AdminTestimonials /></AdminRoute>} />
           <Route path="/admin/team-members" element={<AdminRoute><AdminTeamMembers /></AdminRoute>} />
           <Route path="/admin/manpower" element={<AdminRoute><AdminManpower /></AdminRoute>} />
+          <Route path="/admin/analytics" element={<AdminRoute><AdminAnalytics /></AdminRoute>} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

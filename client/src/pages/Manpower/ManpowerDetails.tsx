@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, MapPin, Briefcase, DollarSign, User, Calendar,
-  Heart, BookOpen, Globe, Phone, Award, FileText, Download
+  Heart, BookOpen, Globe, Phone, Award, FileText, Download, MessageCircle, Share2
 } from 'lucide-react';
 import { API_ENDPOINTS, ASSETS_CONFIG } from '../../config/api';
 import './ManpowerDetails.css';
@@ -78,12 +78,34 @@ const ManpowerDetails: React.FC = () => {
   const [error, setError] = useState('');
   const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
   const fromAdmin = new URLSearchParams(window.location.search).get('from') === 'admin';
+  const viewTrackedRef = React.useRef(false);
 
   useEffect(() => {
-    if (id) {
+    if (id && !viewTrackedRef.current) {
       fetchWorkerDetails();
+      trackAnalytics('VIEW');
+      viewTrackedRef.current = true;
     }
   }, [id]);
+
+  const trackAnalytics = async (actionType: string) => {
+    try {
+      const payload = {
+        userType: 'GUEST',
+        workerId: id,
+        actionType: actionType
+      };
+      
+      fetch(`${API_ENDPOINTS.ANALYTICS}/save`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        keepalive: true
+      }).catch((error) => console.error('Analytics tracking failed:', error));
+    } catch (error) {
+      console.error('Analytics tracking error:', error);
+    }
+  };
 
   const fetchWorkerDetails = async () => {
     try {
@@ -222,17 +244,67 @@ const ManpowerDetails: React.FC = () => {
                 </div>
               </div>
 
-              {worker.resume && (
-                <a
-                  href={`${ASSETS_CONFIG.BASE_URL}${worker.resume}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {worker.isContactNumberVisible && worker.candidateContactNumber && (
+                  <a
+                    href={`tel:${worker.countryCode}${worker.candidateContactNumber}`}
+                    className="download-resume-btn"
+                    onClick={() => trackAnalytics('CALL')}
+                    style={{ backgroundColor: '#10b981' }}
+                  >
+                    <Phone size={20} />
+                    Call Now
+                  </a>
+                )}
+                
+                {worker.whatsappNumber && (
+                  <a
+                    href={`https://wa.me/${worker.whatsappNumber.replace(/[^0-9]/g, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="download-resume-btn"
+                    onClick={() => trackAnalytics('WHATSAPP')}
+                    style={{ backgroundColor: '#25d366' }}
+                  >
+                    <MessageCircle size={20} />
+                    WhatsApp
+                  </a>
+                )}
+                
+                <button
+                  onClick={() => {
+                    trackAnalytics('SHARE');
+                    if (navigator.share) {
+                      navigator.share({
+                        title: worker.nameEng || worker.name,
+                        text: `Check out ${worker.nameEng || worker.name} - ${Array.isArray(worker.jobTitle) ? worker.jobTitle[0] : worker.jobTitle}`,
+                        url: window.location.href
+                      });
+                    } else {
+                      navigator.clipboard.writeText(window.location.href);
+                      alert('Link copied to clipboard!');
+                    }
+                  }}
                   className="download-resume-btn"
+                  style={{ backgroundColor: '#3b82f6' }}
                 >
-                  <Download size={20} />
-                  Download Resume
-                </a>
-              )}
+                  <Share2 size={20} />
+                  Share Profile
+                </button>
+                
+                {worker.resume && (
+                  <a
+                    href={`${ASSETS_CONFIG.BASE_URL}${worker.resume}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="download-resume-btn"
+                    onClick={() => trackAnalytics('DOWNLOAD_RESUME')}
+                  >
+                    <Download size={20} />
+                    Download Resume
+                  </a>
+                )}
+              </div>
             </div>
           </div>
 

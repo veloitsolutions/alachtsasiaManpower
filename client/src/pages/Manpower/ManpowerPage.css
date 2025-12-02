@@ -1,6 +1,6 @@
 .manpower-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+  background-color: var(--neutral-light-gray);
   padding-bottom: 60px;
 }
 
@@ -51,7 +51,7 @@
 
 /* Manpower Section */
 .manpower-section {
-  background-color: var(--neutral-white);
+  background-color: var(--neutral-light-gray);
   padding: var(--space-xl) 0;
 }
 
@@ -110,7 +110,7 @@
 .manpower-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 16px;
 }
 
 .loading-state {
@@ -185,7 +185,15 @@
 
 @media (max-width: 1400px) {
   .manpower-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .manpower-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
   }
 }
 
@@ -201,15 +209,16 @@
 
   .manpower-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    gap: 14px;
   }
 }
 
 @media (max-width: 768px) {
-    .manpower-grid {
+  .manpower-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 12px;
   }
+
   .manpower-hero-section {
     height: 300px;
   }
