@@ -3,6 +3,7 @@ import AdminSidebar from './components/AdminSidebar';
 import { API_ENDPOINTS, ASSETS_CONFIG } from '../../config/api';
 import { extractYouTubeVideoId } from '../../utils/youtubeUtils';
 import { Plus, X, Loader2, Image as ImageIcon, Video, Edit2, Trash2, Play } from 'lucide-react';
+import { createImagePreviewUrl, convertHeicToJpegFile } from '../../utils/heicUtils';
 
 interface GalleryItem {
   _id: string;
@@ -22,8 +23,10 @@ const AdminGallery: React.FC = () => {
   const [type, setType] = useState<'image' | 'video'>('image');
   const [caption, setCaption] = useState('');
   const [file, setFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string>('');
   const [videoUrl, setVideoUrl] = useState('');
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string>('');
   const [formError, setFormError] = useState('');
   const [formLoading, setFormLoading] = useState(false);
 
@@ -63,11 +66,45 @@ const AdminGallery: React.FC = () => {
     setType('image');
     setCaption('');
     setFile(null);
+    setFilePreview('');
     setVideoUrl('');
     setThumbnailFile(null);
+    setThumbnailPreview('');
     setEditingItem(null);
     setShowAddForm(false);
     setFormError('');
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      try {
+        // Convert HEIC to JPEG if needed
+        const convertedFile = await convertHeicToJpegFile(selectedFile);
+        setFile(convertedFile);
+        const previewUrl = await createImagePreviewUrl(convertedFile);
+        setFilePreview(previewUrl);
+      } catch (error) {
+        console.error('Error processing image:', error);
+        setFormError('Failed to process image');
+      }
+    }
+  };
+
+  const handleThumbnailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      try {
+        // Convert HEIC to JPEG if needed
+        const convertedFile = await convertHeicToJpegFile(selectedFile);
+        setThumbnailFile(convertedFile);
+        const previewUrl = await createImagePreviewUrl(convertedFile);
+        setThumbnailPreview(previewUrl);
+      } catch (error) {
+        console.error('Error processing thumbnail:', error);
+        setFormError('Failed to create thumbnail preview');
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -226,11 +263,16 @@ const AdminGallery: React.FC = () => {
                     <label className="block text-sm font-medium text-neutral-black mb-2">Image</label>
                     <input
                       type="file"
-                      accept="image/*"
-                      onChange={(e) => e.target.files && setFile(e.target.files[0])}
+                      accept="image/*,.heic,.heif"
+                      onChange={handleFileChange}
                       className="w-full px-4 py-3 border border-neutral-light-gray rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                       required={!editingItem}
                     />
+                    {filePreview && (
+                      <div className="mt-3">
+                        <img src={filePreview} alt="Preview" className="max-w-xs max-h-48 rounded-lg border border-neutral-light-gray" />
+                      </div>
+                    )}
                     {editingItem && <p className="text-xs text-neutral-gray mt-2">Current image will be kept if no new file is selected</p>}
                   </div>
                 ) : (
@@ -251,11 +293,16 @@ const AdminGallery: React.FC = () => {
                       <label className="block text-sm font-medium text-neutral-black mb-2">Video Thumbnail</label>
                       <input
                         type="file"
-                        accept="image/*"
-                        onChange={(e) => e.target.files && setThumbnailFile(e.target.files[0])}
+                        accept="image/*,.heic,.heif"
+                        onChange={handleThumbnailChange}
                         className="w-full px-4 py-3 border border-neutral-light-gray rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                         required={!editingItem?.thumbnail}
                       />
+                      {thumbnailPreview && (
+                        <div className="mt-3">
+                          <img src={thumbnailPreview} alt="Thumbnail Preview" className="max-w-xs max-h-48 rounded-lg border border-neutral-light-gray" />
+                        </div>
+                      )}
                       {editingItem?.thumbnail && <p className="text-xs text-neutral-gray mt-2">Current thumbnail will be kept if no new file is selected</p>}
                     </div>
                   </>

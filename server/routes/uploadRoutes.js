@@ -5,6 +5,7 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { protect, admin } from '../middleware/authMiddleware.js';
 import { uploadFile, deleteFile } from '../controllers/uploadController.js';
+import { convertHeicToJpeg, isHeicFile, getConvertedFilename } from '../utils/heicConverter.js';
 
 const router = express.Router();
 
@@ -23,25 +24,35 @@ const storage = multer.diskStorage({
     cb(null, uploadsDir);
   },
   filename(req, file, cb) {
-    cb(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
-    );
+    const ext = path.extname(file.originalname).toLowerCase();
+    const timestamp = Date.now();
+    // Keep HEIC extension for now, will convert after upload
+    cb(null, `${file.fieldname}-${timestamp}${ext}`);
   },
 });
 
 // Check file type
 function checkFileType(file, cb) {
+  const ext = path.extname(file.originalname).toLowerCase();
+  const allowedExtensions = [
+    '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg', 
+    '.tiff', '.tif', '.ico', '.avif', '.heic', '.heif',
+    '.mp4', '.webm', '.mov', '.avi'
+  ];
+  
   const allowedTypes = [
     'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp',
     'image/webp', 'image/svg+xml', 'image/tiff', 'image/ico', 'image/avif',
-    'video/mp4', 'video/webm', 'video/mov', 'video/avi'
+    'image/heic', 'image/heif',
+    'video/mp4', 'video/webm', 'video/mov', 'video/avi',
+    'application/octet-stream' // HEIC files sometimes have this MIME type
   ];
   
-  if (allowedTypes.includes(file.mimetype)) {
+  // Check extension first (more reliable for HEIC), then MIME type
+  if (allowedExtensions.includes(ext) || allowedTypes.includes(file.mimetype)) {
     return cb(null, true);
   } else {
-    cb('Error: Only image files (JPEG, PNG, GIF, BMP, WebP, SVG, TIFF, ICO, AVIF) and video files are allowed!');
+    cb('Error: Only image files (JPEG, PNG, GIF, BMP, WebP, SVG, TIFF, ICO, AVIF, HEIC) and video files are allowed!');
   }
 }
 

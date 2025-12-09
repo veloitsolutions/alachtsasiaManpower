@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown, ArrowLeft, Search } from "lucide-react";
 import { ASSETS_CONFIG } from "../../config/api";
 import "./AdminManpowerForm.css";
+import { createImagePreviewUrl, convertHeicToJpegFile } from "../../utils/heicUtils";
 import {
   jobTypes,
   genders,
@@ -223,23 +224,43 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
     }
   };
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       const file = e.target.files[0];
-      setPhoto(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setPhotoPreview(reader.result as string);
-      reader.readAsDataURL(file);
+      try {
+        // Convert HEIC to JPEG if needed
+        const convertedFile = await convertHeicToJpegFile(file);
+        setPhoto(convertedFile);
+        const previewUrl = await createImagePreviewUrl(convertedFile);
+        setPhotoPreview(previewUrl);
+      } catch (error) {
+        console.error('Error processing photo:', error);
+        // Fallback to FileReader for non-HEIC files
+        setPhoto(file);
+        const reader = new FileReader();
+        reader.onloadend = () => setPhotoPreview(reader.result as string);
+        reader.readAsDataURL(file);
+      }
     }
   };
 
-  const handleFullPhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFullPhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       const file = e.target.files[0];
-      setFullPhoto(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setFullPhotoPreview(reader.result as string);
-      reader.readAsDataURL(file);
+      try {
+        // Convert HEIC to JPEG if needed
+        const convertedFile = await convertHeicToJpegFile(file);
+        setFullPhoto(convertedFile);
+        const previewUrl = await createImagePreviewUrl(convertedFile);
+        setFullPhotoPreview(previewUrl);
+      } catch (error) {
+        console.error('Error processing full photo:', error);
+        // Fallback to FileReader for non-HEIC files
+        setFullPhoto(file);
+        const reader = new FileReader();
+        reader.onloadend = () => setFullPhotoPreview(reader.result as string);
+        reader.readAsDataURL(file);
+      }
     }
   };
 
@@ -1119,7 +1140,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
                   <input
                     type="file"
                     id="passportPhoto"
-                    accept="image/*"
+                    accept="image/*,.heic,.heif"
                     onChange={handlePhotoChange}
                     className="hidden"
                   />
@@ -1169,7 +1190,7 @@ const AdminManpowerForm: React.FC<AdminManpowerFormProps> = ({
                   <input
                     type="file"
                     id="fullPhoto"
-                    accept="image/*"
+                    accept="image/*,.heic,.heif"
                     onChange={handleFullPhotoChange}
                     className="hidden"
                   />

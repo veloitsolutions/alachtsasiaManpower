@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AdminSidebar from './components/AdminSidebar';
 import { API_ENDPOINTS, ASSETS_CONFIG } from '../../config/api';
 import { Plus, X, Loader2, Users, Edit2, Trash2 } from 'lucide-react';
+import { convertHeicToJpegFile } from '../../utils/heicUtils';
 
 interface ClientLogo {
   _id: string;
@@ -49,6 +50,20 @@ const AdminClientLogos: React.FC = () => {
     setEditingLogo(logo);
     setName(logo.name);
     setShowAddForm(true);
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      try {
+        // Convert HEIC to JPEG if needed
+        const convertedFile = await convertHeicToJpegFile(selectedFile);
+        setFile(convertedFile);
+      } catch (error) {
+        console.error('Error processing image:', error);
+        setFormError('Failed to process image');
+      }
+    }
   };
 
   const resetForm = () => {
@@ -169,7 +184,7 @@ const AdminClientLogos: React.FC = () => {
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => e.target.files && setFile(e.target.files[0])}
+                    onChange={handleFileChange}
                     className="w-full px-4 py-3 border border-neutral-light-gray rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                     required={!editingLogo}
                   />
@@ -199,32 +214,32 @@ const AdminClientLogos: React.FC = () => {
               <p className="text-neutral-gray text-lg">No client logos found. Add some!</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
               {clientLogos.map((logo) => (
-                <div key={logo._id} className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-6 border border-gray-100">
-                  <div className="aspect-square bg-gray-50 rounded-lg mb-4 flex items-center justify-center p-4">
+                <div key={logo._id} className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-3 sm:p-6 border border-gray-100">
+                  <div className="aspect-square bg-gray-50 rounded-lg mb-3 sm:mb-4 flex items-center justify-center p-2 sm:p-4">
                     <img
                       src={`${ASSETS_CONFIG.BASE_URL}${logo.logo}`}
                       alt={logo.name}
                       className="max-w-full max-h-full object-contain"
                     />
                   </div>
-                  <h3 className="font-semibold text-neutral-black text-center mb-2 truncate">{logo.name}</h3>
-                  <p className="text-xs text-neutral-gray text-center mb-4">Added: {new Date(logo.createdAt).toLocaleDateString()}</p>
-                  <div className="flex gap-2">
+                  <h3 className="font-semibold text-neutral-black text-center mb-1 sm:mb-2 truncate text-sm sm:text-base">{logo.name}</h3>
+                  <p className="text-xs text-neutral-gray text-center mb-3 sm:mb-4">Added: {new Date(logo.createdAt).toLocaleDateString()}</p>
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <button
                       onClick={() => handleEdit(logo)}
-                      className="flex-1 flex items-center justify-center gap-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg transition-all text-xs font-medium"
+                      className="flex-1 flex items-center justify-center gap-1 bg-blue-500 hover:bg-blue-600 text-white px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-all text-xs font-medium"
                     >
                       <Edit2 size={14} />
-                      Edit
+                      <span>Edit</span>
                     </button>
                     <button
                       onClick={() => handleDelete(logo._id)}
-                      className="flex-1 flex items-center justify-center gap-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg transition-all text-xs font-medium"
+                      className="flex-1 flex items-center justify-center gap-1 bg-red-500 hover:bg-red-600 text-white px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-all text-xs font-medium"
                     >
                       <Trash2 size={14} />
-                      Delete
+                      <span>Delete</span>
                     </button>
                   </div>
                 </div>

@@ -11,6 +11,7 @@ import {
   updateTestimonial,
   deleteTestimonial,
 } from '../controllers/testimonialController.js';
+import { convertHeicToJpeg, isHeicFile, getConvertedFilename } from '../utils/heicConverter.js';
 
 const router = express.Router();
 
@@ -37,12 +38,16 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     const allowedTypes = [
       'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp',
-      'image/webp', 'image/svg+xml', 'image/tiff', 'image/ico', 'image/avif'
+      'image/webp', 'image/svg+xml', 'image/tiff', 'image/ico', 'image/avif',
+      'image/heic', 'image/heif'
     ];
-    if (allowedTypes.includes(file.mimetype)) {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg', '.tiff', '.tif', '.ico', '.avif', '.heic', '.heif'];
+    
+    if (allowedTypes.includes(file.mimetype) || allowedExtensions.includes(ext)) {
       cb(null, true);
     } else {
-      cb(new Error('Only image files are allowed (JPEG, PNG, GIF, BMP, WebP, SVG, TIFF, ICO, AVIF)'), false);
+      cb(new Error('Only image files are allowed (JPEG, PNG, GIF, BMP, WebP, SVG, TIFF, ICO, AVIF, HEIC)'), false);
     }
   }
 });
@@ -79,6 +84,16 @@ router.post('/', protect, admin, upload.single('image'), handleMulterError, asyn
       return res.status(400).json({ message: 'Image is required' });
     }
     
+    // Convert HEIC to JPEG if needed
+    if (isHeicFile(req.file.filename)) {
+      const inputPath = req.file.path;
+      const convertedFilename = getConvertedFilename(req.file.filename);
+      const outputPath = path.join(path.dirname(inputPath), convertedFilename);
+      await convertHeicToJpeg(inputPath, outputPath);
+      req.file.filename = convertedFilename;
+      req.file.path = outputPath;
+    }
+    
     const image = `/uploads/testimonials/${req.file.filename}`;
 
     const testimonial = await Testimonial.create({
@@ -97,7 +112,23 @@ router.post('/', protect, admin, upload.single('image'), handleMulterError, asyn
 });
 
 // Update a testimonial (admin only)
-router.put('/:id', protect, admin, upload.single('image'), handleMulterError, updateTestimonial);
+router.put('/:id', protect, admin, upload.single('image'), handleMulterError, async (req, res) => {
+  try {
+    // Convert HEIC to JPEG if needed
+    if (req.file && isHeicFile(req.file.filename)) {
+      const inputPath = req.file.path;
+      const convertedFilename = getConvertedFilename(req.file.filename);
+      const outputPath = path.join(path.dirname(inputPath), convertedFilename);
+      await convertHeicToJpeg(inputPath, outputPath);
+      req.file.filename = convertedFilename;
+      req.file.path = outputPath;
+    }
+    await updateTestimonial(req, res);
+  } catch (error) {
+    console.error('Testimonial update error:', error);
+    res.status(400).json({ message: error.message || 'Failed to update testimonial' });
+  }
+});
 
 // Delete a testimonial (admin only)
 router.delete('/:id', protect, admin, deleteTestimonial);

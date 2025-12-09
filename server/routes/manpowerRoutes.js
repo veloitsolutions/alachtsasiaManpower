@@ -5,6 +5,7 @@ import fs from 'fs';
 import { protect, admin } from '../middleware/authMiddleware.js';
 import Manpower from '../models/manpower.js';
 import { validateImageFile, validateResumeFile, generateSecureFilename } from '../utils/fileValidation.js';
+import { convertHeicToJpeg, isHeicFile, getConvertedFilename } from '../utils/heicConverter.js';
 import {
   getManpower,
   getManpowerById,
@@ -69,11 +70,18 @@ const upload = multer({
   },
   fileFilter: (req, file, cb) => {
     if (file.fieldname === 'photo' || file.fieldname === 'passportPhoto' || file.fieldname === 'fullPhoto') {
-      const validation = validateImageFile(file);
-      if (validation.valid) {
+      // Check file extension for HEIC files (more reliable than MIME type)
+      const ext = path.extname(file.originalname).toLowerCase();
+      if (ext === '.heic' || ext === '.heif') {
+        // Allow HEIC files regardless of MIME type
         cb(null, true);
       } else {
-        cb(new Error(validation.error), false);
+        const validation = validateImageFile(file);
+        if (validation.valid) {
+          cb(null, true);
+        } else {
+          cb(new Error(validation.error), false);
+        }
       }
     } else if (file.fieldname === 'resume') {
       const validation = validateResumeFile(file);
@@ -119,6 +127,30 @@ router.post('/', protect, admin, upload.fields([
   { name: 'resume', maxCount: 1 }
 ]), handleMulterError, async (req, res) => {
   try {
+    // Convert HEIC images to JPEG if needed
+    if (req.files) {
+      for (const fieldName of ['photo', 'passportPhoto', 'fullPhoto']) {
+        if (req.files[fieldName] && req.files[fieldName][0]) {
+          const file = req.files[fieldName][0];
+          if (isHeicFile(file.filename)) {
+            try {
+              const inputPath = file.path;
+              const convertedFilename = getConvertedFilename(file.filename);
+              const outputPath = path.join(path.dirname(inputPath), convertedFilename);
+              await convertHeicToJpeg(inputPath, outputPath);
+              req.files[fieldName][0].filename = convertedFilename;
+              req.files[fieldName][0].path = outputPath;
+            } catch (conversionError) {
+              console.error(`HEIC conversion error for ${fieldName}:`, conversionError);
+              return res.status(400).json({ 
+                message: `Failed to process ${fieldName} image. Please try converting to JPG first.`,
+                error: conversionError.message 
+              });
+            }
+          }
+        }
+      }
+    }
     await createManpower(req, res);
   } catch (error) {
     console.error('Manpower creation error:', error);
@@ -134,6 +166,30 @@ router.put('/:id', protect, admin, upload.fields([
   { name: 'resume', maxCount: 1 }
 ]), handleMulterError, async (req, res) => {
   try {
+    // Convert HEIC images to JPEG if needed
+    if (req.files) {
+      for (const fieldName of ['photo', 'passportPhoto', 'fullPhoto']) {
+        if (req.files[fieldName] && req.files[fieldName][0]) {
+          const file = req.files[fieldName][0];
+          if (isHeicFile(file.filename)) {
+            try {
+              const inputPath = file.path;
+              const convertedFilename = getConvertedFilename(file.filename);
+              const outputPath = path.join(path.dirname(inputPath), convertedFilename);
+              await convertHeicToJpeg(inputPath, outputPath);
+              req.files[fieldName][0].filename = convertedFilename;
+              req.files[fieldName][0].path = outputPath;
+            } catch (conversionError) {
+              console.error(`HEIC conversion error for ${fieldName}:`, conversionError);
+              return res.status(400).json({ 
+                message: `Failed to process ${fieldName} image. Please try converting to JPG first.`,
+                error: conversionError.message 
+              });
+            }
+          }
+        }
+      }
+    }
     await updateManpower(req, res);
   } catch (error) {
     console.error('Manpower update error:', error);

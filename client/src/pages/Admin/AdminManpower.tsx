@@ -241,7 +241,7 @@ const AdminManpower: React.FC = () => {
                 <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-white mb-2">Manpower Management</h1>
                 <p className="text-white/90 text-sm sm:text-base">Manage your workers and manpower</p>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
                 <button
                   onClick={() => {
                     setShowAnalytics(!showAnalytics);
@@ -249,14 +249,14 @@ const AdminManpower: React.FC = () => {
                       setShowForm(false);
                     }
                   }}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all shadow-lg font-semibold ${
+                  className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-all shadow-lg font-medium text-sm ${
                     showAnalytics
                       ? 'bg-gray-800 text-white hover:bg-gray-700'
                       : 'bg-white text-gray-800 hover:bg-gray-100'
                   }`}
                 >
-                  {showAnalytics ? <X size={20} /> : <BarChart3 size={20} />}
-                  {showAnalytics ? 'Close Analytics' : 'Worker Analytics'}
+                  {showAnalytics ? <X size={18} /> : <BarChart3 size={18} />}
+                  <span className="whitespace-nowrap">Analytics</span>
                 </button>
                 <button
                   onClick={() => {
@@ -267,10 +267,10 @@ const AdminManpower: React.FC = () => {
                       setShowAnalytics(false);
                     }
                   }}
-                  className="flex items-center gap-2 bg-white text-primary hover:bg-gray-100 px-6 py-3 rounded-lg transition-all shadow-lg font-semibold"
+                  className="flex items-center justify-center gap-2 bg-white text-primary hover:bg-gray-100 px-4 py-2 rounded-lg transition-all shadow-lg font-medium text-sm"
                 >
-                  {showForm ? <X size={20} /> : <Plus size={20} />}
-                  {showForm ? 'Cancel' : 'Add New Worker'}
+                  {showForm ? <X size={18} /> : <Plus size={18} />}
+                  <span className="whitespace-nowrap">{showForm ? 'Cancel' : 'Add Worker'}</span>
                 </button>
               </div>
             </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AdminSidebar from './components/AdminSidebar';
 import { API_ENDPOINTS, ASSETS_CONFIG } from '../../config/api';
 import { Plus, X, Loader2, Users, Edit2, Trash2 } from 'lucide-react';
+import { createImagePreviewUrl, convertHeicToJpegFile } from '../../utils/heicUtils';
 
 interface TeamMember {
   _id: string;
@@ -21,8 +22,25 @@ const AdminTeamMembers: React.FC = () => {
   const [name, setName] = useState('');
   const [role, setRole] = useState('');
   const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>('');
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState('');
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      try {
+        // Convert HEIC to JPEG if needed
+        const convertedFile = await convertHeicToJpegFile(selectedFile);
+        setImage(convertedFile);
+        const previewUrl = await createImagePreviewUrl(convertedFile);
+        setImagePreview(previewUrl);
+      } catch (error) {
+        console.error('Error processing image:', error);
+        setFormError('Failed to process image');
+      }
+    }
+  };
 
   const userInfoString = localStorage.getItem('userInfo');
   const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
@@ -194,11 +212,16 @@ const AdminTeamMembers: React.FC = () => {
                   <label className="block text-sm font-medium text-neutral-black mb-2">Profile Photo *</label>
                   <input
                     type="file"
-                    accept="image/*"
-                    onChange={(e) => e.target.files && setImage(e.target.files[0])}
+                    accept="image/*,.heic,.heif"
+                    onChange={handleImageChange}
                     className="w-full px-4 py-3 border border-neutral-light-gray rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                     required={!editingMember}
                   />
+                  {imagePreview && (
+                    <div className="mt-3">
+                      <img src={imagePreview} alt="Preview" className="max-w-xs max-h-48 rounded-lg border border-neutral-light-gray" />
+                    </div>
+                  )}
                   {editingMember && <p className="text-xs text-neutral-gray mt-2">Current image will be kept if no new file is selected</p>}
                 </div>
 

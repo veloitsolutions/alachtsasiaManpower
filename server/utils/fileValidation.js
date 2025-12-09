@@ -1,7 +1,7 @@
 import path from 'path';
 import crypto from 'crypto';
 
-const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml', 'image/gif', 'image/bmp', 'image/x-icon', 'image/tiff'];
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml', 'image/gif', 'image/bmp', 'image/x-icon', 'image/tiff', 'image/heic', 'image/heif'];
 const ALLOWED_RESUME_TYPES = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 const MAX_RESUME_SIZE = 10 * 1024 * 1024; // 10MB
@@ -18,7 +18,7 @@ export const validateImageFile = (file) => {
   }
   
   const ext = path.extname(file.originalname).toLowerCase();
-  if (!['.jpg', '.jpeg', '.png', '.webp', '.svg', '.gif', '.bmp', '.ico', '.tiff', '.tif'].includes(ext)) {
+  if (!['.jpg', '.jpeg', '.png', '.webp', '.svg', '.gif', '.bmp', '.ico', '.tiff', '.tif', '.heic', '.heif'].includes(ext)) {
     return { valid: false, error: 'Invalid image file extension' };
   }
   
