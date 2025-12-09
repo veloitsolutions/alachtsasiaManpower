@@ -316,51 +316,53 @@
 }
 
 @media (max-width: 360px) {
+  /* Keep horizontal (row) layout on very small screens to avoid stacking */
   .card-content-wrapper {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    text-align: center;
+    text-align: left;
+    gap: 8px;
+    padding: 8px;
   }
 
   .card-image-section {
-    margin-bottom: 6px;
+    margin-bottom: 0;
   }
 
   .image-container {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
   }
 
+  /* Keep list styling consistent and readable */
   .details-list {
-    list-style: none;
-    padding-left: 0;
+    list-style: disc;
+    padding-left: 12px;
     text-align: left;
   }
 
   .details-list li {
-    padding: 3px 0;
-    border-bottom: 1px solid #f3f4f6;
-  }
-
-  .details-list li:last-child {
+    padding: 0;
+    margin-bottom: 2px;
     border-bottom: none;
   }
 
   .detail-label::after {
-    content: ': ';
+    content: ' - ';
   }
 
   .card-actions-row {
-    justify-content: center;
+    justify-content: space-between;
   }
 
   .action-btn {
-    flex: 0 0 auto;
-    min-width: 50px;
-    padding: 8px;
+    flex: 1;
+    min-width: 0;
+    padding: 6px 6px;
   }
 
+  /* Keep action labels visible on small screens */
   .action-btn span {
-    display: none;
+    display: inline;
   }
 }
