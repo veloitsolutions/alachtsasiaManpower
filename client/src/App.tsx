@@ -71,7 +71,7 @@ function App() {
       <main className={`main-content ${isHomePage ? 'home-page' : ''} ${isAdminRoute ? 'admin-route' : ''}`}>
         <ScrollToTop/>
         <Routes>
-          <Route path="/" element={<ServicesPage />} />
+          <Route path="/" element={<ManpowerPage />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/journey" element={<JourneyPage />} />
