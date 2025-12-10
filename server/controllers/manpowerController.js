@@ -394,13 +394,20 @@ const deleteManpower = asyncHandler(async (req, res) => {
 // @route   GET /api/manpower/filters/options
 // @access  Public
 const getFilterOptions = asyncHandler(async (req, res) => {
-  const types = await Manpower.distinct('type');
+  const types = await Manpower.distinct('workerCategory');
   const nationalities = await Manpower.distinct('nationality');
+  const occupations = await Manpower.distinct('jobTitle');
   const genders = await Manpower.distinct('gender');
+
+  // Flatten occupations array if needed and filter out empty values
+  const flattenedOccupations = Array.isArray(occupations) 
+    ? occupations.flat().filter(occ => occ && occ.trim())
+    : [];
 
   res.json({
     types,
     nationalities,
+    occupations: flattenedOccupations,
     genders,
   });
 });
