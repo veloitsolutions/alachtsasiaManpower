@@ -33,15 +33,20 @@ const ManpowerFilter: React.FC<ManpowerFilterProps> = ({
 }) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  const handleFilterChange = (key: keyof Filters, value: string) => {
-    onFilterChange({
-      ...filters,
-      [key]: value,
-    });
+  // Local staged filters - user can change these and then click Apply
+  const [localFilters, setLocalFilters] = useState<Filters>(filters);
+
+  // Keep local staged filters in sync when parent applies new filters
+  useEffect(() => {
+    setLocalFilters(filters);
+  }, [filters]);
+
+  const handleLocalChange = (key: keyof Filters, value: string) => {
+    setLocalFilters(prev => ({ ...prev, [key]: value }));
   };
 
   const resetFilters = () => {
-    onFilterChange({
+    const cleared: Filters = {
       workerCategory: '',
       nationality: '',
       gender: '',
@@ -50,7 +55,21 @@ const ManpowerFilter: React.FC<ManpowerFilterProps> = ({
       minAge: '',
       maxAge: '',
       search: '',
-    });
+    };
+    // Clear applied filters immediately and also clear staged filters
+    onFilterChange(cleared);
+    setLocalFilters(cleared);
+  };
+
+  const applyFilters = () => {
+    onFilterChange(localFilters);
+    setIsMobileOpen(false);
+  };
+
+  const cancelFilters = () => {
+    // Revert staged changes to currently applied filters and close
+    setLocalFilters(filters);
+    setIsMobileOpen(false);
   };
 
   const hasActiveFilters = Object.values(filters).some(value => value !== '');
@@ -76,17 +95,13 @@ const ManpowerFilter: React.FC<ManpowerFilterProps> = ({
           </div>
           <button
             className="mobile-close-btn"
-            onClick={() => setIsMobileOpen(false)}
+            onClick={() => cancelFilters()}
           >
             <X size={20} />
           </button>
         </div>
 
-        {hasActiveFilters && (
-          <button className="reset-filters-btn" onClick={resetFilters}>
-            Clear All Filters
-          </button>
-        )}
+        
 
         <div className="filter-group">
           <label htmlFor="search">Search</label>
@@ -94,8 +109,8 @@ const ManpowerFilter: React.FC<ManpowerFilterProps> = ({
             type="text"
             id="search"
             placeholder="Search by name, role..."
-            value={filters.search}
-            onChange={(e) => handleFilterChange('search', e.target.value)}
+            value={localFilters.search}
+            onChange={(e) => handleLocalChange('search', e.target.value)}
             className="filter-input"
           />
         </div>
@@ -104,8 +119,8 @@ const ManpowerFilter: React.FC<ManpowerFilterProps> = ({
           <label htmlFor="workerCategory">Worker Category</label>
           <select
             id="workerCategory"
-            value={filters.workerCategory}
-            onChange={(e) => handleFilterChange('workerCategory', e.target.value)}
+            value={localFilters.workerCategory}
+            onChange={(e) => handleLocalChange('workerCategory', e.target.value)}
             className="filter-select"
           >
             <option value="">All Categories</option>
@@ -121,8 +136,8 @@ const ManpowerFilter: React.FC<ManpowerFilterProps> = ({
           <label htmlFor="jobTitle">Job Title</label>
           <select
             id="jobTitle"
-            value={filters.jobTitle}
-            onChange={(e) => handleFilterChange('jobTitle', e.target.value)}
+            value={localFilters.jobTitle}
+            onChange={(e) => handleLocalChange('jobTitle', e.target.value)}
             className="filter-select"
           >
             <option value="">All Job Titles</option>
@@ -138,8 +153,8 @@ const ManpowerFilter: React.FC<ManpowerFilterProps> = ({
           <label htmlFor="nationality">Nationality</label>
           <select
             id="nationality"
-            value={filters.nationality}
-            onChange={(e) => handleFilterChange('nationality', e.target.value)}
+            value={localFilters.nationality}
+            onChange={(e) => handleLocalChange('nationality', e.target.value)}
             className="filter-select"
           >
             <option value="">All Nationalities</option>
@@ -155,8 +170,8 @@ const ManpowerFilter: React.FC<ManpowerFilterProps> = ({
           <label htmlFor="gender">Gender</label>
           <select
             id="gender"
-            value={filters.gender}
-            onChange={(e) => handleFilterChange('gender', e.target.value)}
+            value={localFilters.gender}
+            onChange={(e) => handleLocalChange('gender', e.target.value)}
             className="filter-select"
           >
             <option value="">All Genders</option>
@@ -172,8 +187,8 @@ const ManpowerFilter: React.FC<ManpowerFilterProps> = ({
           <label htmlFor="maritalStatus">Marital Status</label>
           <select
             id="maritalStatus"
-            value={filters.maritalStatus}
-            onChange={(e) => handleFilterChange('maritalStatus', e.target.value)}
+            value={localFilters.maritalStatus}
+            onChange={(e) => handleLocalChange('maritalStatus', e.target.value)}
             className="filter-select"
           >
             <option value="">All</option>
@@ -192,8 +207,8 @@ const ManpowerFilter: React.FC<ManpowerFilterProps> = ({
             <input
               type="number"
               placeholder="Min"
-              value={filters.minAge}
-              onChange={(e) => handleFilterChange('minAge', e.target.value)}
+              value={localFilters.minAge}
+              onChange={(e) => handleLocalChange('minAge', e.target.value)}
               className="filter-input age-input"
               min="18"
               max="65"
@@ -202,13 +217,23 @@ const ManpowerFilter: React.FC<ManpowerFilterProps> = ({
             <input
               type="number"
               placeholder="Max"
-              value={filters.maxAge}
-              onChange={(e) => handleFilterChange('maxAge', e.target.value)}
+              value={localFilters.maxAge}
+              onChange={(e) => handleLocalChange('maxAge', e.target.value)}
               className="filter-input age-input"
               min="18"
               max="65"
             />
           </div>
+        </div>
+
+        {/* Action Buttons (Clear + Apply) */}
+        <div className="filter-actions" style={{ display: 'flex', gap: 10, marginTop: 6 }}>
+          <button className="reset-filters-btn" onClick={resetFilters} style={{ flex: 1 }}>
+            Clear
+          </button>
+          <button className="reset-filters-btn" onClick={applyFilters} style={{ flex: 1, background: 'var(--primary-red)', color: '#fff' }}>
+            Apply
+          </button>
         </div>
       </div>
 
@@ -216,7 +241,7 @@ const ManpowerFilter: React.FC<ManpowerFilterProps> = ({
       {isMobileOpen && (
         <div
           className="mobile-filter-overlay"
-          onClick={() => setIsMobileOpen(false)}
+          onClick={() => cancelFilters()}
         />
       )}
     </>
